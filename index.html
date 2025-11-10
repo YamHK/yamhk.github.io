@@ -530,6 +530,7 @@
                             <option value="company/assets/index.html">个人资产管理</option>
                             <option value="module/index/mx_qrcode_page.html">数字支付助手</option>
                             <option value="module/index/mx_task.html" selected>任务中心</option>
+                            <option value="module/index/mx_stock_discussion.html">股票交流社区</option>
                         </select>
                         <button id="save-default-feature" class="bg-primary hover:bg-primary/90 text-dark font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
                             保存设置
@@ -780,6 +781,18 @@
                     link: 'module/index/mx_task.html',
                     category: 'feature',
                     type: '个人金融'
+                },
+                // 股票交流社区
+                {
+                    id: 'mx_stock_discussion',
+                    name: '股票交流社区',
+                    description: '与股友分享投资见解，共同关注股票动态',
+                    icon: 'fa-line-chart',
+                    iconBgClass: 'bg-yellow-100',
+                    iconColorClass: 'text-yellow-600',
+                    link: 'module/index/mx_stock_discussion.html',
+                    category: 'feature',
+                    type: '社交金融'
                 }
             ];
         }

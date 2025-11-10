@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票交流社区 - 金零社</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e6a419', // 金融金色
+                        secondary: '#1a237e', // 深蓝
+                        dark: '#1a1a2e',
+                        light: '#f8f9fa',
+                        accent: '#f50057'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 15px rgba(230, 164, 25, 0.1);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 20px rgba(230, 164, 25, 0.2);
+            }
+            .gold-glow {
+                box-shadow: 0 0 15px rgba(230, 164, 25, 0.5), 0 0 30px rgba(26, 35, 126, 0.3);
+            }
+        }
+    </style>
+</head>
+<body class="bg-light min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-dark shadow-md fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../index.html" class="text-xl font-bold text-primary flex items-center" onclick="saveLastVisitedPage()">
+                        <i class="fa fa-line-chart mr-2 text-2xl"></i>金零社
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="../../index.html" class="text-gray-300 hover:text-primary transition-colors duration-200" onclick="saveLastVisitedPage()">
+                        <i class="fa fa-home mr-1"></i>首页
+                    </a>
+                    <a href="#stocks" class="text-gray-300 hover:text-primary transition-colors duration-200">
+                        <i class="fa fa-line-chart mr-1"></i>关注股票
+                    </a>
+                    <a href="#discussions" class="text-gray-300 hover:text-primary transition-colors duration-200">
+                        <i class="fa fa-comments mr-1"></i>讨论区
+                    </a>
+                    <a href="mx_contact.html" class="text-primary font-medium transition-colors duration-200">
+                        <i class="fa fa-qrcode mr-1"></i>联系我们
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <section class="pt-24 pb-16 bg-gradient-to-r from-blue-900 to-indigo-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-bold mb-4">股票交流社区</h1>
+            <p class="text-xl max-w-2xl mx-auto">与股友分享投资见解，共同关注股票动态</p>
+        </div>
+    </section>
+
+    <!-- 主体内容 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 添加关注股票 -->
+            <div class="bg-light rounded-xl p-6 mb-10 card-shadow">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fa fa-plus-circle text-primary mr-2"></i>添加关注股票
+                </h2>
+                <form id="add-stock-form" class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="stock-input" placeholder="输入股票代码或名称，如：000001、平安银行" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                    <button type="submit" class="bg-primary hover:bg-primary/90 text-dark px-6 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                        <i class="fa fa-plus mr-2"></i>添加股票
+                    </button>
+                </form>
+            </div>
+
+            <!-- 关注股票列表 -->
+            <div class="mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold flex items-center">
+                        <i class="fa fa-line-chart text-primary mr-2"></i>关注股票
+                    </h2>
+                    <div class="text-sm text-gray-500">
+                        <i class="fa fa-refresh mr-1"></i>实时更新
+                    </div>
+                </div>
+
+                <!-- 股票卡片容器 -->
+                <div id="stocks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 默认提示 -->
+                    <div class="col-span-full text-center py-12 text-gray-500" id="empty-state">
+                        <i class="fa fa-line-chart text-5xl mb-4 opacity-30"></i>
+                        <p>还没有关注任何股票</p>
+                        <p class="text-sm mt-2">添加您关注的股票以参与讨论</p>
+                    </div>
+                    
+                    <!-- 股票卡片示例（实际将通过JavaScript动态生成） -->
+                    <!--
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 card-shadow hover-scale">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-semibold text-lg text-dark">000001 平安银行</h3>
+                                <p class="text-gray-500 text-sm">SZ</p>
+                            </div>
+                            <button class="delete-stock text-gray-400 hover:text-red-500 transition-colors p-1" title="取消关注">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="text-2xl font-bold text-dark mr-4">12.35 <span class="text-sm text-green-500">+0.45%</span></div>
+                            <div class="text-gray-600">
+                                <div class="text-sm">最高 12.50</div>
+                                <div class="text-sm">最低 12.10</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>成交量: 12.5万手</span>
+                            <span>市值: 2500亿</span>
+                        </div>
+                        <div class="mt-4">
+                            <a href="#discussion-000001" class="text-primary hover:underline">查看讨论 (23)</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+
+            <!-- 讨论区 -->
+            <div id="discussions" class="mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold flex items-center">
+                        <i class="fa fa-comments text-primary mr-2"></i>股票讨论区
+                    </h2>
+                </div>
+
+                <!-- 发表评论 -->
+                <div class="bg-light rounded-xl p-6 mb-6 card-shadow">
+                    <h3 class="text-lg font-semibold mb-4">发表观点</h3>
+                    <form id="comment-form">
+                        <div class="mb-4">
+                            <select id="comment-stock" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                <option value="">请选择要评论的股票</option>
+                                <!-- 股票选项将通过JavaScript动态生成 -->
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <textarea id="comment-content" rows="4" placeholder="分享您的投资观点和分析..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-primary hover:bg-primary/90 text-dark px-6 py-2 rounded-lg transition-colors duration-200">
+                                发表评论
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 讨论列表 -->
+                <div id="discussions-container">
+                    <!-- 默认提示 -->
+                    <div class="col-span-full text-center py-12 text-gray-500" id="discussions-empty-state">
+                        <i class="fa fa-comments-o text-5xl mb-4 opacity-30"></i>
+                        <p>暂无讨论内容</p>
+                        <p class="text-sm mt-2">发表您的第一个观点开始讨论</p>
+                    </div>
+                    
+                    <!-- 讨论项示例（实际将通过JavaScript动态生成） -->
+                    <!--
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 card-shadow">
+                        <div class="flex items-start mb-4">
+                            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                U
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h4 class="font-semibold">用户123</h4>
+                                    <span class="text-gray-500 text-sm">2025-11-10 14:30</span>
+                                </div>
+                                <div class="text-gray-500 text-sm">评论了 <span class="text-primary">000001 平安银行</span></div>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">
+                            这只股票最近表现不错，基本面良好，技术面上也有突破迹象，建议关注。
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <button class="flex items-center mr-4 hover:text-primary">
+                                <i class="fa fa-thumbs-up mr-1"></i> 12
+                            </button>
+                            <button class="flex items-center hover:text-primary">
+                                <i class="fa fa-comment mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+
+            <!-- 说明 -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fa fa-info-circle text-blue-500 text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-blue-700">
+                            <strong>说明：</strong>股票交流社区为您提供与股友交流的平台，您可以添加关注的股票并发表观点。
+                            所有数据和讨论内容均存储在本地浏览器中，不会上传到服务器。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fa fa-line-chart mr-2"></i>金零社
+                    </h3>
+                    <p class="text-gray-400 mb-4">专业数字金融社交平台，为个人用户提供智能金融解决方案和社交服务</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-wechat text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="mx_contact.html" class="text-gray-400 hover:text-primary transition-colors duration-200">联系我们</a></li>
+                        <li><a href="mx_task.html" class="text-gray-400 hover:text-primary transition-colors duration-200">任务中心</a></li>
+                        <li><a href="mx_chat.html" class="text-gray-400 hover:text-primary transition-colors duration-200">金融社交圈</a></li>
+                        <li><a href="mx_weather.html" class="text-gray-400 hover:text-primary transition-colors duration-200">市场行情分析</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">法律信息</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">隐私政策</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">使用条款</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">免责声明</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2025 金零社金融服务平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 保存最后访问的页面信息
+        function saveLastVisitedPage() {
+            const currentPage = window.location.href;
+            const currentPageName = "股票交流社区";
+            localStorage.setItem('last_visited_page', currentPage);
+            localStorage.setItem('last_visited_page_name', currentPageName);
+        }
+
+        // 股票交流系统
+        class StockDiscussionSystem {
+            constructor() {
+                this.stocks = [];
+                this.discussions = [];
+                this.loadFromLocalStorage();
+                this.bindEvents();
+                this.renderStocks();
+                this.renderDiscussions();
+            }
+
+            // 从本地存储加载数据
+            loadFromLocalStorage() {
+                try {
+                    const savedStocks = localStorage.getItem('stockDiscussion_stocks');
+                    const savedDiscussions = localStorage.getItem('stockDiscussion_discussions');
+                    
+                    if (savedStocks) this.stocks = JSON.parse(savedStocks);
+                    if (savedDiscussions) this.discussions = JSON.parse(savedDiscussions);
+                } catch (e) {
+                    console.error('加载数据失败:', e);
+                }
+            }
+
+            // 保存数据到本地存储
+            saveToLocalStorage() {
+                try {
+                    localStorage.setItem('stockDiscussion_stocks', JSON.stringify(this.stocks));
+                    localStorage.setItem('stockDiscussion_discussions', JSON.stringify(this.discussions));
+                } catch (e) {
+                    console.error('保存数据失败:', e);
+                }
+            }
+
+            // 绑定事件
+            bindEvents() {
+                // 添加股票表单
+                document.getElementById('add-stock-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const stockInput = document.getElementById('stock-input');
+                    const stockValue = stockInput.value.trim();
+                    
+                    if (stockValue) {
+                        this.addStock(stockValue);
+                        stockInput.value = '';
+                    }
+                });
+
+                // 发表评论表单
+                document.getElementById('comment-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const stockSelect = document.getElementById('comment-stock');
+                    const contentTextarea = document.getElementById('comment-content');
+                    
+                    const stock = stockSelect.value;
+                    const content = contentTextarea.value.trim();
+                    
+                    if (stock && content) {
+                        this.addDiscussion(stock, content);
+                        contentTextarea.value = '';
+                    } else {
+                        alert('请选择股票并输入评论内容');
+                    }
+                });
+            }
+
+            // 添加股票
+            addStock(stockInfo) {
+                // 简单验证股票代码格式
+                const stock = {
+                    id: 'stock_' + Date.now(),
+                    code: stockInfo.split(' ')[0], // 取代码部分
+                    name: stockInfo.includes(' ') ? stockInfo.split(' ').slice(1).join(' ') : stockInfo,
+                    addedAt: new Date().toISOString()
+                };
+
+                // 检查是否已存在
+                if (this.stocks.some(s => s.code === stock.code)) {
+                    alert('该股票已在关注列表中');
+                    return;
+                }
+
+                this.stocks.push(stock);
+                this.saveToLocalStorage();
+                this.renderStocks();
+                this.updateCommentStockOptions();
+            }
+
+            // 删除股票
+            removeStock(stockId) {
+                this.stocks = this.stocks.filter(stock => stock.id !== stockId);
+                // 同时删除相关的讨论
+                this.discussions = this.discussions.filter(discussion => discussion.stockId !== stockId);
+                this.saveToLocalStorage();
+                this.renderStocks();
+                this.renderDiscussions();
+                this.updateCommentStockOptions();
+            }
+
+            // 添加讨论
+            addDiscussion(stockCode, content) {
+                const stock = this.stocks.find(s => s.code === stockCode);
+                if (!stock) return;
+
+                const discussion = {
+                    id: 'discussion_' + Date.now(),
+                    stockId: stock.id,
+                    stockCode: stock.code,
+                    stockName: stock.name,
+                    content: content,
+                    userId: '用户' + Math.floor(Math.random() * 1000),
+                    timestamp: new Date().toISOString()
+                };
+
+                this.discussions.push(discussion);
+                this.saveToLocalStorage();
+                this.renderDiscussions();
+            }
+
+            // 渲染股票列表
+            renderStocks() {
+                const container = document.getElementById('stocks-container');
+                const emptyState = document.getElementById('empty-state');
+
+                if (this.stocks.length === 0) {
+                    emptyState.style.display = 'block';
+                    container.innerHTML = '';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                let stocksHTML = '';
+
+                this.stocks.forEach(stock => {
+                    // 简化的股票数据（实际应用中可能需要API获取实时数据）
+                    const price = (Math.random() * 20 + 5).toFixed(2);
+                    const change = (Math.random() * 2 - 1).toFixed(2);
+                    const changeClass = parseFloat(change) >= 0 ? 'text-green-500' : 'text-red-500';
+                    const changeSymbol = parseFloat(change) >= 0 ? '+' : '';
+
+                    stocksHTML += `
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 card-shadow hover-scale">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-semibold text-lg text-dark">${stock.code} ${stock.name}</h3>
+                                <p class="text-gray-500 text-sm">SZ</p>
+                            </div>
+                            <button class="delete-stock text-gray-400 hover:text-red-500 transition-colors p-1" title="取消关注" data-id="${stock.id}">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="text-2xl font-bold text-dark mr-4">${price} <span class="text-sm ${changeClass}">${changeSymbol}${change}%</span></div>
+                            <div class="text-gray-600">
+                                <div class="text-sm">最高 ${(parseFloat(price) + Math.random() * 2).toFixed(2)}</div>
+                                <div class="text-sm">最低 ${(parseFloat(price) - Math.random() * 2).toFixed(2)}</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>成交量: ${(Math.random() * 20 + 5).toFixed(1)}万手</span>
+                            <span>市值: ${(Math.random() * 3000 + 1000).toFixed(0)}亿</span>
+                        </div>
+                        <div class="mt-4">
+                            <a href="#discussion-${stock.code}" class="text-primary hover:underline">查看讨论 (${this.getDiscussionCount(stock.id)})</a>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                container.innerHTML = stocksHTML;
+
+                // 绑定删除事件
+                document.querySelectorAll('.delete-stock').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const stockId = e.currentTarget.getAttribute('data-id');
+                        this.removeStock(stockId);
+                    });
+                });
+            }
+
+            // 获取股票讨论数量
+            getDiscussionCount(stockId) {
+                return this.discussions.filter(d => d.stockId === stockId).length;
+            }
+
+            // 更新评论股票选项
+            updateCommentStockOptions() {
+                const select = document.getElementById('comment-stock');
+                let optionsHTML = '<option value="">请选择要评论的股票</option>';
+                
+                this.stocks.forEach(stock => {
+                    optionsHTML += `<option value="${stock.code}">${stock.code} ${stock.name}</option>`;
+                });
+                
+                select.innerHTML = optionsHTML;
+            }
+
+            // 渲染讨论区
+            renderDiscussions() {
+                const container = document.getElementById('discussions-container');
+                const emptyState = document.getElementById('discussions-empty-state');
+
+                if (this.discussions.length === 0) {
+                    emptyState.style.display = 'block';
+                    container.innerHTML = '';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                // 按时间倒序排列
+                const sortedDiscussions = [...this.discussions].sort((a, b) => 
+                    new Date(b.timestamp) - new Date(a.timestamp)
+                );
+
+                let discussionsHTML = '';
+
+                sortedDiscussions.forEach(discussion => {
+                    const date = new Date(discussion.timestamp);
+                    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+                    discussionsHTML += `
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 card-shadow">
+                        <div class="flex items-start mb-4">
+                            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                ${discussion.userId.charAt(0)}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h4 class="font-semibold">${discussion.userId}</h4>
+                                    <span class="text-gray-500 text-sm">${formattedDate}</span>
+                                </div>
+                                <div class="text-gray-500 text-sm">评论了 <span class="text-primary">${discussion.stockCode} ${discussion.stockName}</span></div>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">
+                            ${discussion.content}
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <button class="flex items-center mr-4 hover:text-primary">
+                                <i class="fa fa-thumbs-up mr-1"></i> ${Math.floor(Math.random() * 50)}
+                            </button>
+                            <button class="flex items-center hover:text-primary">
+                                <i class="fa fa-comment mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                container.innerHTML = discussionsHTML;
+            }
+        }
+
+        // 初始化系统
+        let stockDiscussionSystem;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化股票交流系统
+            stockDiscussionSystem = new StockDiscussionSystem();
+            
+            // 初始化ESC键监听
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+</body>
+</html>
