@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>固定资产表 - 固定资产管理系统</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #1890ff;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .header a:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .tab-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        select {
+            cursor: pointer;
+        }
+        button {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #40a9ff;
+        }
+        .btn-secondary {
+            background-color: #52c41a;
+        }
+        .btn-secondary:hover {
+            background-color: #73d13d;
+        }
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+        .btn-danger:hover {
+            background-color: #ff7875;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-group button {
+            flex: 1;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-container input {
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        th {
+            background-color: #fafafa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #fafafa;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .alert-success {
+            background-color: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+        .alert-error {
+            background-color: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+        .hidden {
+            display: none;
+        }
+        #fileInput {
+            display: none;
+        }
+        .export-btn {
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>固定资产表</h1>
+            <div>
+                <a href="usage_record.html" style="margin-right: 10px;">使用记录管理</a>
+                <a href="index.html">返回资管首页</a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab" onclick="switchTab(0)">资产录入</button>
+            <button class="tab active" onclick="switchTab(1)">数据展示</button>
+        </div>
+
+        <!-- 资产录入表单 -->
+        <div class="tab-content" id="tab0">
+            <div class="form-container">
+                <h3>新增固定资产</h3>
+                <div id="alertMessage" class="alert hidden"></div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assetCode">资产编码 <span style="color: red;">*</span></label>
+                        <input type="text" id="assetCode" placeholder="请输入资产编码">
+                    </div>
+                    <div class="form-group">
+                        <label for="assetName">资产名称 <span style="color: red;">*</span></label>
+                        <input type="text" id="assetName" placeholder="请输入资产名称">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assetType">资产类型 <span style="color: red;">*</span></label>
+                        <select id="assetType" onchange="generateAssetCode()">
+                            <option value="">请选择资产类型</option>
+                            <option value="固定资产" selected>固定资产</option>
+                            <option value="公共设备">公共设备</option>
+                            <option value="网络设备">网络设备</option>
+                            <option value="显示器">显示器</option>
+                            <option value="客户机">客户机</option>
+                            <option value="笔记本">笔记本</option>
+                            <option value="服务器">服务器</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assetStatus">资产状态 <span style="color: red;">*</span></label>
+                        <select id="assetStatus">
+                            <option value="">请选择资产状态</option>
+                            <option value="在用">在用</option>
+                            <option value="闲置">闲置</option>
+                            <option value="维修">维修</option>
+                            <option value="报废">报废</option>
+                            <option value="待分配">待分配</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="department">使用部门 <span style="color: red;">*</span></label>
+                        <select id="department">
+                            <option value="">请选择使用部门</option>
+                            <option value="财务部">财务部</option>
+                            <option value="技术部">技术部</option>
+                            <option value="行政部">行政部</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">数量 <span style="color: red;">*</span></label>
+                        <input type="number" id="quantity" min="1" value="1" oninput="calculateTotal()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="unitPrice">单价 (元) <span style="color: red;">*</span></label>
+                        <input type="number" id="unitPrice" min="0" step="0.01" value="0" oninput="calculateDepreciation()">
+                    </div>
+                    <div class="form-group">
+                        <label for="depreciation">累计折旧 (元)</label>
+                        <input type="number" id="depreciation" min="0" step="0.01" value="0" oninput="calculateDepreciation()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="netValue">净值 (元)</label>
+                        <input type="number" id="netValue" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalAmount">总金额 (元)</label>
+                        <input type="number" id="totalAmount" readonly>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="purchaseDate">购买日期</label>
+                        <input type="date" id="purchaseDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="supplier">供应商</label>
+                        <input type="text" id="supplier" placeholder="请输入供应商名称">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="brand">品牌</label>
+                        <input type="text" id="brand" placeholder="请输入品牌">
+                    </div>
+                    <div class="form-group">
+                        <label for="model">型号</label>
+                        <input type="text" id="model" placeholder="请输入型号">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="saveFixedAsset()">保存固定资产</button>
+                    <button type="button" onclick="resetForm()">重置表单</button>
+                </div>
+            </div>
+
+            <div class="import-export">
+                <h3>数据导入导出</h3>
+                <div class="btn-group">
+                    <input type="file" id="fileInput" accept=".xlsx,.xls">
+                    <button onclick="document.getElementById('fileInput').click()">导入Excel</button>
+                    <button class="btn-secondary" onclick="exportExcel()">导出Excel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据展示表格 -->
+        <div class="tab-content active" id="tab1">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="搜索资产编码或名称">
+                <button onclick="searchAssets()">搜索</button>
+                <button type="button" onclick="clearSearch()">清除</button>
+            </div>
+
+            <table id="fixedAssetsTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>资产编码</th>
+                        <th>资产名称</th>
+                        <th>资产类型</th>
+                        <th>资产状态</th>
+                        <th>使用部门</th>
+                        <th>数量</th>
+                        <th>单价 (元)</th>
+                        <th>累计折旧 (元)</th>
+                        <th>净值 (元)</th>
+                        <th>总金额 (元)</th>
+                        <th>购买日期</th>
+                        <th>品牌</th>
+                        <th>型号</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="fixedAssetsTableBody">
+                    <!-- 数据将通过JavaScript动态生成 -->
+                </tbody>
+            </table>
+
+            <button class="btn-danger export-btn" onclick="deleteSelectedAssets()">删除选中资产</button>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页
+        function switchTab(index) {
+            // 隐藏所有标签内容
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // 移除所有标签的活跃状态
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 显示选中的标签内容
+            tabContents[index].classList.add('active');
+            tabs[index].classList.add('active');
+            
+            // 如果切换到数据展示标签，刷新表格数据
+            if (index === 1) {
+                loadFixedAssets();
+            }
+        }
+
+        // 显示提示信息
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            
+            setTimeout(() => {
+                alertDiv.className = 'alert hidden';
+            }, 3000);
+        }
+
+        // 计算总金额
+        function calculateTotal() {
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+            const totalAmount = quantity * unitPrice;
+            
+            document.getElementById('totalAmount').value = totalAmount.toFixed(2);
+        }
+
+        // 计算折旧和净值
+        function calculateDepreciation() {
+            const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+            const depreciation = parseFloat(document.getElementById('depreciation').value) || 0;
+            const netValue = Math.max(0, unitPrice - depreciation); // 净值不能小于0
+            
+            document.getElementById('netValue').value = netValue.toFixed(2);
+            calculateTotal(); // 同时更新总金额
+        }
+
+        // 重置表单
+        function resetForm() {
+            document.getElementById('assetCode').value = '';
+            document.getElementById('assetName').value = '';
+            document.getElementById('assetType').value = '固定资产';
+            document.getElementById('assetStatus').value = '';
+            document.getElementById('department').value = '';
+            document.getElementById('quantity').value = '1';
+            document.getElementById('unitPrice').value = '0';
+            document.getElementById('depreciation').value = '0';
+            document.getElementById('netValue').value = '0.00';
+            document.getElementById('totalAmount').value = '0.00';
+            document.getElementById('purchaseDate').value = '';
+            document.getElementById('supplier').value = '';
+            document.getElementById('brand').value = '';
+            document.getElementById('model').value = '';
+        }
+
+        // 生成资产编码
+        function generateAssetCode() {
+            const assetType = document.getElementById('assetType').value;
+            if (!assetType) return;
+
+            // 从本地存储获取编码规则
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            
+            // 查找固定资产编码规则
+            const rule = codeRules.find(r => r.ruleName === '固定资产编码规则');
+            
+            // 如果找到规则，则生成编码
+            if (rule) {
+                const code = generateCodeFromRule(rule);
+                document.getElementById('assetCode').value = code;
+            } else {
+                // 如果没有找到规则，生成一个默认编码
+                const prefix = 'ZC';
+                const dateStr = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+                const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                document.getElementById('assetCode').value = `${prefix}${dateStr}${randomNum}`;
+            }
+        }
+
+        // 根据规则生成编码
+        function generateCodeFromRule(rule) {
+            let code = '';
+            
+            // 添加前缀
+            if (rule.prefix) {
+                code += rule.prefix;
+            }
+            
+            // 添加日期
+            if (rule.includeDate) {
+                const now = new Date();
+                let dateStr = '';
+                
+                if (rule.dateFormat === 'YYYYMMDD') {
+                    dateStr = now.getFullYear() + 
+                              String(now.getMonth() + 1).padStart(2, '0') + 
+                              String(now.getDate()).padStart(2, '0');
+                } else if (rule.dateFormat === 'YYYYMM') {
+                    dateStr = now.getFullYear() + 
+                              String(now.getMonth() + 1).padStart(2, '0');
+                } else if (rule.dateFormat === 'YYMM') {
+                    dateStr = String(now.getFullYear()).slice(2) + 
+                              String(now.getMonth() + 1).padStart(2, '0');
+                }
+                
+                code += (code ? rule.separator : '') + dateStr;
+            }
+            
+            // 添加序号
+            const nextSequence = rule.currentSequence + 1;
+            const sequenceStr = String(nextSequence).padStart(rule.sequenceLength, '0');
+            code += (code ? rule.separator : '') + sequenceStr;
+            
+            return code;
+        }
+
+        // 保存固定资产
+        function saveFixedAsset() {
+            // 获取表单数据
+            const assetCode = document.getElementById('assetCode').value.trim();
+            const assetName = document.getElementById('assetName').value.trim();
+            const assetType = document.getElementById('assetType').value;
+            const assetStatus = document.getElementById('assetStatus').value;
+            const department = document.getElementById('department').value;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+            const depreciation = parseFloat(document.getElementById('depreciation').value) || 0;
+            const netValue = parseFloat(document.getElementById('netValue').value) || 0;
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const supplier = document.getElementById('supplier').value.trim();
+            const brand = document.getElementById('brand').value.trim();
+            const model = document.getElementById('model').value.trim();
+            
+            // 验证必填字段
+            if (!assetCode || !assetName || !assetType || !assetStatus || !department) {
+                showAlert('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            // 从本地存储获取现有固定资产数据
+            const fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+            
+            // 检查资产编码是否已存在
+            const existingAsset = fixedAssets.find(asset => asset.assetCode === assetCode);
+            if (existingAsset) {
+                showAlert('资产编码已存在，请使用不同的编码', 'error');
+                return;
+            }
+            
+            // 创建新固定资产对象
+            const newFixedAsset = {
+                assetCode,
+                assetName,
+                assetType,
+                assetStatus,
+                department,
+                quantity,
+                unitPrice,
+                depreciation,
+                netValue,
+                totalAmount,
+                purchaseDate,
+                supplier,
+                brand,
+                model,
+                id: Date.now().toString() // 生成唯一ID
+            };
+            
+            // 添加新固定资产到数组
+            fixedAssets.push(newFixedAsset);
+            
+            // 保存回本地存储
+            localStorage.setItem('fixedAssets', JSON.stringify(fixedAssets));
+            
+            // 更新编码规则中的序号
+            updateCodeRuleSequence();
+            
+            // 同时更新资产主表
+            updateAssetMain(newFixedAsset);
+            
+            showAlert('固定资产保存成功');
+            resetForm();
+        }
+
+        // 更新编码规则序号
+        function updateCodeRuleSequence() {
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            const ruleIndex = codeRules.findIndex(r => r.ruleName === '固定资产编码规则');
+            if (ruleIndex >= 0) {
+                codeRules[ruleIndex].currentSequence += 1;
+                localStorage.setItem('codeRules', JSON.stringify(codeRules));
+            }
+        }
+
+        // 更新资产主表
+        function updateAssetMain(fixedAsset) {
+            // 从主表字段中提取需要的信息
+            const mainAssetFields = {
+                assetCode: fixedAsset.assetCode,
+                assetName: fixedAsset.assetName,
+                assetType: fixedAsset.assetType,
+                assetStatus: fixedAsset.assetStatus,
+                department: fixedAsset.department,
+                quantity: fixedAsset.quantity,
+                unitPrice: fixedAsset.unitPrice,
+                totalAmount: fixedAsset.totalAmount,
+                purchaseDate: fixedAsset.purchaseDate,
+                supplier: fixedAsset.supplier,
+                id: fixedAsset.id
+            };
+            
+            // 获取资产主表数据
+            const assets = JSON.parse(localStorage.getItem('assets') || '[]');
+            
+            // 检查是否已存在
+            const existingIndex = assets.findIndex(asset => asset.assetCode === fixedAsset.assetCode);
+            
+            if (existingIndex >= 0) {
+                // 更新现有资产
+                assets[existingIndex] = mainAssetFields;
+            } else {
+                // 添加新资产
+                assets.push(mainAssetFields);
+            }
+            
+            // 保存回本地存储
+            localStorage.setItem('assets', JSON.stringify(assets));
+        }
+
+        // 加载固定资产数据
+        function loadFixedAssets(searchTerm = '') {
+            const fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+            const tableBody = document.getElementById('fixedAssetsTableBody');
+            
+            // 清空表格
+            tableBody.innerHTML = '';
+            
+            // 过滤搜索结果
+            const filteredAssets = fixedAssets.filter(asset => {
+                if (!searchTerm) return true;
+                return asset.assetCode.includes(searchTerm) || 
+                       asset.assetName.includes(searchTerm);
+            });
+            
+            // 如果没有数据
+            if (filteredAssets.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="15" style="text-align: center;">暂无数据</td></tr>';
+                return;
+            }
+            
+            // 填充表格
+            filteredAssets.forEach(asset => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="asset-checkbox" data-id="${asset.id}"></td>
+                    <td><a href="usage_record.html?assetCode=${asset.assetCode}" style="color: #1890ff; text-decoration: none;">${asset.assetCode}</a></td>
+                    <td>${asset.assetName}</td>
+                    <td>${asset.assetType}</td>
+                    <td>${asset.assetStatus}</td>
+                    <td>${asset.department}</td>
+                    <td>${asset.quantity}</td>
+                    <td>${asset.unitPrice.toFixed(2)}</td>
+                    <td>${asset.depreciation.toFixed(2)}</td>
+                    <td class="${asset.netValue < asset.unitPrice * 0.1 ? 'highlight' : ''}">${asset.netValue.toFixed(2)}</td>
+                    <td>${asset.totalAmount.toFixed(2)}</td>
+                    <td>${asset.purchaseDate || '-'}</td>
+                    <td>${asset.brand || '-'}</td>
+                    <td>${asset.model || '-'}</td>
+                    <td>
+                        <button onclick="editFixedAsset('${asset.id}')" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                        <button onclick="deleteFixedAsset('${asset.id}')" style="padding: 4px 8px; font-size: 12px; background-color: #ff4d4f;">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 搜索固定资产
+        function searchAssets() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            loadFixedAssets(searchTerm);
+        }
+
+        // 清除搜索
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            loadFixedAssets();
+        }
+
+        // 编辑固定资产
+        function editFixedAsset(id) {
+            const fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+            const asset = fixedAssets.find(a => a.id === id);
+            
+            if (asset) {
+                // 填充表单
+                document.getElementById('assetCode').value = asset.assetCode;
+                document.getElementById('assetName').value = asset.assetName;
+                document.getElementById('assetType').value = asset.assetType;
+                document.getElementById('assetStatus').value = asset.assetStatus;
+                document.getElementById('department').value = asset.department;
+                document.getElementById('quantity').value = asset.quantity;
+                document.getElementById('unitPrice').value = asset.unitPrice;
+                document.getElementById('depreciation').value = asset.depreciation;
+                document.getElementById('netValue').value = asset.netValue.toFixed(2);
+                document.getElementById('totalAmount').value = asset.totalAmount.toFixed(2);
+                document.getElementById('purchaseDate').value = asset.purchaseDate || '';
+                document.getElementById('supplier').value = asset.supplier || '';
+                document.getElementById('brand').value = asset.brand || '';
+                document.getElementById('model').value = asset.model || '';
+                
+                // 切换到录入标签页
+                switchTab(0);
+                
+                // 滚动到表单顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // 提示用户正在编辑
+                showAlert(`正在编辑固定资产：${asset.assetName}`);
+                
+                // 保存编辑状态
+                localStorage.setItem('editingFixedAssetId', id);
+            }
+        }
+
+        // 删除单个固定资产
+        function deleteFixedAsset(id) {
+            if (confirm('确定要删除这个固定资产吗？')) {
+                let fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+                const assetToDelete = fixedAssets.find(a => a.id === id);
+                
+                // 从固定资产表删除
+                fixedAssets = fixedAssets.filter(a => a.id !== id);
+                localStorage.setItem('fixedAssets', JSON.stringify(fixedAssets));
+                
+                // 同时从资产主表删除
+                let assets = JSON.parse(localStorage.getItem('assets') || '[]');
+                assets = assets.filter(a => a.assetCode !== assetToDelete.assetCode);
+                localStorage.setItem('assets', JSON.stringify(assets));
+                
+                showAlert('固定资产删除成功');
+                loadFixedAssets();
+            }
+        }
+
+        // 删除选中固定资产
+        function deleteSelectedAssets() {
+            const checkboxes = document.querySelectorAll('.asset-checkbox:checked');
+            if (checkboxes.length === 0) {
+                showAlert('请先选择要删除的固定资产', 'error');
+                return;
+            }
+            
+            if (confirm(`确定要删除选中的 ${checkboxes.length} 个固定资产吗？`)) {
+                let fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+                const assetIds = Array.from(checkboxes).map(cb => cb.dataset.id);
+                
+                // 获取要删除的资产信息
+                const assetsToDelete = fixedAssets.filter(a => assetIds.includes(a.id));
+                
+                // 从固定资产表删除
+                fixedAssets = fixedAssets.filter(a => !assetIds.includes(a.id));
+                localStorage.setItem('fixedAssets', JSON.stringify(fixedAssets));
+                
+                // 同时从资产主表删除
+                let assets = JSON.parse(localStorage.getItem('assets') || '[]');
+                const assetCodes = assetsToDelete.map(a => a.assetCode);
+                assets = assets.filter(a => !assetCodes.includes(a.assetCode));
+                localStorage.setItem('assets', JSON.stringify(assets));
+                
+                showAlert(`成功删除 ${checkboxes.length} 个固定资产`);
+                loadFixedAssets();
+            }
+        }
+
+        // 全选/取消全选
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.asset-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = this.checked;
+            });
+        });
+
+        // 导入Excel（模拟功能）
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            showAlert('Excel文件导入成功（模拟功能）');
+            this.value = '';
+        });
+
+        // 导出Excel
+        function exportExcel() {
+            const fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+            
+            // 构建CSV内容
+            let csvContent = "资产编码,资产名称,资产类型,资产状态,使用部门,数量,单价(元),累计折旧(元),净值(元),总金额(元),购买日期,供应商,品牌,型号\n";
+            
+            if (fixedAssets.length > 0) {
+                fixedAssets.forEach(asset => {
+                    const row = [
+                        asset.assetCode,
+                        asset.assetName,
+                        asset.assetType,
+                        asset.assetStatus,
+                        asset.department,
+                        asset.quantity,
+                        asset.unitPrice.toFixed(2),
+                        asset.depreciation.toFixed(2),
+                        asset.netValue.toFixed(2),
+                        asset.totalAmount.toFixed(2),
+                        asset.purchaseDate || '',
+                        asset.supplier || '',
+                        asset.brand || '',
+                        asset.model || ''
+                    ];
+                    csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
+                });
+            }
+            
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `固定资产数据_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.display = "none";
+            
+            // 添加到页面并触发下载
+            document.body.appendChild(link);
+            link.click();
+            
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            showAlert('数据导出成功');
+        }
+
+        // 页面加载时的初始化
+        window.onload = function() {
+            const editingId = localStorage.getItem('editingFixedAssetId');
+            if (editingId) {
+                // 可以在这里恢复编辑状态
+                localStorage.removeItem('editingFixedAssetId');
+            }
+            
+            // 初始化测试数据
+            initTestData();
+        };
+        
+        // 初始化测试数据
+        function initTestData() {
+            // 检查是否已有数据，如果没有则生成测试数据
+            const fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+            
+            if (fixedAssets.length === 0) {
+                const testData = [
+                    {
+                        assetCode: 'ZC001',
+                        assetName: '办公电脑',
+                        assetType: '固定资产',
+                        assetStatus: '在用',
+                        department: '技术部',
+                        quantity: 10,
+                        unitPrice: 5000.00,
+                        depreciation: 500.00,
+                        netValue: 4500.00,
+                        totalAmount: 50000.00,
+                        purchaseDate: '2025-01-15',
+                        supplier: '计算机设备供应商A',
+                        brand: '联想',
+                        model: 'ThinkPad X1',
+                        id: '1'
+                    },
+                    {
+                        assetCode: 'ZC002',
+                        assetName: '办公桌椅',
+                        assetType: '固定资产',
+                        assetStatus: '在用',
+                        department: '行政部',
+                        quantity: 20,
+                        unitPrice: 1500.00,
+                        depreciation: 150.00,
+                        netValue: 1350.00,
+                        totalAmount: 30000.00,
+                        purchaseDate: '2025-02-20',
+                        supplier: '办公家具供应商B',
+                        brand: '欧派',
+                        model: 'OP-801',
+                        id: '2'
+                    },
+                    {
+                        assetCode: 'ZC003',
+                        assetName: '打印机',
+                        assetType: '固定资产',
+                        assetStatus: '闲置',
+                        department: '财务部',
+                        quantity: 5,
+                        unitPrice: 2000.00,
+                        depreciation: 200.00,
+                        netValue: 1800.00,
+                        totalAmount: 10000.00,
+                        purchaseDate: '2025-03-10',
+                        supplier: '办公设备供应商C',
+                        brand: '惠普',
+                        model: 'LaserJet Pro',
+                        id: '3'
+                    }
+                ];
+                
+                // 保存测试数据到本地存储
+                localStorage.setItem('fixedAssets', JSON.stringify(testData));
+                
+                // 同时更新资产主表
+                testData.forEach(item => {
+                    updateAssetMain(item);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

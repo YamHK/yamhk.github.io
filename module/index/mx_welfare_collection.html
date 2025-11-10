@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>福利品领取 - EV 官方平台</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F1F5F9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .hero-gradient {
+                background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            }
+            .form-input-focus {
+                @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-primary flex items-center">
+                        <i class="fa fa-connectdevelop mr-2 text-2xl"></i>EV 官方平台
+                    </span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- 全局ESC键监听脚本 -->
+                    <script src="../../../js/global_escape_listener.js"></script>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero-gradient pt-32 pb-20 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-block p-3 bg-white/10 rounded-2xl mb-6">
+                <i class="fa fa-gift text-5xl"></i>
+            </div>
+            <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold mb-4 leading-tight">
+                福利品抽奖活动
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
+                登记个人信息，参与当季新鲜板栗抽奖活动
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#collection-form" class="bg-white text-amber-600 hover:bg-white/90 px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
+                    立即参与
+                </a>
+                <a href="#welfare-info" class="bg-transparent border-2 border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium transition-all duration-200">
+                    了解活动详情
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 福利品信息 -->
+    <section id="welfare-info" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">活动福利介绍</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">当季新鲜板栗，随机抽取赠送，获奖名单将公示</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="order-2 md:order-1">
+                    <h3 class="text-2xl font-bold text-dark mb-4">优质板栗</h3>
+                    <p class="text-gray-600 mb-6">
+                        本季福利品为精选优质板栗，产地直供，新鲜美味。板栗富含蛋白质、碳水化合物、维生素和矿物质，具有健脾养胃、补肾强筋等功效。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fa fa-leaf text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark mb-1">天然健康</h4>
+                                <p class="text-gray-600">无农药残留，自然生长，保证品质</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fa fa-random text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark mb-1">随机抽取</h4>
+                                <p class="text-gray-600">公平公正，系统随机抽取幸运用户</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fa fa-bullhorn text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark mb-1">公开公示</h4>
+                                <p class="text-gray-600">获奖名单将在活动结束后进行公示</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="bg-amber-50 p-6 rounded-2xl card-shadow">
+                            <img src="https://picsum.photos/seed/chestnut/600/400" alt="新鲜板栗" class="w-full h-auto rounded-xl mb-4">
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div class="bg-white p-4 rounded-lg">
+                                    <p class="text-gray-500 text-sm">福利品名称</p>
+                                    <p class="font-semibold text-amber-600 text-xl">新鲜板栗</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg">
+                                    <p class="text-gray-500 text-sm">赠送数量</p>
+                                    <p class="font-semibold text-amber-600 text-xl">500g/份</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg">
+                                    <p class="text-gray-500 text-sm">活动期限</p>
+                                    <p class="font-semibold text-amber-600 text-sm">即日起至月底</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg">
+                                    <p class="text-gray-500 text-sm">活动状态</p>
+                                    <p class="font-semibold text-green-600 text-sm">进行中</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 装饰元素 -->
+                        <div class="absolute -top-6 -left-6 w-24 h-24 bg-amber-100 rounded-full opacity-50 -z-10"></div>
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-amber-200 rounded-full opacity-50 -z-10"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 抽奖流程 -->
+    <section class="py-16 bg-amber-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">抽奖流程</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">简单几步，参与福利品抽奖活动</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl card-shadow hover-scale relative">
+                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-xl">1</div>
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa fa-file-text-o text-amber-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">填写信息</h3>
+                    <p class="text-gray-600 text-center">
+                        准确填写个人信息和联系方式，参与抽奖活动
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl card-shadow hover-scale relative">
+                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-xl">2</div>
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa fa-random text-amber-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">随机抽取</h3>
+                    <p class="text-gray-600 text-center">
+                        活动结束后，系统将随机抽取幸运用户，确保公平公正
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl card-shadow hover-scale relative">
+                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-xl">3</div>
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa fa-bullhorn text-amber-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">公示发放</h3>
+                    <p class="text-gray-600 text-center">
+                        获奖名单将在系统内公示，并联系获奖用户发放福利
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 抽奖信息登记表单 -->
+    <section id="collection-form" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">抽奖活动登记</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">请填写以下信息参与福利品抽奖活动</p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                <form id="welfare-form" class="space-y-6">
+                    <!-- 基本信息 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">姓名 <span class="text-red-500">*</span></label>
+                            <input type="text" id="full-name" name="full-name" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                                placeholder="请输入您的姓名">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">手机号码 <span class="text-red-500">*</span></label>
+                            <input type="tel" id="phone" name="phone" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                                placeholder="请输入您的手机号码">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">电子邮箱</label>
+                        <input type="email" id="email" name="email"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                            placeholder="请输入您的电子邮箱（选填）">
+                    </div>
+                    
+                    <!-- 详细信息 -->
+                    <div>
+                        <label for="department" class="block text-sm font-medium text-gray-700 mb-1">所属部门 <span class="text-red-500">*</span></label>
+                        <select id="department" name="department" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus">
+                            <option value="">请选择部门</option>
+                            <option value="技术部">技术部</option>
+                            <option value="市场部">市场部</option>
+                            <option value="行政部">行政部</option>
+                            <option value="财务部">财务部</option>
+                            <option value="人力资源部">人力资源部</option>
+                            <option value="其他部门">其他部门</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="employee-id" class="block text-sm font-medium text-gray-700 mb-1">员工编号 <span class="text-red-500">*</span></label>
+                        <input type="text" id="employee-id" name="employee-id" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                            placeholder="请输入您的员工编号">
+                    </div>
+                    
+                    <!-- 联系方式 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">联系方式 <span class="text-red-500">*</span></label>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <input type="radio" id="pickup" name="contact-method" value="pickup" required
+                                    class="w-5 h-5 text-amber-500 border-gray-300 focus:ring-amber-500">
+                                <label for="pickup" class="ml-3 text-gray-700">公司前台领取</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="delivery" name="contact-method" value="delivery"
+                                    class="w-5 h-5 text-amber-500 border-gray-300 focus:ring-amber-500">
+                                <label for="delivery" class="ml-3 text-gray-700">邮寄配送</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 配送地址（条件显示） -->
+                    <div id="delivery-address-container" class="hidden">
+                        <label for="delivery-address" class="block text-sm font-medium text-gray-700 mb-1">配送地址 <span class="text-red-500">*</span></label>
+                        <textarea id="delivery-address" name="delivery-address"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                            rows="3" placeholder="请输入详细配送地址"></textarea>
+                    </div>
+                    
+                    <!-- 备注 -->
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">备注信息</label>
+                        <textarea id="notes" name="notes"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                            rows="2" placeholder="如有特殊需求，请在此说明（选填）"></textarea>
+                    </div>
+                    
+                    <!-- 抽奖说明 -->
+                    <div class="bg-amber-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-amber-800 mb-2">抽奖说明</h4>
+                        <p class="text-gray-600 text-sm">
+                            1. 提交信息即视为参与抽奖活动
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            2. 活动结束后将随机抽取幸运用户，获奖名单将在系统内公示
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            3. 每位员工限参与一次，重复提交无效
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            4. 获奖用户将收到系统通知，请保持联系方式畅通
+                        </p>
+                    </div>
+                    
+                    <!-- 提交按钮 -->
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+                            <i class="fa fa-paper-plane mr-2"></i>
+                            提交抽奖申请
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">常见问题</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">关于福利品抽奖活动的常见问题解答</p>
+            </div>
+            
+            <div class="space-y-4" id="faq-container">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                    <button class="faq-toggle w-full text-left flex justify-between items-center focus:outline-none">
+                        <h3 class="text-lg font-semibold text-dark">抽奖活动的截止日期是什么时候？</h3>
+                        <i class="fa fa-chevron-down text-amber-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content mt-4 text-gray-600 hidden">
+                        <p>抽奖活动截止日期为本月底，逾期将无法提交申请。请您及时提交抽奖申请参与活动。</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                    <button class="faq-toggle w-full text-left flex justify-between items-center focus:outline-none">
+                        <h3 class="text-lg font-semibold text-dark">每人可以参与多少次抽奖？</h3>
+                        <i class="fa fa-chevron-down text-amber-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content mt-4 text-gray-600 hidden">
+                        <p>为了公平起见，每位员工仅限参与一次抽奖。系统会通过员工编号进行验证，确保每位员工只能提交一次有效申请，多次提交将视为无效。</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                    <button class="faq-toggle w-full text-left flex justify-between items-center focus:outline-none">
+                        <h3 class="text-lg font-semibold text-dark">如何得知自己是否中奖？</h3>
+                        <i class="fa fa-chevron-down text-amber-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content mt-4 text-gray-600 hidden">
+                        <p>活动结束后，系统将在首页公示获奖名单，并通过短信和邮件方式通知中奖用户。请确保您填写的联系方式准确有效。</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                    <button class="faq-toggle w-full text-left flex justify-between items-center focus:outline-none">
+                        <h3 class="text-lg font-semibold text-dark">中奖后如何领取福利品？</h3>
+                        <i class="fa fa-chevron-down text-amber-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content mt-4 text-gray-600 hidden">
+                        <p>中奖用户可以根据在表单中选择的联系方式领取福利品：选择公司前台领取的用户可在指定时间前往前台领取；选择邮寄配送的用户将收到快递配送的福利品。</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                    <button class="faq-toggle w-full text-left flex justify-between items-center focus:outline-none">
+                        <h3 class="text-lg font-semibold text-dark">抽奖过程是否公平公正？</h3>
+                        <i class="fa fa-chevron-down text-amber-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content mt-4 text-gray-600 hidden">
+                        <p>抽奖过程完全公平公正。系统采用随机算法进行抽取，确保每位参与者都有平等的中奖机会。中奖名单将在系统内公示，接受大家监督。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 成功提交弹窗 -->
+    <div id="success-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa fa-check text-green-500 text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-dark mb-4">提交成功！</h3>
+                <p class="text-gray-600 mb-6">
+                    您已成功参与福利品抽奖活动，请耐心等待抽奖结果，活动结束后将公布获奖名单。
+                </p>
+                <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                    <p class="text-sm text-gray-500">参与编号</p>
+                    <p class="font-semibold text-dark" id="order-number">--</p>
+                </div>
+                <button id="close-modal" class="w-full bg-primary hover:bg-primary/90 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fa fa-connectdevelop mr-2"></i>EV 官方平台
+                    </h3>
+                    <p class="text-gray-400 mb-4">为您提供高效、便捷的一站式服务平台</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">快速链接</h4>
+                    <ul class="space-y-2">
+                        <!-- 返回首页链接已移除 -->
+                        <li><a href="../../../module/index/mx_contact.html" class="text-gray-400 hover:text-white transition-colors duration-200">联系我们</a></li>
+                        <li><a href="../../../module/index/mx_days.html" class="text-gray-400 hover:text-white transition-colors duration-200">重要日子</a></li>
+                        <li><a href="../../../module/index/mx_qrcode_page.html" class="text-gray-400 hover:text-white transition-colors duration-200">二维码生成</a></li>
+                        <li><a href="../../../module/index/mx_chat.html" class="text-gray-400 hover:text-white transition-colors duration-200">聊天室</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">法律信息</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">隐私政策</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">使用条款</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">版权声明</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+                <p>© 2025 EV 官方平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 监听联系方式选择，显示/隐藏配送地址
+        document.querySelectorAll('input[name="contact-method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const deliveryAddressContainer = document.getElementById('delivery-address-container');
+                const deliveryAddress = document.getElementById('delivery-address');
+                
+                if (this.value === 'delivery') {
+                    deliveryAddressContainer.classList.remove('hidden');
+                    deliveryAddress.required = true;
+                } else {
+                    deliveryAddressContainer.classList.add('hidden');
+                    deliveryAddress.required = false;
+                }
+            });
+        });
+        
+        // 表单提交处理
+        document.getElementById('welfare-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 表单验证
+            const form = e.target;
+            if (!form.checkValidity()) {
+                // 如果表单验证失败，让浏览器显示默认的验证提示
+                form.reportValidity();
+                return;
+            }
+            
+            // 生成订单编号
+            const orderNumber = generateOrderNumber();
+            document.getElementById('order-number').textContent = orderNumber;
+            
+            // 显示成功弹窗
+            document.getElementById('success-modal').classList.remove('hidden');
+            
+            // 重置表单
+            form.reset();
+            document.getElementById('delivery-address-container').classList.add('hidden');
+        });
+        
+        // 关闭弹窗
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('success-modal').classList.add('hidden');
+        });
+        
+        // 生成参与编号
+        function generateOrderNumber() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            
+            return `抽奖${year}${month}${day}${hours}${minutes}${seconds}${random}`;
+        }
+        
+        // 常见问题手风琴效果
+        document.querySelectorAll('.faq-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                // 切换当前FAQ的显示状态
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+                
+                // 关闭其他所有FAQ
+                document.querySelectorAll('.faq-toggle').forEach(otherToggle => {
+                    if (otherToggle !== this) {
+                        otherToggle.nextElementSibling.classList.add('hidden');
+                        otherToggle.querySelector('i').classList.remove('rotate-180');
+                    }
+                });
+            });
+        });
+        
+        // 页面滚动时导航栏效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('shadow-sm');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('shadow-sm');
+            }
+        });
+        
+        // 保存当前页面信息到localStorage，用于快速返回功能
+        window.addEventListener('beforeunload', function() {
+            localStorage.setItem('last_visited_page', window.location.href);
+            localStorage.setItem('last_visited_page_name', '福利品领取');
+        });
+    </script>
+</body>
+</html>

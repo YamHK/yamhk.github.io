@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正当季 - EV 官方平台</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F1F5F9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../index.html" class="text-xl font-bold text-primary flex items-center" onclick="saveLastVisitedPage()">
+                        <i class="fa fa-connectdevelop mr-2 text-2xl"></i>ev
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="../../index.html" class="text-gray-600 hover:text-primary transition-colors duration-200" onclick="saveLastVisitedPage()">
+                        <i class="fa fa-home mr-1"></i>首页
+                    </a>
+                    <a href="../../index.html#features" class="text-gray-600 hover:text-primary transition-colors duration-200">
+                        <i class="fa fa-th-large mr-1"></i>功能
+                    </a>
+                    <a href="../../index.html#tools" class="text-gray-600 hover:text-primary transition-colors duration-200">
+                        <i class="fa fa-wrench mr-1"></i>工具
+                    </a>
+                    <a href="mx_contact.html" class="text-primary font-medium transition-colors duration-200">
+                        <i class="fa fa-qrcode mr-1"></i>联系我们
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <section class="py-24 bg-gradient-to-r from-primary/10 to-secondary/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-bold text-dark mb-4">正当季</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">精选当季热销商品，为您推荐最适合的好物</p>
+        </div>
+    </section>
+
+    <!-- 正当季商品主体 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 商品分类标签 -->
+            <div class="flex flex-wrap gap-3 mb-8">
+                <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium">全部商品</button>
+                <button class="bg-light hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">夏季清凉</button>
+                <button class="bg-light hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">护肤防晒</button>
+                <button class="bg-light hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">户外装备</button>
+                <button class="bg-light hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">运动健身</button>
+                <button class="bg-light hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">家居生活</button>
+            </div>
+            
+            <!-- 工具栏 -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <span class="text-gray-600">共 <span class="text-primary font-semibold">24</span> 件商品</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-600">排序：</span>
+                        <select class="bg-light border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm">
+                            <option value="default">默认排序</option>
+                            <option value="sales">销量优先</option>
+                            <option value="price-asc">价格从低到高</option>
+                            <option value="price-desc">价格从高到低</option>
+                            <option value="rating">评分优先</option>
+                        </select>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="p-2 rounded-lg bg-primary text-white">
+                            <i class="fa fa-th-large"></i>
+                        </button>
+                        <button class="p-2 rounded-lg bg-light text-gray-600 hover:bg-gray-200 transition-colors">
+                            <i class="fa fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 加载指示器 -->
+            <div id="seasonal-loading" class="flex justify-center items-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+            
+            <!-- 商品列表 - 网格视图 -->
+            <div id="seasonal-products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 hidden">
+                <!-- 商品卡片将通过JavaScript动态加载 -->
+            </div>
+            
+            <!-- 分页 -->
+            <div class="flex justify-center mt-12 space-x-2">
+                <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button class="px-4 py-2 rounded-lg bg-primary text-white">1</button>
+                <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-light transition-colors">2</button>
+                <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-light transition-colors">3</button>
+                <span class="px-4 py-2 text-gray-500">...</span>
+                <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-light transition-colors">6</button>
+                <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-light transition-colors">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fa fa-connectdevelop mr-2"></i>ev
+                    </h3>
+                    <p class="text-gray-400 mb-4">为您提供高效、便捷的一站式服务平台</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="mx_contact.html" class="text-gray-400 hover:text-white transition-colors duration-200">联系我们</a></li>
+                        <li><a href="mx_index_days.html" class="text-gray-400 hover:text-white transition-colors duration-200">重要日子</a></li>
+                        <li><a href="mx_qrcode_page.html" class="text-gray-400 hover:text-white transition-colors duration-200">二维码生成</a></li>
+                        <li><a href="travel_map.html" class="text-gray-400 hover:text-white transition-colors duration-200">去哪儿玩</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">法律信息</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">隐私政策</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">使用条款</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">版权声明</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+                <p>© 2025 ev. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 保存最后访问的页面信息
+        function saveLastVisitedPage() {
+            const currentPage = window.location.href;
+            const currentPageName = "正当季";
+            localStorage.setItem('last_visited_page', currentPage);
+            localStorage.setItem('last_visited_page_name', currentPageName);
+        }
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('bg-white/95', 'backdrop-blur-sm');
+                navbar.classList.remove('bg-white');
+            } else {
+                navbar.classList.add('bg-white');
+                navbar.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+        
+        // 正当季商品功能
+        function loadSeasonalProducts() {
+            const loadingEl = document.getElementById('seasonal-loading');
+            const containerEl = document.getElementById('seasonal-products-container');
+            
+            // 模拟获取商品数据
+            setTimeout(() => {
+                // 模拟商品数据 - 更多商品
+                const seasonalProducts = [
+                    {
+                        id: 1,
+                        name: '夏季清凉风扇',
+                        price: 199,
+                        discountPrice: 149,
+                        image: 'https://picsum.photos/seed/fan1/300/300',
+                        rating: 4.8,
+                        reviewCount: 2345
+                    },
+                    {
+                        id: 2,
+                        name: '防晒保湿套装',
+                        price: 398,
+                        discountPrice: 299,
+                        image: 'https://picsum.photos/seed/sunscreen2/300/300',
+                        rating: 4.9,
+                        reviewCount: 1876
+                    },
+                    {
+                        id: 3,
+                        name: '户外露营帐篷',
+                        price: 899,
+                        discountPrice: 699,
+                        image: 'https://picsum.photos/seed/tent3/300/300',
+                        rating: 4.7,
+                        reviewCount: 987
+                    },
+                    {
+                        id: 4,
+                        name: '智能运动手环',
+                        price: 299,
+                        discountPrice: 199,
+                        image: 'https://picsum.photos/seed/bracelet4/300/300',
+                        rating: 4.6,
+                        reviewCount: 3456
+                    },
+                    {
+                        id: 5,
+                        name: '便携式榨汁机',
+                        price: 249,
+                        discountPrice: 189,
+                        image: 'https://picsum.photos/seed/juice5/300/300',
+                        rating: 4.5,
+                        reviewCount: 1234
+                    },
+                    {
+                        id: 6,
+                        name: '轻便折叠雨伞',
+                        price: 89,
+                        discountPrice: 59,
+                        image: 'https://picsum.photos/seed/umbrella6/300/300',
+                        rating: 4.7,
+                        reviewCount: 4567
+                    },
+                    {
+                        id: 7,
+                        name: '凉感毛巾套装',
+                        price: 129,
+                        discountPrice: 89,
+                        image: 'https://picsum.photos/seed/towel7/300/300',
+                        rating: 4.4,
+                        reviewCount: 789
+                    },
+                    {
+                        id: 8,
+                        name: '驱蚊神器',
+                        price: 79,
+                        discountPrice: 49,
+                        image: 'https://picsum.photos/seed/mosquito8/300/300',
+                        rating: 4.6,
+                        reviewCount: 2345
+                    }
+                ];
+                
+                // 生成商品HTML
+                let productsHtml = '';
+                seasonalProducts.forEach(product => {
+                    productsHtml += `
+                    <div class="bg-white rounded-xl overflow-hidden border border-gray-100 hover-scale card-shadow">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                热卖
+                            </div>
+                            <button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200">
+                                <i class="fa fa-heart-o text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-dark mb-2 line-clamp-1">${product.name}</h3>
+                            <div class="flex items-center text-yellow-400 text-sm mb-2">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-half-o"></i>
+                                <span class="text-gray-500 ml-1">${product.rating} (${product.reviewCount})</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-primary font-bold text-lg">¥${product.discountPrice}</span>
+                                    <span class="text-gray-400 line-through text-sm ml-2">¥${product.price}</span>
+                                </div>
+                                <button class="bg-primary hover:bg-primary/90 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                
+                // 更新页面
+                containerEl.innerHTML = productsHtml;
+                loadingEl.classList.add('hidden');
+                containerEl.classList.remove('hidden');
+            }, 1000);
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载正当季商品
+            loadSeasonalProducts();
+        });
+    </script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html>

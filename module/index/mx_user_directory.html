@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统用户目录 - 金零社</title>
+    <meta name="description" content="金零社系统用户目录，用于展示和筛选系统内所有用户及好友关系">
+    <meta name="keywords" content="用户目录,好友列表,用户筛选,金零社">
+    <link rel="icon" type="image/x-icon" href="../../../favicon.ico">
+    
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e6a419',
+                        secondary: '#1a237e',
+                        accent: '#f50057',
+                        dark: '#1a1a2e',
+                        darker: '#16213e',
+                        light: '#f8f9fa',
+                        'status-online': '#4caf50',
+                        'status-offline': '#9e9e9e',
+                        'status-away': '#ff9800',
+                        'status-busy': '#f44336'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .transition-custom {
+                transition: all 0.3s ease;
+            }
+            .shadow-custom {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+            .card-hover {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            }
+            .avatar-badge {
+                position: absolute;
+                bottom: 2px;
+                right: 2px;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                border: 2px solid white;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        /* 加载动画 */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        /* 下拉选择动画 */
+        .filter-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .filter-dropdown.active {
+            max-height: 300px;
+        }
+        /* 列表过渡动画 */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .user-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- 头部导航 -->
+    <header class="bg-dark text-white shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-users text-primary text-xl"></i>
+                    <h1 class="text-xl font-bold">系统用户目录</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <span class="text-sm text-gray-300">欢迎，</span>
+                        <span class="text-primary font-medium">当前用户</span>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-status-online rounded-full"></div>
+                    </div>
+                    <button id="home-btn" class="px-3 py-1 text-sm rounded bg-primary/20 hover:bg-primary/30 transition-colors">
+                        <i class="fa fa-home mr-1"></i> 返回首页
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow container mx-auto px-4 py-6">
+        <!-- 筛选和搜索区域 -->
+        <div class="bg-white rounded-lg shadow-custom p-4 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- 搜索框 -->
+                <div class="relative flex-grow max-w-xl">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="搜索用户名或ID..."
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                    >
+                    <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+                
+                <!-- 视图切换 -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-600">视图:</span>
+                    <button id="view-grid" class="p-2 bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors active">
+                        <i class="fa fa-th-large"></i>
+                    </button>
+                    <button id="view-list" class="p-2 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                        <i class="fa fa-list"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 筛选条件面板 -->
+            <div class="mt-4 space-y-4">
+                <!-- 好友关系筛选 -->
+                <div class="filter-group">
+                    <button 
+                        id="friend-filter-btn" 
+                        class="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                        <div class="flex items-center">
+                            <i class="fa fa-user-friends text-secondary mr-2"></i>
+                            <span class="font-medium">好友关系</span>
+                        </div>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div id="friend-filter-dropdown" class="filter-dropdown mt-2 pl-8 pr-4 py-3 space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="all-users" class="friend-filter-checkbox" checked>
+                            <label for="all-users" class="text-sm cursor-pointer">所有用户</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="is-friend" class="friend-filter-checkbox">
+                            <label for="is-friend" class="text-sm cursor-pointer">我的好友</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="pending-request" class="friend-filter-checkbox">
+                            <label for="pending-request" class="text-sm cursor-pointer">待处理请求</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 好友分组筛选 -->
+                <div class="filter-group">
+                    <button 
+                        id="group-filter-btn" 
+                        class="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                        <div class="flex items-center">
+                            <i class="fa fa-layer-group text-secondary mr-2"></i>
+                            <span class="font-medium">好友分组</span>
+                        </div>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div id="group-filter-dropdown" class="filter-dropdown mt-2 pl-8 pr-4 py-3 space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="all-groups" class="group-filter-checkbox" checked>
+                            <label for="all-groups" class="text-sm cursor-pointer">所有分组</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="group-family" class="group-filter-checkbox">
+                            <label for="group-family" class="text-sm cursor-pointer">家人</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="group-friends" class="group-filter-checkbox">
+                            <label for="group-friends" class="text-sm cursor-pointer">朋友</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="group-colleagues" class="group-filter-checkbox">
+                            <label for="group-colleagues" class="text-sm cursor-pointer">同事</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="group-classmates" class="group-filter-checkbox">
+                            <label for="group-classmates" class="text-sm cursor-pointer">同学</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 状态筛选 -->
+                <div class="filter-group">
+                    <button 
+                        id="status-filter-btn" 
+                        class="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                        <div class="flex items-center">
+                            <i class="fa fa-circle text-secondary mr-2"></i>
+                            <span class="font-medium">在线状态</span>
+                        </div>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div id="status-filter-dropdown" class="filter-dropdown mt-2 pl-8 pr-4 py-3 space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="all-statuses" class="status-filter-checkbox" checked>
+                            <label for="all-statuses" class="text-sm cursor-pointer">所有状态</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="status-online" class="status-filter-checkbox">
+                            <label for="status-online" class="text-sm cursor-pointer">
+                                <span class="inline-block w-2 h-2 rounded-full bg-status-online mr-1"></span>
+                                在线
+                            </label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="status-away" class="status-filter-checkbox">
+                            <label for="status-away" class="text-sm cursor-pointer">
+                                <span class="inline-block w-2 h-2 rounded-full bg-status-away mr-1"></span>
+                                离开
+                            </label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="status-busy" class="status-filter-checkbox">
+                            <label for="status-busy" class="text-sm cursor-pointer">
+                                <span class="inline-block w-2 h-2 rounded-full bg-status-busy mr-1"></span>
+                                忙碌
+                            </label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="status-offline" class="status-filter-checkbox">
+                            <label for="status-offline" class="text-sm cursor-pointer">
+                                <span class="inline-block w-2 h-2 rounded-full bg-status-offline mr-1"></span>
+                                离线
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 筛选操作按钮 -->
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button id="reset-filters" class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        重置筛选
+                    </button>
+                    <button id="apply-filters" class="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                        应用筛选
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 结果统计 -->
+        <div class="flex items-center justify-between mb-4">
+            <div class="text-sm text-gray-600">
+                共找到 <span id="user-count" class="font-medium text-secondary">0</span> 位用户
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-sm text-gray-600">排序:</span>
+                <select id="sort-select" class="text-sm border border-gray-300 rounded-lg py-1 px-3 focus:outline-none focus:ring-1 focus:ring-primary">
+                    <option value="name-asc">姓名 (A-Z)</option>
+                    <option value="name-desc">姓名 (Z-A)</option>
+                    <option value="id-asc">ID (升序)</option>
+                    <option value="id-desc">ID (降序)</option>
+                    <option value="status" selected>在线状态</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- 用户列表区域 -->
+        <div id="user-container" class="user-grid">
+            <!-- 初始加载骨架屏 -->
+            <div class="card-hover bg-white rounded-lg shadow-sm overflow-hidden p-4">
+                <div class="flex items-start space-x-4">
+                    <div class="skeleton w-16 h-16 rounded-full"></div>
+                    <div class="flex-grow">
+                        <div class="skeleton h-5 w-2/3 mb-2 rounded"></div>
+                        <div class="skeleton h-4 w-1/2 mb-3 rounded"></div>
+                        <div class="skeleton h-3 w-3/4 rounded"></div>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <div class="skeleton h-8 w-24 rounded"></div>
+                    <div class="skeleton h-8 w-24 rounded"></div>
+                </div>
+            </div>
+            <div class="card-hover bg-white rounded-lg shadow-sm overflow-hidden p-4">
+                <div class="flex items-start space-x-4">
+                    <div class="skeleton w-16 h-16 rounded-full"></div>
+                    <div class="flex-grow">
+                        <div class="skeleton h-5 w-2/3 mb-2 rounded"></div>
+                        <div class="skeleton h-4 w-1/2 mb-3 rounded"></div>
+                        <div class="skeleton h-3 w-3/4 rounded"></div>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <div class="skeleton h-8 w-24 rounded"></div>
+                    <div class="skeleton h-8 w-24 rounded"></div>
+                </div>
+            </div>
+            <div class="card-hover bg-white rounded-lg shadow-sm overflow-hidden p-4">
+                <div class="flex items-start space-x-4">
+                    <div class="skeleton w-16 h-16 rounded-full"></div>
+                    <div class="flex-grow">
+                        <div class="skeleton h-5 w-2/3 mb-2 rounded"></div>
+                        <div class="skeleton h-4 w-1/2 mb-3 rounded"></div>
+                        <div class="skeleton h-3 w-3/4 rounded"></div>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <div class="skeleton h-8 w-24 rounded"></div>
+                    <div class="skeleton h-8 w-24 rounded"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 无结果提示 -->
+        <div id="no-results" class="hidden bg-white rounded-lg shadow-custom p-8 text-center mt-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <i class="fa fa-search text-gray-400 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">未找到符合条件的用户</h3>
+            <p class="text-gray-500 mb-4">请尝试调整筛选条件或搜索关键词</p>
+            <button id="clear-all-filters" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                清除所有筛选条件
+            </button>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>© 2024 金零社 系统用户目录 | 本模块用于展示和管理系统内的用户信息</p>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟用户数据
+        const mockUsers = [
+            {
+                id: 'user001',
+                name: '张三',
+                avatar: '../../../avatar.jpg',
+                status: 'online',
+                statusText: '在线',
+                department: '技术部',
+                position: '高级工程师',
+                friendStatus: 'friend',
+                friendGroup: ['同事', '朋友'],
+                lastActive: '刚刚',
+                contactInfo: {
+                    email: 'zhangsan@example.com',
+                    phone: '138****1234'
+                }
+            },
+            {
+                id: 'user002',
+                name: '李四',
+                avatar: '../../../avatar.jpg',
+                status: 'away',
+                statusText: '离开',
+                department: '市场部',
+                position: '市场经理',
+                friendStatus: 'friend',
+                friendGroup: ['同事'],
+                lastActive: '10分钟前',
+                contactInfo: {
+                    email: 'lisi@example.com',
+                    phone: '139****5678'
+                }
+            },
+            {
+                id: 'user003',
+                name: '王五',
+                avatar: '../../../avatar.jpg',
+                status: 'busy',
+                statusText: '忙碌',
+                department: '设计部',
+                position: 'UI设计师',
+                friendStatus: 'none',
+                friendGroup: [],
+                lastActive: '30分钟前',
+                contactInfo: {
+                    email: 'wangwu@example.com',
+                    phone: '137****9012'
+                }
+            },
+            {
+                id: 'user004',
+                name: '赵六',
+                avatar: '../../../avatar.jpg',
+                status: 'offline',
+                statusText: '离线',
+                department: '财务部',
+                position: '财务总监',
+                friendStatus: 'pending',
+                friendGroup: [],
+                lastActive: '2小时前',
+                contactInfo: {
+                    email: 'zhaoliu@example.com',
+                    phone: '136****3456'
+                }
+            },
+            {
+                id: 'user005',
+                name: '孙七',
+                avatar: '../../../avatar.jpg',
+                status: 'online',
+                statusText: '在线',
+                department: '人力资源部',
+                position: 'HR经理',
+                friendStatus: 'friend',
+                friendGroup: ['家人'],
+                lastActive: '刚刚',
+                contactInfo: {
+                    email: 'sunqi@example.com',
+                    phone: '135****7890'
+                }
+            },
+            {
+                id: 'user006',
+                name: '周八',
+                avatar: '../../../avatar.jpg',
+                status: 'away',
+                statusText: '离开',
+                department: '技术部',
+                position: '产品经理',
+                friendStatus: 'friend',
+                friendGroup: ['同事', '同学'],
+                lastActive: '1小时前',
+                contactInfo: {
+                    email: 'zhouba@example.com',
+                    phone: '134****2345'
+                }
+            },
+            {
+                id: 'user007',
+                name: '吴九',
+                avatar: '../../../avatar.jpg',
+                status: 'offline',
+                statusText: '离线',
+                department: '运营部',
+                position: '运营专员',
+                friendStatus: 'none',
+                friendGroup: [],
+                lastActive: '昨天',
+                contactInfo: {
+                    email: 'wujiu@example.com',
+                    phone: '133****6789'
+                }
+            },
+            {
+                id: 'user008',
+                name: '郑十',
+                avatar: '../../../avatar.jpg',
+                status: 'online',
+                statusText: '在线',
+                department: '技术部',
+                position: '前端工程师',
+                friendStatus: 'friend',
+                friendGroup: ['同事', '朋友'],
+                lastActive: '刚刚',
+                contactInfo: {
+                    email: 'zhengshi@example.com',
+                    phone: '132****0123'
+                }
+            }
+        ];
+
+        // 状态对应的CSS类
+        const statusClasses = {
+            'online': 'bg-status-online',
+            'away': 'bg-status-away',
+            'busy': 'bg-status-busy',
+            'offline': 'bg-status-offline'
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化筛选器下拉菜单
+            initFilterDropdowns();
+            
+            // 初始化视图切换
+            initViewToggle();
+            
+            // 初始化筛选逻辑
+            initFilterLogic();
+            
+            // 初始化搜索功能
+            initSearch();
+            
+            // 初始化排序功能
+            initSorting();
+            
+            // 初始化重置按钮
+            initResetButtons();
+            
+            // 初始化返回首页按钮
+            initHomeButton();
+            
+            // 加载用户数据
+            setTimeout(() => {
+                renderUsers(mockUsers);
+            }, 1000); // 模拟加载延迟
+        });
+
+        // 初始化筛选器下拉菜单
+        function initFilterDropdowns() {
+            const filterButtons = document.querySelectorAll('[id$="-filter-btn"]');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const dropdownId = this.id.replace('-btn', '-dropdown');
+                    const dropdown = document.getElementById(dropdownId);
+                    const icon = this.querySelector('.fa-chevron-down');
+                    
+                    dropdown.classList.toggle('active');
+                    icon.style.transform = dropdown.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+                });
+            });
+            
+            // 复选框互斥逻辑
+            const allCheckboxes = document.querySelectorAll('input[id^="all-"]');
+            
+            allCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const filterType = this.id.split('-')[1]; // 获取筛选类型: users, groups, statuses
+                    const otherCheckboxes = document.querySelectorAll(`input.${filterType}-filter-checkbox:not(#all-${filterType})`);
+                    
+                    if (this.checked) {
+                        otherCheckboxes.forEach(cb => {
+                            cb.checked = false;
+                            cb.disabled = true;
+                        });
+                    } else {
+                        otherCheckboxes.forEach(cb => {
+                            cb.disabled = false;
+                        });
+                    }
+                });
+            });
+            
+            // 其他复选框逻辑
+            const specificCheckboxes = document.querySelectorAll('input[id^="all-"] ~ input');
+            
+            specificCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const filterType = this.className.split('-')[0]; // 获取筛选类型: friend, group, status
+                    const allCheckbox = document.getElementById(`all-${filterType}s`);
+                    const otherCheckboxes = document.querySelectorAll(`input.${filterType}-filter-checkbox:not(#all-${filterType}s)`);
+                    
+                    // 如果有任何一个特定复选框被选中，则取消选中"全部"复选框
+                    const anyChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
+                    
+                    if (anyChecked) {
+                        allCheckbox.checked = false;
+                        allCheckbox.disabled = true;
+                    } else {
+                        allCheckbox.disabled = false;
+                    }
+                });
+            });
+        }
+
+        // 初始化视图切换
+        function initViewToggle() {
+            const viewGridBtn = document.getElementById('view-grid');
+            const viewListBtn = document.getElementById('view-list');
+            const userContainer = document.getElementById('user-container');
+            
+            viewGridBtn.addEventListener('click', function() {
+                viewGridBtn.classList.add('bg-primary/10', 'text-primary');
+                viewGridBtn.classList.remove('bg-gray-100', 'text-gray-600');
+                viewListBtn.classList.remove('bg-primary/10', 'text-primary');
+                viewListBtn.classList.add('bg-gray-100', 'text-gray-600');
+                
+                userContainer.classList.remove('user-list');
+                userContainer.classList.add('user-grid');
+            });
+            
+            viewListBtn.addEventListener('click', function() {
+                viewListBtn.classList.add('bg-primary/10', 'text-primary');
+                viewListBtn.classList.remove('bg-gray-100', 'text-gray-600');
+                viewGridBtn.classList.remove('bg-primary/10', 'text-primary');
+                viewGridBtn.classList.add('bg-gray-100', 'text-gray-600');
+                
+                userContainer.classList.remove('user-grid');
+                userContainer.classList.add('user-list');
+                userContainer.style.gridTemplateColumns = '1fr';
+            });
+        }
+
+        // 初始化筛选逻辑
+        function initFilterLogic() {
+            const applyFiltersBtn = document.getElementById('apply-filters');
+            
+            applyFiltersBtn.addEventListener('click', function() {
+                applyFilters();
+            });
+        }
+
+        // 应用筛选条件
+        function applyFilters() {
+            let filteredUsers = [...mockUsers];
+            
+            // 好友关系筛选
+            const friendFilters = getSelectedFilters('friend');
+            if (friendFilters.length > 0) {
+                filteredUsers = filteredUsers.filter(user => {
+                    if (friendFilters.includes('all-users')) return true;
+                    if (friendFilters.includes('is-friend')) return user.friendStatus === 'friend';
+                    if (friendFilters.includes('pending-request')) return user.friendStatus === 'pending';
+                    return false;
+                });
+            }
+            
+            // 好友分组筛选
+            const groupFilters = getSelectedFilters('group');
+            if (groupFilters.length > 0 && !groupFilters.includes('all-groups')) {
+                filteredUsers = filteredUsers.filter(user => {
+                    // 只筛选有共同分组的好友
+                    if (user.friendStatus !== 'friend') return false;
+                    return groupFilters.some(filter => {
+                        const groupName = filter.replace('group-', '');
+                        return user.friendGroup.includes(groupName.charAt(0).toUpperCase() + groupName.slice(1));
+                    });
+                });
+            }
+            
+            // 状态筛选
+            const statusFilters = getSelectedFilters('status');
+            if (statusFilters.length > 0) {
+                filteredUsers = filteredUsers.filter(user => {
+                    if (statusFilters.includes('all-statuses')) return true;
+                    return statusFilters.includes(`status-${user.status}`);
+                });
+            }
+            
+            // 搜索筛选（如果有搜索关键词）
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            if (searchTerm) {
+                filteredUsers = filteredUsers.filter(user => {
+                    return user.name.toLowerCase().includes(searchTerm) || 
+                           user.id.toLowerCase().includes(searchTerm) ||
+                           user.department.toLowerCase().includes(searchTerm) ||
+                           user.position.toLowerCase().includes(searchTerm);
+                });
+            }
+            
+            // 排序
+            filteredUsers = sortUsers(filteredUsers);
+            
+            // 更新用户列表
+            renderUsers(filteredUsers);
+            
+            // 收起所有筛选下拉菜单
+            const dropdowns = document.querySelectorAll('.filter-dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+            
+            const icons = document.querySelectorAll('.fa-chevron-down');
+            icons.forEach(icon => {
+                icon.style.transform = 'rotate(0)';
+            });
+        }
+
+        // 获取选中的筛选条件
+        function getSelectedFilters(filterType) {
+            const checkboxes = document.querySelectorAll(`input.${filterType}-filter-checkbox:checked`);
+            return Array.from(checkboxes).map(cb => cb.id);
+        }
+
+        // 初始化搜索功能
+        function initSearch() {
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                
+                // 防抖处理
+                searchTimeout = setTimeout(() => {
+                    applyFilters();
+                }, 300);
+            });
+        }
+
+        // 初始化排序功能
+        function initSorting() {
+            const sortSelect = document.getElementById('sort-select');
+            
+            sortSelect.addEventListener('change', function() {
+                applyFilters();
+            });
+        }
+
+        // 排序用户列表
+        function sortUsers(users) {
+            const sortValue = document.getElementById('sort-select').value;
+            
+            return [...users].sort((a, b) => {
+                switch (sortValue) {
+                    case 'name-asc':
+                        return a.name.localeCompare(b.name, 'zh-CN');
+                    case 'name-desc':
+                        return b.name.localeCompare(a.name, 'zh-CN');
+                    case 'id-asc':
+                        return a.id.localeCompare(b.id);
+                    case 'id-desc':
+                        return b.id.localeCompare(a.id);
+                    case 'status':
+                        // 按状态排序：在线 > 离开 > 忙碌 > 离线
+                        const statusOrder = { 'online': 0, 'away': 1, 'busy': 2, 'offline': 3 };
+                        return statusOrder[a.status] - statusOrder[b.status];
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        // 初始化重置按钮
+        function initResetButtons() {
+            const resetFiltersBtn = document.getElementById('reset-filters');
+            const clearAllFiltersBtn = document.getElementById('clear-all-filters');
+            const searchInput = document.getElementById('search-input');
+            
+            function resetAllFilters() {
+                // 重置搜索框
+                searchInput.value = '';
+                
+                // 重置所有筛选器
+                const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+                allCheckboxes.forEach(cb => {
+                    cb.checked = cb.id.startsWith('all-');
+                    cb.disabled = false;
+                });
+                
+                // 启用所有"全部"复选框的关联复选框
+                const allCheckboxesOnly = document.querySelectorAll('input[id^="all-"]');
+                allCheckboxesOnly.forEach(cb => {
+                    if (cb.checked) {
+                        const filterType = cb.id.split('-')[1];
+                        const otherCheckboxes = document.querySelectorAll(`input.${filterType}-filter-checkbox:not(#all-${filterType})`);
+                        otherCheckboxes.forEach(otherCb => {
+                            otherCb.disabled = true;
+                        });
+                    }
+                });
+                
+                // 重置排序
+                document.getElementById('sort-select').value = 'status';
+                
+                // 应用重置后的筛选
+                applyFilters();
+            }
+            
+            resetFiltersBtn.addEventListener('click', resetAllFilters);
+            clearAllFiltersBtn.addEventListener('click', resetAllFilters);
+        }
+
+        // 初始化返回首页按钮
+        function initHomeButton() {
+            document.getElementById('home-btn').addEventListener('click', function() {
+                window.location.href = '../../../index.html';
+            });
+        }
+
+        // 渲染用户列表
+        function renderUsers(users) {
+            const userContainer = document.getElementById('user-container');
+            const userCountElement = document.getElementById('user-count');
+            const noResultsElement = document.getElementById('no-results');
+            
+            // 更新用户计数
+            userCountElement.textContent = users.length;
+            
+            // 清空容器
+            userContainer.innerHTML = '';
+            
+            // 显示或隐藏无结果提示
+            if (users.length === 0) {
+                noResultsElement.classList.remove('hidden');
+                return;
+            } else {
+                noResultsElement.classList.add('hidden');
+            }
+            
+            // 渲染用户卡片
+            users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'card-hover bg-white rounded-lg shadow-sm overflow-hidden p-4 transition-custom';
+                
+                // 好友状态按钮文本
+                let actionButtonText, actionButtonClass;
+                switch (user.friendStatus) {
+                    case 'friend':
+                        actionButtonText = '查看资料';
+                        actionButtonClass = 'bg-primary text-white hover:bg-primary/90';
+                        break;
+                    case 'pending':
+                        actionButtonText = '待处理';
+                        actionButtonClass = 'bg-gray-300 text-gray-700 cursor-not-allowed';
+                        break;
+                    default:
+                        actionButtonText = '添加好友';
+                        actionButtonClass = 'bg-secondary text-white hover:bg-secondary/90';
+                }
+                
+                // 构建用户卡片HTML
+                userCard.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img 
+                                src="${user.avatar}" 
+                                alt="${user.name}" 
+                                class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm"
+                            >
+                            <div class="avatar-badge ${statusClasses[user.status]}"></div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="font-medium text-secondary">${user.name}</h3>
+                                <span class="text-xs px-2 py-1 rounded-full bg-${user.status === 'online' ? 'status-online' : 'gray'}-100 text-${user.status === 'online' ? 'status-online' : 'gray'}-700">
+                                    ${user.statusText}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 mb-1">ID: ${user.id}</p>
+                            <p class="text-sm text-gray-600 mb-2">${user.department} | ${user.position}</p>
+                            <div class="flex flex-wrap gap-1">
+                                ${user.friendStatus === 'friend' && user.friendGroup.length > 0 ? 
+                                    user.friendGroup.map(group => `
+                                        <span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
+                                            ${group}
+                                        </span>
+                                    `).join('') : 
+                                    ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <button class="px-3 py-1.5 text-xs rounded-lg ${actionButtonClass} transition-colors">
+                            ${actionButtonText}
+                        </button>
+                        ${user.friendStatus === 'friend' ? `
+                            <button class="px-3 py-1.5 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fa fa-comment-o mr-1"></i> 发消息
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                
+                // 添加到容器
+                userContainer.appendChild(userCard);
+                
+                // 添加卡片点击事件（除按钮外的区域）
+                userCard.addEventListener('click', function(e) {
+                    // 如果点击的是按钮，不执行卡片点击逻辑
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                        return;
+                    }
+                    
+                    // 这里可以添加查看用户详情的逻辑
+                    console.log('查看用户详情:', user.id);
+                });
+                
+                // 添加按钮点击事件
+                const buttons = userCard.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation(); // 阻止事件冒泡
+                        
+                        if (button.textContent.includes('添加好友')) {
+                            console.log('发送好友请求:', user.id);
+                            button.textContent = '待处理';
+                            button.className = 'px-3 py-1.5 text-xs rounded-lg bg-gray-300 text-gray-700 cursor-not-allowed';
+                        } else if (button.textContent.includes('查看资料')) {
+                            console.log('查看用户资料:', user.id);
+                            // 这里可以实现跳转到用户详情页的逻辑
+                        } else if (button.textContent.includes('发消息')) {
+                            console.log('发送消息给:', user.id);
+                            // 这里可以实现打开聊天窗口的逻辑
+                        }
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+</html>

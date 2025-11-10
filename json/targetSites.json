@@ -1,0 +1,379 @@
+{
+  "sites": {
+    "bing": {
+      "title": "必应",
+      "url": "https://cn.bing.com/search?q=%E5%94%AF%E4%B8%80%E7%9F%A5%E9%81%93",
+      "accessAble": true
+    },
+    "contact": {
+      "title": "contact",
+      "url": "DYNAMIC_BASE_URL/contact_download.html",
+      "accessAble": false
+    },
+    "chat": {
+      "title": "chat",
+      "url": "DYNAMIC_BASE_URL/index_chat.html",
+      "accessAble": true
+    },
+    "sign": {
+      "title": "sign",
+      "url": "DYNAMIC_BASE_URL/module/index/index_sign.html",
+      "accessAble": true
+    },
+    "days": {
+      "title": "days",
+      "url": "DYNAMIC_BASE_URL/module/index/index_days.html",
+      "accessAble": false
+    },
+    "Zhejiang": {
+      "title": "浙江之声",
+      "url": "https://www.ximalaya.com/radio/633",
+      "accessAble": true
+    },
+    "Guangdong": {
+      "title": "广东之声",
+      "url": "https://www.ximalaya.com/radio/245",
+      "accessAble": true
+    },
+    "Jiangxi": {
+      "title": "江西之声",
+      "url": "https://www.ximalaya.com/radio/606",
+      "accessAble": true
+    },
+    "Jiangsu": {
+      "title": "江苏之声",
+      "url": "https://www.ximalaya.com/radio/534",
+      "accessAble": true
+    },
+    "Hunan": {
+      "title": "湖南之声",
+      "url": "https://www.ximalaya.com/radio/405",
+      "accessAble": true
+    },
+    "Anhui": {
+      "title": "安徽之声",
+      "url": "https://www.ximalaya.com/radio/2269",
+      "accessAble": true
+    },
+    "Beijing": {
+      "title": "北京之声",
+      "url": "https://www.ximalaya.com/radio/1789",
+      "accessAble": true
+    },
+    "Shanghai": {
+      "title": "上海之声",
+      "url": "https://www.ximalaya.com/radio/58",
+      "accessAble": true
+    },
+    "Shandong": {
+      "title": "山东之声",
+      "url": "https://www.ximalaya.com/radio/1440",
+      "accessAble": true
+    },
+    "Hubei": {
+      "title": "湖北之声",
+      "url": "https://www.ximalaya.com/radio/703",
+      "accessAble": true
+    },
+    "Hebei": {
+      "title": "河北之声",
+      "url": "https://www.ximalaya.com/radio/494",
+      "accessAble": true
+    },
+    "Henan": {
+      "title": "河南之声",
+      "url": "https://www.ximalaya.com/radio/1549",
+      "accessAble": true
+    },
+    "Gansu": {
+      "title": "甘肃之声",
+      "url": "https://www.ximalaya.com/radio/287",
+      "accessAble": true
+    },
+    "gk": {
+      "title": "高考",
+      "url": "https://easylearn.baidu.com/gaokao/content/list?tabKey=composition&year=2024&stfrom=aladdin&testType=%E6%96%B0%E8%AF%BE%E6%A0%87I%E5%8D%B7",
+      "accessAble": true
+    },
+    "California": {
+      "title": "California",
+      "url": "https://radio.garden/visit/los-angeles-ca/qRhxzkLk",
+      "accessAble": true
+    },
+    "Tokyo": {
+      "title": "Tokyo",
+      "url": "https://radio.garden/visit/tokyo/eR8K4rBb",
+      "accessAble": true
+    },
+    "yyf": {
+      "title": "杨衍方的秘密",
+      "url": "http://116.62.214.84:8173/assistant",
+      "accessAble": true
+    },
+    "tt": {
+      "title": "头条",
+      "url": "https://www.toutiao.com/?channel=all&source=video_detail",
+      "accessAble": false
+    },
+    "qx": {
+      "title": "奇秀",
+      "url": "https://x.pps.tv/room/283241?from=pcw_live_center&vfrm=pcw_live_center",
+      "accessAble": false
+    },
+    "bilibili": {
+      "title": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1zk5CzCEDG/?share_source=copy_web&vd_source=4e363daee7c6b662a44d227e17780b60",
+      "accessAble": true
+    },
+    "2": {
+      "title": "2",
+      "url": "DYNAMIC_BASE_URL/module/index/2048.html",
+      "accessAble": true
+    },
+    "matrix": {
+      "title": "matrix",
+      "url": "DYNAMIC_BASE_URL/module/index/matrix.html",
+      "accessAble": true
+    },
+    "index": {
+      "title": "index",
+      "url": "DYNAMIC_BASE_URL/?t=bing",
+      "accessAble": true
+    },
+    "svn": {
+      "title": "svn",
+      "url": "DYNAMIC_BASE_URL/svn/",
+      "accessAble": true
+    },
+    "qingchen": {
+      "title": "清晨",
+      "url": "https://www.ximalaya.com/radio/1011",
+      "accessAble": true
+    },
+    "16456813": {
+      "title": "音乐小七治愈系",
+      "url": "https://www.9xiu.com/16456813",
+      "accessAble": true
+    },
+    "copilot": {
+      "title": "必应AI",
+      "url": "https://www.bing.com/search?q=%E5%AD%A6%E4%BB%A5%E8%87%B4%E7%9F%A5&form=QBLH&sp=-1&lq=0&pq=fanruan&sc=11-7&qs=n&sk=&cvid=18F92D8799EE4136A93A90180C4F4285&ghsh=0&ghacc=0&ghpl=&showconv=1",
+      "accessAble": true
+    },
+    "hangzhou": {
+      "title": "杭州之声",
+      "url": "https://www.ximalaya.com/radio/646",
+      "accessAble": true
+    },
+    "ningbo": {
+      "title": "宁波之声",
+      "url": "https://www.ximalaya.com/radio/653",
+      "accessAble": true
+    },
+    "wenzhou": {
+      "title": "温州之声",
+      "url": "https://www.ximalaya.com/radio/655",
+      "accessAble": true
+    },
+    "mtime": {
+      "title": "不可知之地",
+      "url": "http://www.mtime.com/",
+      "accessAble": true
+    },
+    "nb": {
+      "title": "宁波本地",
+      "url": "https://nb.bendibao.com/",
+      "accessAble": true
+    },
+    "segmentfault": {
+      "title": "segmentfault",
+      "url": "https://segmentfault.com/t/java",
+      "accessAble": true
+    },
+    "juejin": {
+      "title": "juejin",
+      "url": "https://juejin.cn/backend",
+      "accessAble": true
+    },
+    "proginn": {
+      "title": "proginn",
+      "url": "https://www.proginn.com/",
+      "accessAble": true
+    },
+    "coderutil": {
+      "title": "coderutil",
+      "url": "https://www.coderutil.com/",
+      "accessAble": true
+    },
+    "yuanjisong": {
+      "title": "yuanjisong",
+      "url": "https://www.yuanjisong.com/job",
+      "accessAble": true
+    },
+    "zhihu": {
+      "title": "zhihu",
+      "url": "https://zhuanlan.zhihu.com/p/409390451",
+      "accessAble": true
+    },
+    "w3school": {
+      "title": "w3school",
+      "url": "https://www.w3school.com.cn/p.asp#java",
+      "accessAble": true
+    },
+    "javase": {
+      "title": "javase",
+      "url": "https://docs.oracle.com/javase/8/docs/",
+      "accessAble": true
+    },
+    "risen": {
+      "title": "risen",
+      "url": "https://www.risensyg.com/news/index/2/4.html",
+      "accessAble": true
+    },
+    "baidu": {
+      "title": "baidu",
+      "url": "https://top.baidu.com/board?tab=homepage",
+      "accessAble": true
+    },
+    "syg": {
+      "title": "syg",
+      "url": "http://syg-test.risensyg.com/syg-w/dashboard/analysis",
+      "accessAble": true
+    },
+    "momoyu": {
+      "title": "momoyu",
+      "url": "https://www.momoyu.cc/",
+      "accessAble": true
+    },
+    "ithome": {
+      "title": "ithome",
+      "url": "https://www.ithome.com/",
+      "accessAble": true
+    },
+    "liulanmi": {
+      "title": "liulanmi",
+      "url": "https://liulanmi.com/news/2914.html",
+      "accessAble": true
+    },
+    "csdn": {
+      "title": "csdn",
+      "url": "https://www.csdn.net/",
+      "accessAble": true
+    },
+    "yiyan": {
+      "title": "yiyan",
+      "url": "https://yiyan.baidu.com/",
+      "accessAble": true
+    },
+    "ke": {
+      "title": "ke",
+      "url": "https://ke.qq.com/",
+      "accessAble": true
+    },
+    "liaoxuefeng": {
+      "title": "liaoxuefeng",
+      "url": "https://www.liaoxuefeng.com/wiki/1252599548343744",
+      "accessAble": true
+    },
+    "flydean": {
+      "title": "flydean",
+      "url": "http://www.flydean.com/java-roadmap-2020",
+      "accessAble": true
+    },
+    "modao": {
+      "title": "modao",
+      "url": "https://modao.cc/workspace/recent",
+      "accessAble": false
+    },
+    "nowcoder": {
+      "title": "nowcoder",
+      "url": "https://www.nowcoder.com/",
+      "accessAble": false
+    },
+    "cctv15": {
+      "title": "cctv15",
+      "url": "https://tv.cctv.cn/live/cctv15/",
+      "accessAble": false
+    },
+    "zb": {
+      "title": "zb",
+      "url": "https://zb.oschina.net/projects/list.html",
+      "accessAble": false
+    },
+    "leetcode": {
+      "title": "leetcode",
+      "url": "https://leetcode.cn/problemset/",
+      "accessAble": false
+    },
+    "zjzwfw": {
+      "title": "zjzwfw",
+      "url": "https://gswsdj.zjzwfw.gov.cn/unite.do?method=enterGrzx&dm=&csrftoken=65766930&esignErrorInfo=",
+      "accessAble": false
+    },
+    "duiyou360": {
+      "title": "duiyou360",
+      "url": "https://www.duiyou360.com/taskHostingPage/index?from=topbar",
+      "accessAble": false
+    },
+    "oschina": {
+      "title": "oschina",
+      "url": "https://www.oschina.net/project/lang/19/java",
+      "accessAble": false
+    },
+    "jianshu": {
+      "title": "jianshu",
+      "url": "https://www.jianshu.com/techareas/backend",
+      "accessAble": false
+    },
+    "iyf": {
+      "title": "iyf",
+      "url": "https://www.iyf.tv/play/bMYW885bR56?id=dEp8gof8L17",
+      "accessAble": false
+    },
+    "openai": {
+      "title": "openai",
+      "url": "https://chat.openai.com/c/7fadf62c-8741-40c0-8866-5dc49aa7c2cf",
+      "accessAble": false
+    },
+    "gitee": {
+      "title": "gitee",
+      "url": "https://gitee.com/explore",
+      "accessAble": false
+    },
+    "gvp": {
+      "title": "gvp",
+      "url": "https://gitee.com/gvp",
+      "accessAble": false
+    },
+    "github": {
+      "title": "github",
+      "url": "https://github.com/",
+      "accessAble": false
+    },
+    "tophub": {
+      "title": "tophub",
+      "url": "https://tophub.today/",
+      "accessAble": false
+    },
+    "youtube": {
+      "title": "youtube",
+      "url": "https://www.youtube.com/",
+      "accessAble": false
+    },
+    "vscode": {
+      "title": "vscode",
+      "url": "https://vscode.dev/",
+      "accessAble": false
+    },
+    "xigua": {
+      "title": "西瓜视频",
+      "url": "https://www.ixigua.com/",
+      "accessAble": false
+    },
+    "jenkins": {
+      "title": "jenkins",
+      "url": "http://10.10.9.197:7999/view/prod/",
+      "accessAble": false
+    }
+  }
+}

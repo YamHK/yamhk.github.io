@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>去哪儿玩 - 中国地图</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .map-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .province {
+            fill: #4a90e2;
+            stroke: #fff;
+            stroke-width: 1;
+            transition: fill 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .province:hover {
+            fill: #ff6b35;
+        }
+        
+        .province-tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        
+        .province-tooltip.show {
+            opacity: 1;
+        }
+        
+        .qr-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .qr-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .qr-code-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .qr-code {
+            width: 250px;
+            height: 250px;
+            border: 10px solid #f0f0f0;
+            border-radius: 10px;
+        }
+        
+        .qr-placeholder {
+            width: 250px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            color: #666;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .qr-section p {
+            color: #7f8c8d;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+        
+        .province-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .back-home-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .instructions {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        .instructions h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .instructions ul {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .map-container {
+                height: 400px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa fa-map-marker" aria-hidden="true"></i> 去哪儿玩</h1>
+            <p>探索中国的美丽风景，发现值得一游的地方</p>
+        </div>
+        
+        <div class="content">
+            <div class="map-section">
+                <h2 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">中国地图</h2>
+                <div class="map-container" style="width: 100%; height: 400px; position: relative; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; overflow: hidden;">
+                    <svg class="china-map" viewBox="0 0 1500 800" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+                        <!-- 中国标准地图SVG实现 -->
+                        <defs>
+                            <style>
+                                .province {
+                                    fill: #1E90FF;
+                                    stroke: #FFFFFF;
+                                    stroke-width: 1.5;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                    opacity: 0.85;
+                                }
+                                .province:hover {
+                                    fill: #FFD700;
+                                    stroke: #FF8C00;
+                                    stroke-width: 2;
+                                    opacity: 1;
+                                    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+                                }
+                                .label {
+                                    font-size: 14px;
+                                    fill: #333333;
+                                    font-weight: 500;
+                                    user-select: none;
+                                    pointer-events: none;
+                                    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+                                }
+                                .special-region {
+                                    fill: #FF6347;
+                                    opacity: 0.9;
+                                }
+                                .special-region:hover {
+                                    fill: #FF4500;
+                                    stroke: #DC143C;
+                                }
+                            </style>
+                        </defs>
+                        <g id="china-mainland" transform="scale(0.6) translate(-200, 0)">
+                            <!-- 东北地区 -->
+                            <path id="heilongjiang" class="province" d="M600,100 L650,80 L700,60 L750,70 L800,90 L830,120 L860,140 L890,120 L920,100 L950,110 L970,130 L980,160 L960,190 L940,220 L910,240 L880,230 L850,210 L820,220 L790,240 L760,230 L730,210 L700,190 L720,140 L700,140 Z" data-name="黑龙江省"></path>
+                            <path id="jilin" class="province" d="M880,230 L910,240 L940,220 L960,190 L980,160 L990,180 L1010,200 L1030,190 L1050,170 L1070,180 L1090,200 L1080,230 L1060,250 L1040,240 L1020,220 L1000,230 L980,250 L960,240 L940,220 L920,230 L900,250 L880,240 Z" data-name="吉林省"></path>
+                            <path id="liaoning" class="province" d="M1060,250 L1080,230 L1090,200 L1110,220 L1130,240 L1150,230 L1170,210 L1190,220 L1210,240 L1190,270 L1170,290 L1150,280 L1130,260 L1110,270 L1090,290 L1070,280 L1050,260 Z" data-name="辽宁省"></path>
+                            
+                            <!-- 北部地区 -->
+                            <path id="neimenggu" class="province" d="M700,140 L720,160 L750,180 L780,160 L810,140 L840,160 L870,180 L900,160 L930,140 L960,160 L990,180 L970,230 L950,280 L930,270 L910,250 L890,260 L870,280 L850,270 L830,250 L810,260 L790,280 L770,270 L750,250 L730,260 L710,280 L690,270 L670,250 L650,260 L630,280 L610,270 L590,250 L610,200 L630,150 L650,130 Z" data-name="内蒙古自治区"></path>
+                            <path id="hebei" class="province" d="M1050,260 L1070,280 L1090,290 L1110,270 L1130,260 L1150,280 L1170,290 L1190,270 L1210,240 L1230,260 L1250,280 L1230,310 L1210,330 L1190,320 L1170,300 L1150,310 L1130,330 L1110,320 L1090,310 L1070,300 L1050,280 Z" data-name="河北省"></path>
+                            <path id="beijing" class="province" d="M1110,270 L1130,260 L1150,280 L1130,300 L1110,290 Z" data-name="北京市"></path>
+                            <path id="tianjin" class="province" d="M1150,280 L1170,290 L1190,270 L1180,250 L1160,260 Z" data-name="天津市"></path>
+                            <path id="shandong" class="province" d="M1170,290 L1190,270 L1210,240 L1230,260 L1250,280 L1230,310 L1210,330 L1190,320 L1170,300 L1150,310 L1130,300 L1150,280 Z" data-name="山东省"></path>
+                            <path id="shanxi" class="province" d="M1010,260 L1030,280 L1050,290 L1070,280 L1090,290 L1070,320 L1050,340 L1030,330 L1010,310 L990,320 L970,340 L950,330 L930,310 L950,290 L970,300 L990,280 Z" data-name="山西省"></path>
+                            
+                            <!-- 西北地区 -->
+                            <path id="xinjiang" class="province" d="M100,100 L150,120 L200,140 L250,120 L300,100 L350,120 L400,140 L450,120 L500,100 L550,120 L600,140 L580,190 L560,240 L540,230 L520,210 L500,220 L480,240 L460,230 L440,210 L420,220 L400,240 L380,230 L360,210 L340,220 L320,240 L300,230 L280,210 L260,220 L240,240 L220,230 L200,210 L180,220 L160,240 L140,230 L120,210 L100,220 L80,240 L60,230 L40,210 L50,160 L70,110 Z" data-name="新疆维吾尔自治区"></path>
+                            <path id="xizang" class="province" d="M320,150 L370,170 L420,190 L470,170 L520,150 L570,170 L620,190 L600,240 L580,290 L560,280 L540,260 L520,270 L500,290 L480,280 L460,260 L440,270 L420,290 L400,280 L380,260 L360,270 L340,290 L320,280 L300,260 L320,210 L340,160 Z" data-name="西藏自治区"></path>
+                            <path id="qinghai" class="province" d="M400,190 L450,210 L500,230 L550,210 L600,190 L580,240 L560,290 L540,280 L520,260 L500,270 L480,290 L460,280 L440,260 L420,270 L400,290 L380,280 L360,260 L380,210 Z" data-name="青海省"></path>
+                            <path id="gansu" class="province" d="M440,210 L490,230 L540,250 L590,230 L640,210 L620,260 L600,310 L580,300 L560,280 L540,290 L520,310 L500,300 L480,280 L460,290 L440,310 L420,300 L400,280 L420,230 Z" data-name="甘肃省"></path>
+                            <path id="ningxia" class="province" d="M500,250 L520,260 L540,250 L560,260 L580,250 L560,280 L540,290 L520,280 L500,260 Z" data-name="宁夏回族自治区"></path>
+                            <path id="shaanxi" class="province" d="M540,250 L590,270 L640,250 L620,300 L600,350 L580,340 L560,320 L540,330 L520,350 L500,340 L480,320 L500,290 L520,300 L540,280 Z" data-name="陕西省"></path>
+                            
+                            <!-- 中部地区 -->
+                            <path id="henan" class="province" d="M580,290 L630,310 L680,290 L660,340 L640,390 L620,380 L600,360 L580,370 L560,390 L540,380 L520,360 L540,330 L560,320 L580,340 Z" data-name="河南省"></path>
+                            <path id="hubei" class="province" d="M560,360 L610,380 L660,360 L640,410 L620,460 L600,450 L580,430 L560,440 L540,460 L520,450 L500,430 L520,390 L540,400 L560,380 Z" data-name="湖北省"></path>
+                            <path id="hunan" class="province" d="M520,400 L570,420 L620,400 L600,450 L580,500 L560,490 L540,470 L520,480 L500,500 L480,490 L460,470 L480,430 L500,440 L520,420 Z" data-name="湖南省"></path>
+                            <path id="jiangxi" class="province" d="M600,380 L650,400 L700,380 L680,430 L660,480 L640,470 L620,450 L600,460 L580,480 L560,470 L540,450 L560,410 L580,420 L600,400 Z" data-name="江西省"></path>
+                            
+                            <!-- 东部地区 -->
+                            <path id="jiangsu" class="province" d="M1130,300 L1150,310 L1170,300 L1190,320 L1210,330 L1190,360 L1170,380 L1150,370 L1130,350 L1110,360 L1090,380 L1070,370 L1050,350 L1070,320 L1090,330 L1110,320 Z" data-name="江苏省"></path>
+                            <path id="anhui" class="province" d="M1070,350 L1090,360 L1110,350 L1130,370 L1150,380 L1130,410 L1110,430 L1090,420 L1070,400 L1050,410 L1030,430 L1010,420 L990,400 L1010,370 L1030,380 L1050,370 Z" data-name="安徽省"></path>
+                            <path id="zhejiang" class="province" d="M1130,350 L1150,370 L1170,380 L1190,360 L1210,380 L1230,400 L1210,430 L1190,450 L1170,440 L1150,420 L1130,430 L1110,450 L1090,440 L1070,420 L1090,390 L1110,400 L1130,380 Z" data-name="浙江省"></path>
+                            <path id="shanghai" class="province" d="M1190,360 L1210,380 L1230,400 L1210,420 L1190,410 L1170,390 Z" data-name="上海市"></path>
+                            <path id="fujian" class="province" d="M1170,420 L1190,440 L1210,450 L1230,430 L1250,450 L1270,470 L1250,500 L1230,520 L1210,510 L1190,490 L1170,500 L1150,520 L1130,510 L1110,490 L1130,460 L1150,470 L1170,450 Z" data-name="福建省"></path>
+                            
+                            <!-- 南部地区 -->
+                            <path id="guangdong" class="province" d="M1090,470 L1110,490 L1130,510 L1150,520 L1170,500 L1190,490 L1210,510 L1230,520 L1250,500 L1270,470 L1290,490 L1310,510 L1290,540 L1270,560 L1250,550 L1230,530 L1210,540 L1190,560 L1170,550 L1150,530 L1130,540 L1110,560 L1090,550 L1070,530 L1090,490 Z" data-name="广东省"></path>
+                            <path id="guangxi" class="province" d="M970,450 L990,470 L1010,490 L1030,510 L1050,530 L1070,550 L1090,570 L1110,590 L1090,620 L1070,640 L1050,630 L1030,610 L1010,620 L990,640 L970,630 L950,610 L930,620 L910,640 L890,630 L870,610 L890,580 L910,590 L930,610 L950,600 L970,580 L950,540 L930,520 L950,480 Z" data-name="广西壮族自治区"></path>
+                            <path id="hainan" class="province" d="M1150,580 L1170,600 L1190,610 L1210,590 L1220,610 L1200,630 L1180,640 L1160,630 L1140,610 Z" data-name="海南省"></path>
+                            <path id="xianggang" class="province special-region" d="M1190,540 L1200,550 L1210,540 L1200,530 Z" data-name="香港特别行政区"></path>
+                            <path id="aomen" class="province special-region" d="M1170,540 L1180,550 L1170,560 L1160,550 Z" data-name="澳门特别行政区"></path>
+                            
+                            <!-- 西南地区 -->
+                            <path id="sichuan" class="province" d="M680,320 L730,340 L780,320 L760,370 L740,420 L720,410 L700,390 L680,400 L660,420 L640,410 L620,390 L640,350 L660,360 L680,340 Z" data-name="四川省"></path>
+                            <path id="chongqing" class="province" d="M700,390 L720,410 L740,420 L720,450 L700,470 L680,460 L660,440 L680,410 Z" data-name="重庆市"></path>
+                            <path id="guizhou" class="province" d="M660,440 L680,460 L700,470 L720,450 L740,420 L760,440 L780,460 L760,490 L740,510 L720,500 L700,480 L680,490 L660,510 L640,500 L620,480 L640,450 Z" data-name="贵州省"></path>
+                            <path id="yunnan" class="province" d="M580,430 L630,450 L680,430 L660,480 L640,530 L620,520 L600,500 L580,510 L560,530 L540,520 L520,500 L540,460 L560,440 L580,460 Z" data-name="云南省"></path>
+                            
+                            <!-- 台湾省 -->
+                            <path id="taiwan" class="province" d="M1350,350 L1370,330 L1390,350 L1410,370 L1390,390 L1370,410 L1350,390 L1330,370 Z" data-name="台湾省"></path>
+                        </g>
+                        <!-- 省份标签 -->
+                        <g id="province-labels" transform="scale(0.6) translate(-200, 0)">
+                            <text x="750" y="140" class="label">黑龙江</text>
+                            <text x="1050" y="230" class="label">吉林</text>
+                            <text x="1100" y="260" class="label">辽宁</text>
+                            <text x="800" y="200" class="label">内蒙古</text>
+                            <text x="1150" y="280" class="label">河北</text>
+                            <text x="1130" y="280" class="label" font-size="14">北京</text>
+                            <text x="1170" y="270" class="label" font-size="14">天津</text>
+                            <text x="1200" y="300" class="label">山东</text>
+                            <text x="1050" y="310" class="label">山西</text>
+                            <text x="250" y="180" class="label">新疆</text>
+                            <text x="420" y="250" class="label">西藏</text>
+                            <text x="450" y="250" class="label">青海</text>
+                            <text x="490" y="250" class="label">甘肃</text>
+                            <text x="530" y="260" class="label" font-size="14">宁夏</text>
+                            <text x="570" y="310" class="label">陕西</text>
+                            <text x="600" y="340" class="label">河南</text>
+                            <text x="560" y="400" class="label">湖北</text>
+                            <text x="520" y="450" class="label">湖南</text>
+                            <text x="600" y="430" class="label">江西</text>
+                            <text x="1150" y="330" class="label">江苏</text>
+                            <text x="1070" y="390" class="label">安徽</text>
+                            <text x="1170" y="410" class="label">浙江</text>
+                            <text x="1210" y="390" class="label" font-size="14">上海</text>
+                            <text x="1210" y="480" class="label">福建</text>
+                            <text x="1150" y="530" class="label">广东</text>
+                            <text x="970" y="560" class="label">广西</text>
+                            <text x="1180" y="620" class="label" font-size="14">海南</text>
+                            <text x="1190" y="550" class="label" font-size="10">香港</text>
+                            <text x="1170" y="550" class="label" font-size="10">澳门</text>
+                            <text x="700" y="360" class="label">四川</text>
+                            <text x="710" y="430" class="label" font-size="14">重庆</text>
+                            <text x="680" y="480" class="label">贵州</text>
+                            <text x="600" y="470" class="label">云南</text>
+                            <text x="1370" y="380" class="label">台湾</text>
+                        </g>
+                    </svg>
+                </div>
+                <!-- 悬浮提示框 -->
+                <div id="map-tooltip" class="tooltip"></div>
+            </div>
+            <script>
+                // 地图交互功能增强
+                document.addEventListener('DOMContentLoaded', function() {
+                    // 获取所有省份路径
+                    const provinces = document.querySelectorAll('.province');
+                    const tooltip = document.getElementById('map-tooltip');
+                });
+            </script>
+            
+            <div class="qr-section">
+                <h2><i class="fa fa-wechat" aria-hidden="true"></i> 省份微信群</h2>
+                <div class="province-name" id="selected-province">全国总群</div>
+                <div class="qr-code-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=欢迎加入旅游交流总群" alt="微信群二维码" class="qr-code" id="qr-code">
+                    <div class="qr-placeholder" id="qr-placeholder" style="display: none;">
+                        该省份二维码暂未开放
+                    </div>
+                </div>
+                <p id="qr-description">扫码加入我们的旅游交流总群，获取最新旅游资讯</p>
+                <!-- 全局ESC键监听脚本 -->
+                <script src="../../../js/global_escape_listener.js"></script>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>使用说明</h2>
+            <ul>
+                <li>将鼠标悬停在中国地图上的各个省份，可以查看省份名称</li>
+                <li>点击感兴趣的省份可以获取该地区的旅游信息</li>
+                <li>扫描右侧的微信群二维码，加入我们的旅游交流群</li>
+                <li>在群内可以获取最新的旅游资讯、特价信息和旅行攻略</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 提示框元素 -->
+    <div id="map-tooltip" class="tooltip"></div>
+
+    <script>
+        // 保存最后访问的页面信息
+        function saveLastVisitedPage() {
+            const currentPage = window.location.href;
+            const currentPageName = "去哪儿玩";
+            localStorage.setItem('last_visited_page', currentPage);
+            localStorage.setItem('last_visited_page_name', currentPageName);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取元素引用
+            const tooltip = document.getElementById('map-tooltip');
+            const provinces = document.querySelectorAll('.province');
+            const qrCode = document.getElementById('qr-code');
+            const qrPlaceholder = document.getElementById('qr-placeholder');
+            const selectedProvince = document.getElementById('selected-province');
+            const qrDescription = document.getElementById('qr-description');
+            
+            // 省份拼音映射表
+            const provincePinyinMap = {
+                '黑龙江省': 'heilongjiang',
+                '吉林省': 'jilin',
+                '辽宁省': 'liaoning',
+                '内蒙古自治区': 'neimenggu',
+                '河北省': 'hebei',
+                '北京市': 'beijing',
+                '天津市': 'tianjin',
+                '山东省': 'shandong',
+                '山西省': 'shanxi',
+                '新疆维吾尔自治区': 'xinjiang',
+                '西藏自治区': 'xizang',
+                '青海省': 'qinghai',
+                '甘肃省': 'gansu',
+                '宁夏回族自治区': 'ningxia',
+                '陕西省': 'shaanxi',
+                '河南省': 'henan',
+                '湖北省': 'hubei',
+                '湖南省': 'hunan',
+                '江西省': 'jiangxi',
+                '江苏省': 'jiangsu',
+                '安徽省': 'anhui',
+                '浙江省': 'zhejiang',
+                '上海市': 'shanghai',
+                '福建省': 'fujian',
+                '广东省': 'guangdong',
+                '广西壮族自治区': 'guangxi',
+                '海南省': 'hainan',
+                '香港特别行政区': 'xianggang',
+                '澳门特别行政区': 'aomen',
+                '四川省': 'sichuan',
+                '重庆市': 'chongqing',
+                '贵州省': 'guizhou',
+                '云南省': 'yunnan',
+                '台湾省': 'taiwan'
+            };
+            
+            // 为每个省份添加事件监听器
+            provinces.forEach(province => {
+                // 保存原始填充色
+                const originalFill = province.getAttribute('fill');
+                
+                province.addEventListener('mouseenter', function(e) {
+                    const provinceName = this.getAttribute('data-name');
+                    showTooltip(e, provinceName);
+                });
+                
+                province.addEventListener('mousemove', function(e) {
+                    moveTooltip(e);
+                });
+                
+                province.addEventListener('mouseleave', function() {
+                    hideTooltip();
+                });
+                
+                province.addEventListener('click', function() {
+                    const provinceName = this.getAttribute('data-name');
+                    const provincePinyin = provincePinyinMap[provinceName] || '';
+                    showProvinceQRCode(provinceName, provincePinyin);
+                });
+            });
+            
+            function showTooltip(e, text) {
+                tooltip.textContent = text;
+                tooltip.style.opacity = '1';
+                moveTooltip(e);
+            }
+            
+            function moveTooltip(e) {
+                const containerRect = e.target.closest('.map-container').getBoundingClientRect();
+                tooltip.style.left = (e.clientX - containerRect.left + 10) + 'px';
+                tooltip.style.top = (e.clientY - containerRect.top - 30) + 'px';
+            }
+            
+            function hideTooltip() {
+                tooltip.style.opacity = '0';
+            }
+            
+            function showProvinceQRCode(provinceName, provincePinyin) {
+                // 更新选中的省份名称
+                selectedProvince.textContent = provinceName;
+                
+                // 检查是否存在对应的二维码图片
+                const qrImageUrl = `../../qrcodes/${provincePinyin}.png`;
+                
+                // 创建一个图片对象来检查图片是否存在
+                const img = new Image();
+                img.onload = function() {
+                    // 图片存在，显示二维码
+                    qrCode.src = qrImageUrl;
+                    qrCode.style.display = 'block';
+                    qrPlaceholder.style.display = 'none';
+                    qrDescription.textContent = `扫码加入${provinceName}微信群，获取当地旅游资讯`;
+                };
+                img.onerror = function() {
+                    // 图片不存在，显示默认二维码
+                    qrCode.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=欢迎加入旅游交流总群';
+                    qrCode.style.display = 'block';
+                    qrPlaceholder.style.display = 'none';
+                    qrDescription.textContent = `扫码加入旅游交流总群，获取包括${provinceName}在内的全国旅游资讯`;
+                };
+                img.src = qrImageUrl;
+            }
+            
+            // 确保响应式调整
+            window.addEventListener('resize', function() {
+                hideTooltip();
+            });
+        });
+    </script>
+</body>
+</html>

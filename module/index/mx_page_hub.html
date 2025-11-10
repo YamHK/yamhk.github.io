@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面收录中心 - 金零社</title>
+    <meta name="description" content="金零社页面收录中心，集中管理和访问平台内的所有功能页面">
+    <meta name="keywords" content="页面收录,功能中心,金零社">
+    <link rel="icon" type="image/x-icon" href="../../../favicon.ico">
+    
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e6a419',
+                        secondary: '#1a237e',
+                        accent: '#f50057',
+                        dark: '#1a1a2e',
+                        darker: '#16213e',
+                        light: '#f8f9fa'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .transition-custom {
+                transition: all 0.3s ease;
+            }
+            .shadow-custom {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .iframe-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transition: opacity 0.3s ease;
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #e6a419;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .page-card:hover {
+            transform: translateY(-2px);
+        }
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .page-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- 头部导航 -->
+    <header class="bg-dark text-white shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-th-large text-primary text-xl"></i>
+                    <h1 class="text-xl font-bold">页面收录中心</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="current-page-info" class="hidden md:inline-block text-sm text-gray-300">
+                        当前页面: <span id="current-page-name" class="text-primary font-medium">未选择</span>
+                    </span>
+                    <button id="home-btn" class="px-3 py-1 text-sm rounded bg-primary/20 hover:bg-primary/30 transition-colors">
+                        <i class="fa fa-home mr-1"></i> 返回首页
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- 移动端当前页面信息 -->
+        <div class="md:hidden mb-4 p-3 bg-white rounded-lg shadow-custom">
+            <p class="text-sm">当前页面: <span id="current-page-name-mobile" class="text-primary font-medium">未选择</span></p>
+        </div>
+        
+        <!-- 页面加载区域 -->
+        <div class="iframe-container bg-white rounded-lg shadow-custom min-h-[600px] mb-6">
+            <div id="loading-indicator" class="loading-overlay">
+                <div class="spinner mb-3"></div>
+                <p id="loading-text" class="text-gray-600">正在加载页面...</p>
+            </div>
+            <iframe id="content-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+        </div>
+        
+        <!-- 页面列表 -->
+        <div class="bg-white rounded-lg shadow-custom p-4">
+            <h2 class="text-lg font-semibold mb-4 flex items-center">
+                <i class="fa fa-list-ul text-primary mr-2"></i> 可用页面列表
+            </h2>
+            
+            <div id="page-list" class="page-grid grid grid-cols-3 gap-4">
+                <!-- 页面列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-4 mt-8">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>© 2024 金零社 页面收录中心 | 本页面用于集中管理和访问平台内的功能页面</p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面列表数据结构
+        const pageList = [
+            { id: '50OK', name: '50OK页面', url: 'mx_50OK.html', description: '50OK状态页面' },
+            { id: 'calendar', name: '日历组件', url: 'mx_calendar.html', description: '日期选择和日历展示组件' },
+            { id: 'chat', name: '聊天界面', url: 'mx_chat.html', description: '即时通讯聊天界面' },
+            { id: 'constellation_chat', name: '星座聊天', url: 'mx_constellation_chat.html', description: '基于星座的聊天功能' },
+            { id: 'contact', name: '联系我们', url: 'mx_contact.html', description: '联系信息和表单' },
+            { id: 'days', name: '天数计算', url: 'mx_days.html', description: '日期和天数计算工具' },
+            { id: 'junjie', name: '俊杰页面', url: 'mx_junjie.html', description: '俊杰个人相关页面' },
+            { id: 'matrix', name: '矩阵页面', url: 'mx_matrix.html', description: '矩阵数据展示页面' },
+            { id: 'qrcode_page', name: '二维码页面', url: 'mx_qrcode_page.html', description: '二维码生成和展示' },
+            { id: 'redirect', name: '重定向页面', url: 'mx_redirect.html', description: '页面重定向功能' },
+            { id: 'seasonal_products', name: '季节产品', url: 'mx_seasonal_products.html', description: '季节性产品展示' },
+            { id: 'sign', name: '签到页面', url: 'mx_sign.html', description: '用户签到功能' },
+            { id: 'software_custom', name: '软件定制', url: 'mx_software_custom.html', description: '软件定制服务介绍' },
+            { id: 'travel_map', name: '旅行地图', url: 'mx_travel_map.html', description: '旅行目的地地图' },
+            { id: 'weather', name: '天气查询', url: 'mx_weather.html', description: '天气信息查询功能' },
+            { id: 'welfare_collection', name: '福利集合', url: 'mx_welfare_collection.html', description: '福利活动集合页面' },
+            { id: 'zodiac_chat', name: '生肖聊天', url: 'mx_zodiac_chat.html', description: '基于生肖的聊天功能' }
+        ];
+
+        // 获取URL参数
+        function getUrlParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const pairs = queryString.split('&');
+            
+            for (let pair of pairs) {
+                const [key, value] = pair.split('=');
+                if (key) {
+                    params[decodeURIComponent(key)] = decodeURIComponent(value || '');
+                }
+            }
+            
+            return params;
+        }
+
+        // 加载指定页面
+        function loadPage(pageId) {
+            const page = pageList.find(p => p.id === pageId);
+            
+            if (page) {
+                // 更新当前页面信息显示
+                document.getElementById('current-page-name').textContent = page.name;
+                document.getElementById('current-page-name-mobile').textContent = page.name;
+                
+                // 显示加载指示器
+                const loadingIndicator = document.getElementById('loading-indicator');
+                loadingIndicator.style.display = 'flex';
+                document.getElementById('loading-text').textContent = `正在加载 ${page.name}...`;
+                
+                const iframe = document.getElementById('content-iframe');
+                
+                // 设置iframe加载完成事件
+                iframe.onload = function() {
+                    // 隐藏加载指示器
+                    loadingIndicator.style.display = 'none';
+                    
+                    // 尝试设置iframe文档的标题
+                    try {
+                        if (iframe.contentDocument) {
+                            iframe.contentDocument.title = `${page.name} - 金零社`;
+                        }
+                    } catch (e) {
+                        console.warn('无法设置iframe标题，可能存在跨域限制:', e);
+                    }
+                };
+                
+                // 设置iframe错误处理
+                iframe.onerror = function() {
+                    loadingIndicator.style.display = 'none';
+                    console.error(`加载页面 ${page.name} 时发生错误`);
+                    alert(`加载页面失败: ${page.name}`);
+                };
+                
+                // 加载目标页面
+                iframe.src = page.url;
+                
+                // 记录历史，允许用户使用浏览器的前进/后退按钮
+                const stateObj = { pageId: pageId };
+                history.pushState(stateObj, page.name, `?page=${pageId}`);
+            } else {
+                // 如果未找到页面，显示默认内容
+                document.getElementById('content-iframe').src = 'about:blank';
+                document.getElementById('current-page-name').textContent = '未找到页面';
+                document.getElementById('current-page-name-mobile').textContent = '未找到页面';
+                document.getElementById('loading-indicator').style.display = 'none';
+                
+                // 在iframe中显示错误信息
+                const iframe = document.getElementById('content-iframe');
+                iframe.contentDocument.open();
+                iframe.contentDocument.write(`
+                    <!DOCTYPE html>
+                    <html lang="zh-CN">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>页面未找到</title>
+                        <style>
+                            body {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                height: 100vh;
+                                margin: 0;
+                                font-family: Arial, sans-serif;
+                                color: #333;
+                                background-color: #f5f5f5;
+                            }
+                            h1 {
+                                color: #e74c3c;
+                                margin-bottom: 1rem;
+                            }
+                            p {
+                                margin-bottom: 2rem;
+                                text-align: center;
+                            }
+                            .btn {
+                                padding: 0.5rem 1rem;
+                                background-color: #3498db;
+                                color: white;
+                                border: none;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                text-decoration: none;
+                            }
+                            .btn:hover {
+                                background-color: #2980b9;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1><i class="fa fa-exclamation-triangle"></i> 页面未找到</h1>
+                        <p>抱歉，找不到ID为 "${pageId}" 的页面。请从页面列表中选择一个有效页面。</p>
+                        <button class="btn" onclick="parent.loadDefaultPage()">返回首页</button>
+                    </body>
+                    </html>
+                `);
+                iframe.contentDocument.close();
+            }
+        }
+
+        // 加载默认页面（第一个页面或欢迎页面）
+        function loadDefaultPage() {
+            if (pageList.length > 0) {
+                loadPage(pageList[0].id);
+            }
+        }
+
+        // 生成页面列表
+        function generatePageList() {
+            const pageListContainer = document.getElementById('page-list');
+            pageListContainer.innerHTML = '';
+            
+            pageList.forEach(page => {
+                const pageCard = document.createElement('div');
+                pageCard.className = 'page-card bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-custom cursor-pointer';
+                pageCard.setAttribute('data-page-id', page.id);
+                
+                pageCard.innerHTML = `
+                    <h3 class="font-medium text-secondary mb-1">${page.name}</h3>
+                    <p class="text-sm text-gray-500 mb-2 line-clamp-2">${page.description}</p>
+                    <div class="flex justify-end">
+                        <span class="text-xs px-2 py-1 bg-primary/10 text-primary rounded">${page.id}</span>
+                    </div>
+                `;
+                
+                // 添加点击事件
+                pageCard.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page-id');
+                    loadPage(pageId);
+                });
+                
+                pageListContainer.appendChild(pageCard);
+            });
+        }
+
+        // 监听浏览器前进/后退按钮
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.pageId) {
+                loadPage(event.state.pageId);
+            }
+        });
+
+        // 返回首页按钮事件
+        document.getElementById('home-btn').addEventListener('click', function() {
+            window.location.href = '../../../index.html';
+        });
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 生成页面列表
+            generatePageList();
+            
+            // 获取URL参数
+            const params = getUrlParams();
+            
+            // 如果有page参数，加载对应页面，否则加载默认页面
+            if (params.page) {
+                loadPage(params.page);
+            } else {
+                loadDefaultPage();
+            }
+        });
+
+        // 暴露给iframe的方法
+        window.loadDefaultPage = loadDefaultPage;
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>固定资产管理系统</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #1890ff;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            flex: 1;
+            min-width: 150px;
+            background-color: white;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-item:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+        }
+        .nav-item a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>固定资产管理系统</h1>
+            <p>资产管理 | 数据导入导出 | 库存预警</p>
+            <a href="../../index.html" style="color: white; text-decoration: underline;">返回系统首页</a>
+        </div>
+        
+        <div class="nav">
+            <div class="nav-item">
+                <a href="asset_main.html">
+                    <h3>资产主表</h3>
+                    <p>所有资产信息总览</p>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="fixed_asset.html">
+                    <h3>固定资产表</h3>
+                    <p>固定资产详细信息</p>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="low_value.html">
+                    <h3>低值易耗品表</h3>
+                    <p>低值易耗品管理</p>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="code_manage.html">
+                    <h3>编码管理表</h3>
+                    <p>资产编码规则管理</p>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="usage_record.html">
+                    <h3>使用记录表</h3>
+                    <p>资产使用情况记录</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2024 固定资产管理系统 - 版权所有</p>
+        </div>
+    </div>
+
+    <script>
+        // 初始化本地存储
+        function initStorage() {
+            // 初始化各个数据表
+            const tables = ['assets', 'fixedAssets', 'lowValueItems', 'codeRules', 'usageRecords'];
+            
+            tables.forEach(table => {
+                if (!localStorage.getItem(table)) {
+                    localStorage.setItem(table, JSON.stringify([]));
+                }
+            });
+        }
+        
+        // 页面加载时初始化
+        window.onload = initStorage;
+    </script>
+</body>
+</html>

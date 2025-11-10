@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>软件私人定制预约 - EV 官方平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F1F5F9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .form-focus {
+                @apply focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="../../../index.html" class="text-primary flex items-center" onclick="saveLastVisitedPage()">
+                    <i class="fa fa-connectdevelop text-2xl mr-2"></i>
+                    <span class="font-bold text-xl text-dark">ev</span>
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="text-gray-600 hover:text-primary transition-colors">服务介绍</a>
+                <a href="#process" class="text-gray-600 hover:text-primary transition-colors">定制流程</a>
+                <a href="#form" class="text-gray-600 hover:text-primary transition-colors">预约表单</a>
+                <a href="#faq" class="text-gray-600 hover:text-primary transition-colors">常见问题</a>
+            </div>
+            <a href="#form" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full font-medium transition-all shadow-md hover:shadow-lg hidden md:block">
+                立即预约
+            </a>
+            <button class="md:hidden text-gray-600" id="menuToggle">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="#overview" class="text-gray-600 hover:text-primary transition-colors py-2">服务介绍</a>
+                <a href="#process" class="text-gray-600 hover:text-primary transition-colors py-2">定制流程</a>
+                <a href="#form" class="text-gray-600 hover:text-primary transition-colors py-2">预约表单</a>
+                <a href="#faq" class="text-gray-600 hover:text-primary transition-colors py-2">常见问题</a>
+                <a href="#form" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md hover:shadow-lg text-center">
+                    立即预约
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <header class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-dark mb-4">
+                    软件私人定制<br>
+                    <span class="text-primary">专属您的解决方案</span>
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-lg">
+                    我们提供专业的软件开发定制服务，从需求分析到上线运维，全程为您提供一对一的技术支持，打造真正符合您业务需求的专属软件。
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#form" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl text-center">
+                        立即预约定制
+                    </a>
+                    <a href="#process" class="bg-white hover:bg-gray-50 text-primary border-2 border-primary px-8 py-4 rounded-full font-semibold transition-all shadow-md hover:shadow-lg text-center">
+                        了解定制流程
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 relative">
+                <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                    <img src="https://picsum.photos/seed/software/600/400" alt="软件开发定制服务" class="w-full h-auto">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                        <div class="p-6 text-white">
+                            <p class="font-medium">专业团队 · 定制开发 · 全程支持</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-2xl -z-10"></div>
+                <div class="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-2xl -z-10"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 服务介绍 -->
+    <section id="overview" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">我们的定制服务</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">根据您的业务需求，我们提供全方位的软件开发定制服务</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover-scale">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-desktop text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Web应用开发</h3>
+                    <p class="text-gray-600">定制各类企业级Web应用，包括管理系统、数据分析平台、电子商务网站等，满足您的各种业务需求。</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover-scale">
+                    <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-mobile text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">移动应用开发</h3>
+                    <p class="text-gray-600">开发iOS和Android平台的移动应用，提供原生开发或混合开发方案，打造流畅的移动体验。</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm hover-scale">
+                    <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-cloud text-purple-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">系统集成服务</h3>
+                    <p class="text-gray-600">将现有系统进行整合，提供API开发、数据迁移、系统对接等服务，实现业务流程的无缝衔接。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 定制流程 -->
+    <section id="process" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">软件定制流程</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">我们遵循标准化的软件开发流程，确保项目质量和交付效率</p>
+            </div>
+
+            <div class="relative">
+                <!-- 连接线 -->
+                <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 -translate-x-1/2"></div>
+                
+                <div class="space-y-12 md:space-y-0">
+                    <!-- 步骤1 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-semibold text-dark mb-2">需求分析与规划</h3>
+                            <p class="text-gray-600">我们的团队将与您深入沟通，了解您的业务需求和目标，制定详细的功能规划和项目方案。</p>
+                        </div>
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white font-bold text-xl shadow-lg">1</div>
+                        <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+
+                    <!-- 步骤2 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white font-bold text-xl shadow-lg">2</div>
+                        <div class="md:w-1/2 md:pl-12 mb-8 md:mb-0">
+                            <h3 class="text-xl font-semibold text-dark mb-2">设计与原型</h3>
+                            <p class="text-gray-600">根据需求文档，我们的设计团队将创建UI设计稿和交互原型，让您提前体验软件的外观和功能。</p>
+                        </div>
+                    </div>
+
+                    <!-- 步骤3 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-semibold text-dark mb-2">开发与测试</h3>
+                            <p class="text-gray-600">我们的开发团队按照设计文档进行编码实现，同时进行严格的测试，确保软件质量和稳定性。</p>
+                        </div>
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white font-bold text-xl shadow-lg">3</div>
+                        <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+
+                    <!-- 步骤4 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white font-bold text-xl shadow-lg">4</div>
+                        <div class="md:w-1/2 md:pl-12 mb-8 md:mb-0">
+                            <h3 class="text-xl font-semibold text-dark mb-2">部署与上线</h3>
+                            <p class="text-gray-600">完成开发和测试后，我们将协助您进行软件部署和上线，并提供必要的技术支持和培训。</p>
+                        </div>
+                    </div>
+
+                    <!-- 步骤5 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-semibold text-dark mb-2">运维与维护</h3>
+                            <p class="text-gray-600">软件上线后，我们提供持续的技术支持和维护服务，确保软件稳定运行并不断优化和升级。</p>
+                        </div>
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white font-bold text-xl shadow-lg">5</div>
+                        <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 预约表单 -->
+    <section id="form" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">预约定制表单</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">请填写以下信息，我们的专业团队将尽快与您联系，为您提供定制方案</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto bg-gray-50 rounded-xl p-8 shadow-sm">
+                <form id="customForm" class="space-y-6">
+                    <!-- 基本信息 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名 <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus"
+                                placeholder="请输入您的姓名">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">联系电话 <span class="text-red-500">*</span></label>
+                            <input type="tel" id="phone" name="phone" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus"
+                                placeholder="请输入您的联系电话">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">电子邮箱 <span class="text-red-500">*</span></label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus"
+                            placeholder="请输入您的电子邮箱">
+                    </div>
+
+                    <div>
+                        <label for="company" class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
+                        <input type="text" id="company" name="company"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus"
+                            placeholder="请输入您的公司名称（选填）">
+                    </div>
+
+                    <!-- 软件类型 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">软件类型 <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                                <input type="radio" name="softwareType" value="web" required class="mr-2">
+                                <span>Web应用</span>
+                            </label>
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                                <input type="radio" name="softwareType" value="mobile" required class="mr-2">
+                                <span>移动应用</span>
+                            </label>
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                                <input type="radio" name="softwareType" value="system" required class="mr-2">
+                                <span>系统集成</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 详细需求 -->
+                    <div>
+                        <label for="requirements" class="block text-sm font-medium text-gray-700 mb-1">详细需求描述 <span class="text-red-500">*</span></label>
+                        <textarea id="requirements" name="requirements" rows="6" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus resize-none"
+                            placeholder="请详细描述您的软件需求，包括功能特点、目标用户、期望效果等信息，越详细越有助于我们为您提供精准的定制方案..."></textarea>
+                    </div>
+
+                    <!-- 预算范围 -->
+                    <div>
+                        <label for="budget" class="block text-sm font-medium text-gray-700 mb-1">预算范围 <span class="text-red-500">*</span></label>
+                        <select id="budget" name="budget" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus">
+                            <option value="">请选择预算范围</option>
+                            <option value="5000-10000">5,000 - 10,000元</option>
+                            <option value="10000-30000">10,000 - 30,000元</option>
+                            <option value="30000-50000">30,000 - 50,000元</option>
+                            <option value="50000-100000">50,000 - 100,000元</option>
+                            <option value="100000+">100,000元以上</option>
+                        </select>
+                    </div>
+
+                    <!-- 期望交付时间 -->
+                    <div>
+                        <label for="deliveryTime" class="block text-sm font-medium text-gray-700 mb-1">期望交付时间 <span class="text-red-500">*</span></label>
+                        <input type="date" id="deliveryTime" name="deliveryTime" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus">
+                    </div>
+
+                    <!-- 其他需求 -->
+                    <div>
+                        <label for="additional" class="block text-sm font-medium text-gray-700 mb-1">其他需求或说明</label>
+                        <textarea id="additional" name="additional" rows="3"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 form-focus resize-none"
+                            placeholder="请填写其他您认为需要说明的信息（选填）"></textarea>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <div class="text-center">
+                        <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl inline-block">
+                            提交定制需求
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section id="faq" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">常见问题</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">以下是客户经常咨询的问题，如果您有其他疑问，欢迎随时联系我们</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-dark mb-2">Q: 定制软件开发需要多长时间？</h3>
+                    <p class="text-gray-600">A: 开发时间取决于软件的复杂度和功能需求。一般来说，简单的Web应用约1-2个月，中等复杂度的应用约3-6个月，大型企业级应用可能需要6个月以上。我们会在需求分析后提供详细的时间预估。</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-dark mb-2">Q: 如何保障软件的质量和安全？</h3>
+                    <p class="text-gray-600">A: 我们采用标准化的软件开发流程，包括需求分析、设计、开发、测试等多个环节。在开发过程中进行严格的代码审查和测试，确保软件质量。同时，我们会实施安全措施，保护用户数据和系统安全。</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-dark mb-2">Q: 软件上线后是否提供维护服务？</h3>
+                    <p class="text-gray-600">A: 是的，我们提供软件上线后的维护服务，包括系统监控、问题修复、功能优化等。我们可以根据客户需求提供不同期限和级别的维护方案。</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-dark mb-2">Q: 定制软件的知识产权归谁所有？</h3>
+                    <p class="text-gray-600">A: 通常情况下，定制开发的软件知识产权归客户所有。我们会在合同中明确知识产权的归属和使用权限，确保客户的权益得到保障。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订单生成弹窗 -->
+    <div id="orderModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-8 max-w-lg w-full mx-4 relative">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa fa-times text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-secondary mb-4">
+                    <i class="fa fa-check text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-dark mb-2">需求提交成功</h3>
+                <p class="text-gray-600">我们已收到您的定制需求，正在生成订单...</p>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-6">
+                <h4 class="font-semibold text-dark mb-4">订单信息</h4>
+                <div id="orderInfo" class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">订单编号：</span>
+                        <span id="orderId" class="font-medium text-dark"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">提交时间：</span>
+                        <span id="submitTime" class="font-medium text-dark"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">预计响应：</span>
+                        <span class="font-medium text-dark">24小时内</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <!-- 全局ESC键监听脚本 -->
+                <script src="../../../js/global_escape_listener.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 保存最后访问页面
+        function saveLastVisitedPage() {
+            localStorage.setItem('lastVisitedPage', window.location.pathname);
+        }
+
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    // 关闭移动端菜单
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+
+        // 表单提交处理
+        document.getElementById('customForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 生成订单信息
+            const now = new Date();
+            const orderId = 'SO' + now.getFullYear() + 
+                           String(now.getMonth() + 1).padStart(2, '0') + 
+                           String(now.getDate()).padStart(2, '0') + 
+                           String(now.getHours()).padStart(2, '0') + 
+                           String(now.getMinutes()).padStart(2, '0') + 
+                           String(now.getSeconds()).padStart(2, '0') + 
+                           String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+            
+            const submitTime = now.getFullYear() + '-' + 
+                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(now.getDate()).padStart(2, '0') + ' ' + 
+                              String(now.getHours()).padStart(2, '0') + ':' + 
+                              String(now.getMinutes()).padStart(2, '0') + ':' + 
+                              String(now.getSeconds()).padStart(2, '0');
+            
+            // 显示订单信息
+            document.getElementById('orderId').textContent = orderId;
+            document.getElementById('submitTime').textContent = submitTime;
+            
+            // 显示弹窗
+            document.getElementById('orderModal').classList.remove('hidden');
+            
+            // 这里可以添加AJAX请求，将表单数据发送到服务器
+            console.log('表单数据:', new FormData(this));
+            console.log('生成的订单ID:', orderId);
+        });
+
+        // 关闭弹窗
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('orderModal').classList.add('hidden');
+        });
+
+        // 点击弹窗外部关闭弹窗
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('shadow-sm');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html>

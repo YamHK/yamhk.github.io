@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "URL二维码生成器",
+  "version": "1.0",
+  "description": "获取当前页面URL并生成对应的二维码",
+  "action": {
+    "default_title": "URL二维码生成器",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ]
+}

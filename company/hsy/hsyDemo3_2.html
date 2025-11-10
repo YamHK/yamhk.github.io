@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>流量台</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   <!-- 引入Chart.js -->
+<!--  <script src="/chart.js"></script>-->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .chart-container {
+      width: 80%;
+      height: 80%;
+    }
+  </style>
+</head>
+<body>
+<div class="chart-container">
+  <canvas id="multiLineChart"></canvas>
+</div>
+
+<script>
+  const ctx = document.getElementById('multiLineChart').getContext('2d');
+  let multiLineChart;
+  let firstPoint = null;
+  document.addEventListener('DOMContentLoaded', function() {
+    // 请求后端接口获取数据
+    fetch('/inner_matrix/hsy/flow/dataFixPress')  // 替换成你的后端接口地址
+            .then(response => response.json())
+            .then(data => {
+              // 假设后端返回的数据格式如下：
+              // {
+              //   labels: [...],
+              //   datasets: [...]
+              // }
+              const chartData = {
+                labels: data.labels,
+                datasets: data.datasets.map((dataset, index) => {
+                  // 为每个数据集添加一个随机颜色
+                  dataset.borderColor = `rgb(${255*Math.random()},${255*Math.random()},${255*Math.random()}`;
+                  return dataset;
+                })
+              };
+
+              multiLineChart = new Chart(ctx, {
+                type: 'line', // 图表类型为线图
+                data: chartData,
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: '压力 (bar)'
+                      }
+                    },
+                    x: {
+                      title: {
+                        display: true,
+                        text: '流量 (L/min)'
+                      }
+                    }
+                  }
+                }
+              });
+            })
+            .catch(error => {
+              console.error('Error fetching data: ', error);
+            });
+  });
+  // 添加点击事件监听
+  ctx.canvas.addEventListener('click', function(event) {
+    const elements = multiLineChart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+    if (elements.length > 0) {
+      const point = elements[0];
+      if (firstPoint === null) {
+        firstPoint = {
+          x: multiLineChart.data.labels[point.index],
+          y: multiLineChart.data.datasets[point.datasetIndex].data[point.index],
+          index: point.index
+        };
+        console.log('First point selected:', firstPoint);
+      } else {
+        const secondPoint = {
+          x: multiLineChart.data.labels[point.index],
+          y: multiLineChart.data.datasets[point.datasetIndex].data[point.index],
+          index: point.index
+        };
+        console.log('Second point selected:', secondPoint);
+        const deltaX = secondPoint.index - firstPoint.index;
+        const deltaY = secondPoint.y - firstPoint.y;
+        alert(`Delta X: ${deltaX}, Delta Y: ${deltaY}`);
+        firstPoint = null; // Reset first point for next selection
+      }
+    }
+  });
+</script>
+</body>
+</html>

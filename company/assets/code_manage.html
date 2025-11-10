@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编码管理表 - 固定资产管理系统</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #1890ff;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .header a:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .tab-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        select {
+            cursor: pointer;
+        }
+        button {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #40a9ff;
+        }
+        .btn-secondary {
+            background-color: #52c41a;
+        }
+        .btn-secondary:hover {
+            background-color: #73d13d;
+        }
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+        .btn-danger:hover {
+            background-color: #ff7875;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-group button {
+            flex: 1;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-container input {
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        th {
+            background-color: #fafafa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #fafafa;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .alert-success {
+            background-color: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+        .alert-error {
+            background-color: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+        .hidden {
+            display: none;
+        }
+        #fileInput {
+            display: none;
+        }
+        .export-btn {
+            margin-top: 20px;
+        }
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+            color: #1890ff;
+        }
+        .code-preview {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f5ff;
+            border-radius: 4px;
+        }
+        .code-preview h4 {
+            margin-top: 0;
+            color: #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>编码管理表</h1>
+            <a href="index.html">返回资管首页</a>
+        </div>
+
+        <div class="tabs">
+            <button class="tab" onclick="switchTab(0)">编码规则管理</button>
+            <button class="tab active" onclick="switchTab(1)">编码生成器</button>
+        </div>
+
+        <!-- 编码规则管理 -->
+        <div class="tab-content" id="tab0">
+            <div class="form-container">
+                <h3>新增编码规则</h3>
+                <div id="alertMessage" class="alert hidden"></div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ruleName">规则名称 <span style="color: red;">*</span></label>
+                        <input type="text" id="ruleName" placeholder="请输入规则名称（如：固定资产编码）">
+                    </div>
+                    <div class="form-group">
+                        <label for="prefix">前缀标识</label>
+                        <input type="text" id="prefix" placeholder="如：FA代表固定资产" oninput="updateCodePreview()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="includeDate">包含日期</label>
+                        <select id="includeDate" onchange="updateCodePreview()">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateFormat">日期格式</label>
+                        <select id="dateFormat" onchange="updateCodePreview()">
+                            <option value="YYYYMMDD">YYYYMMDD (年月日)</option>
+                            <option value="YYYYMM">YYYYMM (年月)</option>
+                            <option value="YYMM">YYMM (年两位月)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sequenceLength">序号长度</label>
+                        <select id="sequenceLength" onchange="updateCodePreview()">
+                            <option value="3">3位</option>
+                            <option value="4">4位</option>
+                            <option value="5">5位</option>
+                            <option value="6">6位</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentSequence">当前序号</label>
+                        <input type="number" id="currentSequence" min="0" value="0" oninput="updateCodePreview()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="separator">分隔符</label>
+                        <select id="separator" onchange="updateCodePreview()">
+                            <option value="">无</option>
+                            <option value="-">-</option>
+                            <option value="_">_</option>
+                            <option value=".">.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">状态</label>
+                        <select id="status">
+                            <option value="active">启用</option>
+                            <option value="inactive">禁用</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="code-preview">
+                    <h4>编码示例预览</h4>
+                    <div id="codeExample" class="code-example">FA-20240101-001</div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="saveCodeRule()">保存规则</button>
+                    <button type="button" onclick="resetForm()">重置表单</button>
+                </div>
+            </div>
+
+            <div class="rules-table">
+                <h3>编码规则列表</h3>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="搜索规则名称">
+                    <button onclick="searchRules()">搜索</button>
+                    <button type="button" onclick="clearSearch()">清除</button>
+                </div>
+
+                <table id="codeRulesTable">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>规则名称</th>
+                            <th>前缀</th>
+                            <th>包含日期</th>
+                            <th>日期格式</th>
+                            <th>序号长度</th>
+                            <th>当前序号</th>
+                            <th>分隔符</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="codeRulesTableBody">
+                        <!-- 数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+
+                <button class="btn-danger export-btn" onclick="deleteSelectedRules()">删除选中规则</button>
+            </div>
+        </div>
+
+        <!-- 编码生成器 -->
+        <div class="tab-content active" id="tab1">
+            <div class="code-generator">
+                <h3>自动生成资产编码</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ruleSelect">选择编码规则 <span style="color: red;">*</span></label>
+                        <select id="ruleSelect" onchange="updateGeneratorPreview()">
+                            <option value="">请选择规则</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="generateCount">生成数量</label>
+                        <input type="number" id="generateCount" min="1" max="100" value="1">
+                    </div>
+                </div>
+
+                <div class="code-preview">
+                    <h4>生成的编码预览</h4>
+                    <div id="generatedCodePreview" class="code-example">请选择编码规则</div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="generateCodes()">生成编码</button>
+                    <button class="btn-secondary" onclick="copyGeneratedCodes()">复制编码</button>
+                </div>
+
+                <div id="generatedCodesList" style="margin-top: 20px; max-height: 300px; overflow-y: auto;">
+                    <!-- 生成的编码列表将显示在这里 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页
+        function switchTab(index) {
+            // 隐藏所有标签内容
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // 移除所有标签的活跃状态
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 显示选中的标签内容
+            tabContents[index].classList.add('active');
+            tabs[index].classList.add('active');
+            
+            // 如果切换到编码规则管理，刷新表格数据
+            if (index === 0) {
+                loadCodeRules();
+            } else if (index === 1) {
+                // 加载编码规则到选择器
+                loadRulesToSelector();
+            }
+        }
+
+        // 显示提示信息
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            
+            setTimeout(() => {
+                alertDiv.className = 'alert hidden';
+            }, 3000);
+        }
+
+        // 重置表单
+        function resetForm() {
+            document.getElementById('ruleName').value = '';
+            document.getElementById('prefix').value = '';
+            document.getElementById('includeDate').value = 'false';
+            document.getElementById('dateFormat').value = 'YYYYMMDD';
+            document.getElementById('sequenceLength').value = '3';
+            document.getElementById('currentSequence').value = '0';
+            document.getElementById('separator').value = '';
+            document.getElementById('status').value = 'active';
+            updateCodePreview();
+        }
+
+        // 更新编码示例预览
+        function updateCodePreview() {
+            const prefix = document.getElementById('prefix').value || '';
+            const includeDate = document.getElementById('includeDate').value === 'true';
+            const dateFormat = document.getElementById('dateFormat').value;
+            const sequenceLength = parseInt(document.getElementById('sequenceLength').value);
+            const currentSequence = parseInt(document.getElementById('currentSequence').value) + 1;
+            const separator = document.getElementById('separator').value;
+            
+            let code = '';
+            
+            // 添加前缀
+            if (prefix) {
+                code += prefix;
+            }
+            
+            // 添加日期
+            if (includeDate) {
+                const now = new Date();
+                let dateStr = '';
+                
+                if (dateFormat === 'YYYYMMDD') {
+                    dateStr = now.getFullYear() + 
+                              String(now.getMonth() + 1).padStart(2, '0') + 
+                              String(now.getDate()).padStart(2, '0');
+                } else if (dateFormat === 'YYYYMM') {
+                    dateStr = now.getFullYear() + 
+                              String(now.getMonth() + 1).padStart(2, '0');
+                } else if (dateFormat === 'YYMM') {
+                    dateStr = String(now.getFullYear()).slice(2) + 
+                              String(now.getMonth() + 1).padStart(2, '0');
+                }
+                
+                code += (code ? separator : '') + dateStr;
+            }
+            
+            // 添加序号
+            const sequenceStr = String(currentSequence).padStart(sequenceLength, '0');
+            code += (code ? separator : '') + sequenceStr;
+            
+            document.getElementById('codeExample').textContent = code;
+        }
+
+        // 保存编码规则
+        function saveCodeRule() {
+            // 获取表单数据
+            const ruleName = document.getElementById('ruleName').value.trim();
+            const prefix = document.getElementById('prefix').value.trim();
+            const includeDate = document.getElementById('includeDate').value === 'true';
+            const dateFormat = document.getElementById('dateFormat').value;
+            const sequenceLength = parseInt(document.getElementById('sequenceLength').value);
+            const currentSequence = parseInt(document.getElementById('currentSequence').value);
+            const separator = document.getElementById('separator').value;
+            const status = document.getElementById('status').value;
+            
+            // 验证必填字段
+            if (!ruleName) {
+                showAlert('请填写规则名称', 'error');
+                return;
+            }
+            
+            // 从本地存储获取现有编码规则数据
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            
+            // 检查规则名称是否已存在
+            const editingId = localStorage.getItem('editingCodeRuleId');
+            const existingRule = codeRules.find(rule => 
+                rule.ruleName === ruleName && rule.id !== editingId
+            );
+            
+            if (existingRule) {
+                showAlert('规则名称已存在，请使用不同的名称', 'error');
+                return;
+            }
+            
+            // 创建新编码规则对象
+            const codeRule = {
+                ruleName,
+                prefix,
+                includeDate,
+                dateFormat,
+                sequenceLength,
+                currentSequence,
+                separator,
+                status,
+                id: editingId || Date.now().toString() // 生成唯一ID或使用现有ID
+            };
+            
+            if (editingId) {
+                // 更新现有规则
+                const index = codeRules.findIndex(rule => rule.id === editingId);
+                codeRules[index] = codeRule;
+                localStorage.removeItem('editingCodeRuleId');
+                showAlert('编码规则更新成功');
+            } else {
+                // 添加新规则
+                codeRules.push(codeRule);
+                showAlert('编码规则保存成功');
+            }
+            
+            // 保存回本地存储
+            localStorage.setItem('codeRules', JSON.stringify(codeRules));
+            
+            resetForm();
+            loadCodeRules();
+        }
+
+        // 加载编码规则数据
+        function loadCodeRules(searchTerm = '') {
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            const tableBody = document.getElementById('codeRulesTableBody');
+            
+            // 清空表格
+            tableBody.innerHTML = '';
+            
+            // 过滤搜索结果
+            const filteredRules = codeRules.filter(rule => {
+                if (!searchTerm) return true;
+                return rule.ruleName.includes(searchTerm);
+            });
+            
+            // 如果没有数据
+            if (filteredRules.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">暂无编码规则</td></tr>';
+                return;
+            }
+            
+            // 填充表格
+            filteredRules.forEach(rule => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="rule-checkbox" data-id="${rule.id}"></td>
+                    <td>${rule.ruleName}</td>
+                    <td>${rule.prefix || '-'}</td>
+                    <td>${rule.includeDate ? '是' : '否'}</td>
+                    <td>${rule.dateFormat}</td>
+                    <td>${rule.sequenceLength}位</td>
+                    <td>${rule.currentSequence}</td>
+                    <td>${rule.separator || '无'}</td>
+                    <td>${rule.status === 'active' ? '启用' : '禁用'}</td>
+                    <td>
+                        <button onclick="editCodeRule('${rule.id}')" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                        <button onclick="deleteCodeRule('${rule.id}')" style="padding: 4px 8px; font-size: 12px; background-color: #ff4d4f;">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 搜索编码规则
+        function searchRules() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            loadCodeRules(searchTerm);
+        }
+
+        // 清除搜索
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            loadCodeRules();
+        }
+
+        // 编辑编码规则
+        function editCodeRule(id) {
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            const rule = codeRules.find(r => r.id === id);
+            
+            if (rule) {
+                // 填充表单
+                document.getElementById('ruleName').value = rule.ruleName;
+                document.getElementById('prefix').value = rule.prefix || '';
+                document.getElementById('includeDate').value = rule.includeDate ? 'true' : 'false';
+                document.getElementById('dateFormat').value = rule.dateFormat;
+                document.getElementById('sequenceLength').value = rule.sequenceLength;
+                document.getElementById('currentSequence').value = rule.currentSequence;
+                document.getElementById('separator').value = rule.separator || '';
+                document.getElementById('status').value = rule.status;
+                
+                // 更新预览
+                updateCodePreview();
+                
+                // 切换到管理标签页（如果不在的话）
+                if (!document.getElementById('tab0').classList.contains('active')) {
+                    switchTab(0);
+                }
+                
+                // 滚动到表单顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // 提示用户正在编辑
+                showAlert(`正在编辑编码规则：${rule.ruleName}`);
+                
+                // 保存编辑状态
+                localStorage.setItem('editingCodeRuleId', id);
+            }
+        }
+
+        // 删除单个编码规则
+        function deleteCodeRule(id) {
+            if (confirm('确定要删除这个编码规则吗？')) {
+                let codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+                codeRules = codeRules.filter(rule => rule.id !== id);
+                localStorage.setItem('codeRules', JSON.stringify(codeRules));
+                
+                showAlert('编码规则删除成功');
+                loadCodeRules();
+            }
+        }
+
+        // 删除选中编码规则
+        function deleteSelectedRules() {
+            const checkboxes = document.querySelectorAll('.rule-checkbox:checked');
+            if (checkboxes.length === 0) {
+                showAlert('请先选择要删除的编码规则', 'error');
+                return;
+            }
+            
+            if (confirm(`确定要删除选中的 ${checkboxes.length} 个编码规则吗？`)) {
+                let codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+                const ruleIds = Array.from(checkboxes).map(cb => cb.dataset.id);
+                codeRules = codeRules.filter(rule => !ruleIds.includes(rule.id));
+                localStorage.setItem('codeRules', JSON.stringify(codeRules));
+                
+                showAlert(`成功删除 ${checkboxes.length} 个编码规则`);
+                loadCodeRules();
+            }
+        }
+
+        // 全选/取消全选
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.rule-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = this.checked;
+            });
+        });
+
+        // 加载编码规则到生成器选择器
+        function loadRulesToSelector() {
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            const ruleSelect = document.getElementById('ruleSelect');
+            
+            // 清空选择器（保留第一个选项）
+            ruleSelect.innerHTML = '<option value="">请选择规则</option>';
+            
+            // 只添加启用的规则
+            const activeRules = codeRules.filter(rule => rule.status === 'active');
+            
+            activeRules.forEach(rule => {
+                const option = document.createElement('option');
+                option.value = rule.id;
+                option.textContent = rule.ruleName;
+                ruleSelect.appendChild(option);
+            });
+        }
+
+        // 更新生成器预览
+        function updateGeneratorPreview() {
+            const ruleId = document.getElementById('ruleSelect').value;
+            if (!ruleId) {
+                document.getElementById('generatedCodePreview').textContent = '请选择编码规则';
+                return;
+            }
+            
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            const rule = codeRules.find(r => r.id === ruleId);
+            
+            if (rule) {
+                // 生成预览编码
+                const previewCode = generateCode(rule, rule.currentSequence + 1);
+                document.getElementById('generatedCodePreview').textContent = previewCode;
+            }
+        }
+
+        // 生成单个编码
+        function generateCode(rule, sequence) {
+            let code = '';
+            
+            // 添加前缀
+            if (rule.prefix) {
+                code += rule.prefix;
+            }
+            
+            // 添加日期
+            if (rule.includeDate) {
+                const now = new Date();
+                let dateStr = '';
+                
+                if (rule.dateFormat === 'YYYYMMDD') {
+                    dateStr = now.getFullYear() + 
+                              String(now.getMonth() + 1).padStart(2, '0') + 
+                              String(now.getDate()).padStart(2, '0');
+                } else if (rule.dateFormat === 'YYYYMM') {
+                    dateStr = now.getFullYear() + 
+                              String(now.getMonth() + 1).padStart(2, '0');
+                } else if (rule.dateFormat === 'YYMM') {
+                    dateStr = String(now.getFullYear()).slice(2) + 
+                              String(now.getMonth() + 1).padStart(2, '0');
+                }
+                
+                code += (code ? rule.separator : '') + dateStr;
+            }
+            
+            // 添加序号
+            const sequenceStr = String(sequence).padStart(rule.sequenceLength, '0');
+            code += (code ? rule.separator : '') + sequenceStr;
+            
+            return code;
+        }
+
+        // 生成编码
+        function generateCodes() {
+            const ruleId = document.getElementById('ruleSelect').value;
+            const generateCount = parseInt(document.getElementById('generateCount').value) || 1;
+            
+            if (!ruleId) {
+                alert('请选择编码规则');
+                return;
+            }
+            
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            const rule = codeRules.find(r => r.id === ruleId);
+            
+            if (rule) {
+                const generatedCodes = [];
+                const startSequence = rule.currentSequence + 1;
+                
+                for (let i = 0; i < generateCount; i++) {
+                    generatedCodes.push(generateCode(rule, startSequence + i));
+                }
+                
+                // 更新当前序号
+                rule.currentSequence = startSequence + generateCount - 1;
+                localStorage.setItem('codeRules', JSON.stringify(codeRules));
+                
+                // 显示生成的编码
+                const codesList = document.getElementById('generatedCodesList');
+                codesList.innerHTML = `
+                    <h4>生成的编码列表（共 ${generateCount} 个）</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        ${generatedCodes.map(code => `<li style="padding: 5px 0; border-bottom: 1px solid #e8e8e8;">${code}</li>`).join('')}
+                    </ul>
+                `;
+                
+                // 更新预览
+                document.getElementById('generatedCodePreview').textContent = generatedCodes[0];
+                
+                showAlert(`成功生成 ${generateCount} 个编码`, 'success');
+            }
+        }
+
+        // 复制生成的编码
+        function copyGeneratedCodes() {
+            const codesList = document.getElementById('generatedCodesList');
+            if (!codesList.querySelector('ul')) {
+                alert('请先生成编码');
+                return;
+            }
+            
+            const codeElements = codesList.querySelectorAll('li');
+            const codes = Array.from(codeElements).map(el => el.textContent).join('\n');
+            
+            navigator.clipboard.writeText(codes).then(() => {
+                showAlert('编码已复制到剪贴板', 'success');
+            }).catch(err => {
+                showAlert('复制失败，请手动复制', 'error');
+            });
+        }
+
+        // 页面加载时的初始化
+        window.onload = function() {
+            const editingId = localStorage.getItem('editingCodeRuleId');
+            if (editingId) {
+                // 可以在这里恢复编辑状态
+                localStorage.removeItem('editingCodeRuleId');
+            }
+            
+            // 初始化预览
+            updateCodePreview();
+            loadCodeRules();
+            
+            // 初始化测试数据
+            initTestData();
+        };
+        
+        // 初始化测试数据
+        function initTestData() {
+            // 检查是否已有数据，如果没有则生成测试数据
+            const codeRules = JSON.parse(localStorage.getItem('codeRules') || '[]');
+            
+            if (codeRules.length === 0) {
+                const testData = [
+                    {
+                        ruleName: '固定资产编码规则',
+                        prefix: 'ZC',
+                        includeDate: true,
+                        dateFormat: 'YYYYMMDD',
+                        sequenceLength: 3,
+                        currentSequence: 10,
+                        separator: '-',
+                        status: 'active',
+                        id: '1'
+                    },
+                    {
+                        ruleName: '低值易耗品编码规则',
+                        prefix: 'DZ',
+                        includeDate: false,
+                        dateFormat: 'YYYYMMDD',
+                        sequenceLength: 3,
+                        currentSequence: 5,
+                        separator: '',
+                        status: 'active',
+                        id: '2'
+                    },
+                    {
+                        ruleName: '公共设备编码规则',
+                        prefix: 'SB',
+                        includeDate: true,
+                        dateFormat: 'YYMM',
+                        sequenceLength: 4,
+                        currentSequence: 20,
+                        separator: '_',
+                        status: 'inactive',
+                        id: '3'
+                    }
+                ];
+                
+                // 保存测试数据到本地存储
+                localStorage.setItem('codeRules', JSON.stringify(testData));
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Rain</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            font-family: monospace;
+        }
+
+        .matrix-letter {
+            position: absolute;
+            font-size: 20px;
+            color: #008000; /* 墨绿色 */
+            animation: fall 5s linear infinite; /* 加快下落速度 */
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 引入全局ESC键监听脚本 -->
+<script src="../../js/global_escape_listener.js"></script>
+<script>
+    
+
+    let initialTop = -100; // 初始位置的top值
+    const letterCount = 30000; // 字母的总数量
+    const letterWidth = 10; // 字母宽度
+    const letterHeight = 20; // 字母高度
+    const letterSpacing = 5; // 字母间隔
+
+    function createMatrixLetter() {
+        const letters = '01';
+        const letter = letters[Math.floor(Math.random() * letters.length)];
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.classList.add('matrix-letter');
+        span.style.left = Math.floor(Math.random() * window.innerWidth) + 'px';
+        span.style.top = initialTop + 'px'; // 固定初始位置的top值
+        document.body.appendChild(span);
+
+        initialTop += letterHeight + letterSpacing;
+
+        if (document.querySelectorAll('.matrix-letter').length >= letterCount) {
+            clearInterval(intervalId); // 当达到固定数量时停止创建字母
+        }
+    }
+
+    const intervalId = setInterval(createMatrixLetter, 100);
+</script>
+</body>
+</html>

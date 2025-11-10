@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金零社 - 数字金融服务平台</title>
+    <!-- SEO 优化 meta 标签 -->
+    <meta name="description" content="金零社 - 专业数字金融社交平台，为个人用户提供智能金融解决方案和社交服务">
+    <meta name="keywords" content="金零社,数字金融,金融服务,金融科技,投资管理">
+    <meta name="author" content="金零社">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="金零社 - 数字金融服务平台">
+    <meta property="og:description" content="金零社专注于提供专业的数字金融服务和解决方案，为企业和个人用户创造价值。">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="index.png">
+    <meta property="og:url" content="https://www.jinlingshe.com">
+    <!-- 移动端优化 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="金零社">
+    <!-- 浏览器图标 -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="avatar.jpg">
+    <!-- 预连接重要域名 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" as="style">
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    
+    <!-- 引入外部资源 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 可选的Chart.js，使用轻量级替代方案 -->
+    <!-- 移除外部Chart.js依赖，改为使用按需加载或轻量级替代方案 -->
+    <script>
+        // 提供一个简单的Chart.js兼容层，避免代码错误
+        window.Chart = window.Chart || function() { return { destroy: function() {} }; };
+        window.Chart.defaults = {};
+    </script>
+    
+    <!-- 国内服务器可访问性检测 -->
+    <div id="cn-server-detection" class="fixed top-4 right-4 bg-dark/90 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+        <div class="flex items-center space-x-2">
+            <div id="detection-spinner" class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+            <span id="detection-status">正在检测国内服务器...</span>
+        </div>
+        <div id="detection-details" class="text-xs mt-2 text-gray-300"></div>
+        <div id="detection-actions" class="mt-3 hidden">
+            <button id="manual-redirect-btn" class="bg-primary text-dark px-3 py-1 text-sm rounded hover:bg-primary/90 transition-colors">
+                手动跳转到国内服务器
+            </button>
+            <button id="close-detection-btn" class="ml-2 text-xs text-gray-300 hover:text-white transition-colors">
+                关闭
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // 立即执行检测脚本
+        (function() {
+            console.log('[国内服务器检测] 开始初始化');
+            
+            // 获取DOM元素
+            const detectionElement = document.getElementById('cn-server-detection');
+            const statusElement = document.getElementById('detection-status');
+            const detailsElement = document.getElementById('detection-details');
+            const spinnerElement = document.getElementById('detection-spinner');
+            const actionsElement = document.getElementById('detection-actions');
+            const redirectBtn = document.getElementById('manual-redirect-btn');
+            const closeBtn = document.getElementById('close-detection-btn');
+            
+            // 检测参数设置
+            const targetUrl = 'http://yamhk.2288.org:8090/';
+            
+            // 更新状态函数
+            function updateStatus(message, details = '') {
+                if (statusElement) statusElement.textContent = message;
+                if (detailsElement && details) detailsElement.textContent = details;
+                console.log('[国内服务器检测]', message, details ? `(${details})` : '');
+            }
+            
+            // 结束检测函数
+            function finishDetection(success = false) {
+                // 停止旋转动画
+                if (spinnerElement) {
+                    spinnerElement.classList.remove('animate-spin');
+                    spinnerElement.classList.add('rounded-full', 'h-5', 'w-5');
+                    
+                    // 显示成功/失败图标
+                    spinnerElement.innerHTML = success ? 
+                        '<i class="fa fa-check" style="position: relative; top: -7px; left: -1px;"></i>' : 
+                        '<i class="fa fa-times" style="position: relative; top: -7px; left: -1px;"></i>';
+                }
+                
+                // 显示操作按钮
+                if (actionsElement) {
+                    actionsElement.classList.remove('hidden');
+                }
+                
+                // 更新背景色
+                if (detectionElement) {
+                    detectionElement.classList.add(success ? 'bg-green-700/90' : 'bg-red-700/90');
+                }
+            }
+            
+            // 手动跳转函数
+            function manualRedirect() {
+                console.log('[国内服务器检测] 用户手动触发跳转:', targetUrl);
+                if (statusElement) statusElement.textContent = '正在跳转到国内服务器...';
+                window.location.href = targetUrl;
+            }
+            
+            // 关闭检测提示
+            function closeDetection() {
+                console.log('[国内服务器检测] 用户关闭检测提示');
+                if (detectionElement) {
+                    detectionElement.style.transition = 'opacity 0.3s ease';
+                    detectionElement.style.opacity = '0';
+                    setTimeout(() => {
+                        detectionElement.classList.add('hidden');
+                    }, 300);
+                }
+            }
+            
+            // 添加事件监听器
+            if (redirectBtn) redirectBtn.addEventListener('click', manualRedirect);
+            if (closeBtn) closeBtn.addEventListener('click', closeDetection);
+            
+            // 避免在iframe中执行检测
+            if (window.top !== window.self) {
+                updateStatus('在iframe中，跳过检测');
+                finishDetection(false);
+                return;
+            }
+            
+            // 检查是否为localhost访问，如果是则不执行检测和跳转
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost) {
+                updateStatus('localhost访问，跳过跳转');
+                finishDetection(false);
+                
+                // 3秒后自动关闭提示
+                setTimeout(() => {
+                    closeDetection();
+                }, 3000);
+                return;
+            }
+            
+            updateStatus('开始检测目标服务器', targetUrl);
+            
+            // 使用更简单直接的检测方法 - 尝试直接连接
+            const startTime = Date.now();
+            const timeoutMs = 8000;
+            
+            // 简化的检测方法
+            function attemptConnection() {
+                // 创建一个Image对象尝试加载目标服务器上的资源
+                // 这是一个简单的跨域检测方法，不会触发CORS问题
+                const img = new Image();
+                let timer;
+                
+                img.onload = function() {
+                    clearTimeout(timer);
+                    const elapsedTime = Date.now() - startTime;
+                    console.log('[国内服务器检测] 图像加载成功，服务器可达');
+                    updateStatus('检测成功，服务器可达', `耗时: ${elapsedTime}ms`);
+                    finishDetection(true);
+                    
+                    // 自动跳转
+                    setTimeout(() => {
+                        console.log('[国内服务器检测] 执行自动跳转:', targetUrl);
+                        window.location.href = targetUrl;
+                    }, 1500);
+                };
+                
+                img.onerror = function() {
+                    clearTimeout(timer);
+                    const elapsedTime = Date.now() - startTime;
+                    console.log('[国内服务器检测] 图像加载失败');
+                    updateStatus('自动检测失败', `耗时: ${elapsedTime}ms`);
+                    finishDetection(false);
+                };
+                
+                // 设置超时
+                timer = setTimeout(() => {
+                    const elapsedTime = Date.now() - startTime;
+                    console.log('[国内服务器检测] 连接超时');
+                    updateStatus('连接超时', `耗时: ${elapsedTime}ms`);
+                    finishDetection(false);
+                }, timeoutMs);
+                
+                // 尝试加载目标服务器上的favicon或其他小资源
+                img.src = targetUrl + 'favicon.ico?' + Date.now();
+                console.log('[国内服务器检测] 发送检测请求:', img.src);
+            }
+            
+            // 备用检测方法 - 使用JSONP模式
+            function fallbackDetection() {
+                console.log('[国内服务器检测] 使用备用检测方法');
+                const script = document.createElement('script');
+                const callbackName = 'cnServerCheck_' + Date.now();
+                let timer;
+                
+                window[callbackName] = function() {
+                    clearTimeout(timer);
+                    const elapsedTime = Date.now() - startTime;
+                    console.log('[国内服务器检测] JSONP回调触发，服务器可达');
+                    updateStatus('检测成功，服务器可达', `耗时: ${elapsedTime}ms`);
+                    finishDetection(true);
+                    
+                    // 清理
+                    delete window[callbackName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    
+                    // 自动跳转
+                    setTimeout(() => {
+                        console.log('[国内服务器检测] 执行自动跳转:', targetUrl);
+                        window.location.href = targetUrl;
+                    }, 1500);
+                };
+                
+                // 设置超时
+                timer = setTimeout(() => {
+                    const elapsedTime = Date.now() - startTime;
+                    console.log('[国内服务器检测] JSONP检测超时');
+                    updateStatus('自动检测失败', `耗时: ${elapsedTime}ms`);
+                    finishDetection(false);
+                    
+                    // 清理
+                    delete window[callbackName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                }, timeoutMs);
+                
+                // 设置脚本源
+                script.src = targetUrl + '?callback=' + callbackName;
+                script.onerror = function() {
+                    clearTimeout(timer);
+                    const elapsedTime = Date.now() - startTime;
+                    console.log('[国内服务器检测] JSONP脚本加载失败');
+                    updateStatus('自动检测失败', `耗时: ${elapsedTime}ms`);
+                    finishDetection(false);
+                    
+                    // 清理
+                    delete window[callbackName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                };
+                
+                // 添加到文档
+                document.body.appendChild(script);
+                console.log('[国内服务器检测] 发送JSONP检测请求:', script.src);
+            }
+            
+            // 首先尝试简单的图像加载检测
+            attemptConnection();
+            
+            // 如果5秒后还没有结果，尝试备用方法
+            setTimeout(() => {
+                if (spinnerElement && spinnerElement.classList.contains('animate-spin')) {
+                    console.log('[国内服务器检测] 主检测方法超时，尝试备用方法');
+                    fallbackDetection();
+                }
+            }, 5000);
+        })();
+    </script>
+    
+    <!-- 配置Tailwind - 金融主题配色方案 -->
+    <!-- 延迟加载非关键脚本 -->
+    <script>
+        // 使用requestIdleCallback或setTimeout延迟加载非关键脚本
+        const loadNonCriticalResources = () => {
+            // 全局ESC键监听脚本（内联实现以避免额外请求）
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    // 处理ESC键逻辑
+                    console.log('ESC键被按下');
+                    // 关闭任何打开的模态框或下拉菜单
+                    const openModals = document.querySelectorAll('.modal.open, .dropdown.open');
+                    openModals.forEach(modal => modal.classList.remove('open'));
+                }
+            });
+            
+            // 延迟加载百度统计（使用requestIdleCallback优先级更低）
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => {
+                    var _hmt = _hmt || [];
+                    var hm = document.createElement("script");
+                    hm.src = "https://hm.baidu.com/hm.js?your_tracking_code";
+                    hm.async = true;
+                    var s = document.getElementsByTagName("script")[0];
+                    s.parentNode.insertBefore(hm, s);
+                });
+            } else {
+                setTimeout(() => {
+                    var _hmt = _hmt || [];
+                    var hm = document.createElement("script");
+                    hm.src = "https://hm.baidu.com/hm.js?your_tracking_code";
+                    hm.async = true;
+                    var s = document.getElementsByTagName("script")[0];
+                    s.parentNode.insertBefore(hm, s);
+                }, 2000);
+            }
+        };
+        
+        // 页面加载后执行
+        window.addEventListener('load', loadNonCriticalResources);
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e6a419', // 金融金色作为主色调
+                        secondary: '#1a237e', // 深蓝作为辅助色
+                        accent: '#f50057', // 强调色
+                        dark: '#1a1a2e', // 深色背景
+                        darker: '#16213e', // 更深色
+                        light: '#f8f9fa', // 浅色文本
+                        'gold-light': '#f9f0d6', // 浅金色
+                        'navy-light': '#283593' // 浅海军蓝
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 15px rgba(230, 164, 25, 0.1);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 20px rgba(230, 164, 25, 0.2);
+            }
+            .hero-gradient {
+                background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            }
+            .gold-glow {
+                box-shadow: 0 0 15px rgba(230, 164, 25, 0.5), 0 0 30px rgba(26, 35, 126, 0.3);
+            }
+            .gold-border {
+                border: 1px solid rgba(230, 164, 25, 0.5);
+                box-shadow: 0 0 10px rgba(230, 164, 25, 0.2);
+            }
+            .nav-shadow {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 20px rgba(230, 164, 25, 0.1);
+            }
+            .section-divider {
+                height: 2px;
+                background: linear-gradient(90deg, transparent, rgba(230, 164, 25, 0.5), transparent);
+            }
+        }
+    </style>
+</head>
+<body class="bg-light min-h-screen">
+    <!-- 导航栏 - DOTA风格顶部导航 -->
+    <header class="bg-dark fixed w-full top-0 z-50 nav-shadow">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- 网站Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3 gold-glow">
+                            <i class="fa fa-line-chart text-white text-xl"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">金零社</span>
+                    </a>
+                </div>
+                
+                <!-- 主导航菜单 - 桌面版 -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">金融服务</a>
+                    <a href="#categories" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">服务中心</a>
+                    <a href="#quick-access" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">社交金融服务</a>
+                    <a href="module/index/mx_contact.html" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">关于我们</a>
+                </div>
+                
+                <!-- 搜索和用户区域 -->
+                <div class="flex items-center space-x-4">
+                    <!-- 搜索按钮 -->
+                    <button class="text-white hover:text-primary p-2 rounded-full hover:bg-white/10 transition-colors duration-200">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <!-- 用户按钮 -->
+                    <button class="text-white hover:text-primary p-2 rounded-full hover:bg-white/10 transition-colors duration-200">
+                        <i class="fa fa-user-circle text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 内测阶段标记横幅 -->
+    <div class="bg-red-600 text-white text-center py-3 px-4 font-bold text-sm md:text-base sticky top-16 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto flex items-center justify-center flex-wrap">
+            <i class="fa fa-exclamation-triangle mr-2"></i>
+            <span>警告：本网站目前处于内测阶段，尚未正式上线。内容可能随时更改或删除。</span>
+            <i class="fa fa-exclamation-triangle ml-2"></i>
+        </div>
+    </div>
+    
+    <!-- 英雄区域 - DOTA风格强调门户特性 -->
+    <section class="hero-gradient pt-56 pb-24 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-block p-4 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 gold-glow">
+                <i class="fa fa-line-chart text-6xl"></i>
+            </div>
+            <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold mb-6 leading-tight tracking-tight">
+                <span class="text-primary">金零社</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-white/90">
+                专业数字金融服务平台，为企业和个人提供智能金融解决方案。我们致力于通过科技创新，赋能金融发展，创造可持续价值。
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#features" class="bg-primary hover:bg-primary/90 text-dark font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                    探索服务
+                </a>
+                <a href="#quick-access" class="bg-transparent border-2 border-white hover:border-primary text-white hover:text-primary font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105">
+                    解决方案
+                </a>
+            </div>
+        </div>
+        
+        <!-- 装饰性元素 - DOTA风格波纹效果 -->
+        <div class="absolute bottom-0 left-0 right-0 h-16 overflow-hidden">
+            <div class="absolute bottom-0 left-0 right-0 bg-light transform translate-y-1/2">
+                <svg viewBox="0 0 1440 120" class="w-full h-auto">
+                    <path fill="currentColor" fill-opacity="1" d="M0,64L80,80C160,96,320,128,480,122.7C640,117,800,75,960,69.3C1120,64,1280,96,1360,112L1440,128L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z" style="color: #f5f5f5;"></path>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能分类区域 -->
+    <section id="categories" class="py-20 bg-light relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div class="inline-block p-2 bg-primary/10 rounded-lg mb-4">
+                    <i class="fa fa-th-large text-primary text-2xl"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">服务分类</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">探索我们的金融社交服务，满足您的各类需求</p>
+            </div>
+            
+            <!-- 分类导航 -->
+            <div class="flex overflow-x-auto pb-4 mb-8 gap-4 scrollbar-hide">
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-primary text-dark font-medium hover:bg-primary/90 transition-colors duration-200">全部服务</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">个人金融</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">社交金融</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">金融科技</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">技术支持</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 核心功能导航 - 增强版 -->
+    <section id="features" class="py-16 bg-white relative">
+        <!-- 装饰性背景元素 -->
+        <div class="absolute top-0 left-0 w-full h-2 section-divider"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div class="inline-block p-2 bg-secondary/10 rounded-lg mb-4">
+                    <i class="fa fa-star text-secondary text-2xl"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">核心服务</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">我们的精选金融服务，为您提供专业、安全、高效的金融解决方案</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="features-container">
+                <!-- 功能卡片将动态显示 -->
+            </div>
+        </div>
+        
+        <div class="absolute bottom-0 left-0 w-full h-2 section-divider"></div>
+    </section>
+
+    <!-- 添加回到顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-primary text-dark flex items-center justify-center shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+        <i class="fa fa-arrow-up text-xl"></i>
+    </button>
+
+    <!-- 快捷访问区域 - 增强版用户体验 -->
+    <section id="quick-access" class="py-20 bg-gradient-to-b from-white to-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div class="inline-block p-2 bg-accent/10 rounded-lg mb-4">
+                    <i class="fa fa-bolt text-accent text-2xl"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">社交金融服务</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">为个人用户提供的社交金融服务，连接志同道合的金融爱好者</p>
+            </div>
+            
+            <!-- 默认功能选择器 - DOTA风格升级版 -->
+            <div class="bg-white rounded-xl p-8 mb-12 dota-border">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div class="flex items-center">
+                        <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mr-5">
+                            <i class="fa fa-star text-secondary text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-dark">选择常用服务</h3>
+                <p class="text-gray-600">设置您常用的金融服务，提升访问效率</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-4">
+                        <select id="default-feature-selector" class="bg-light border border-gray-300 text-gray-700 py-3 px-5 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm md:text-base w-full md:w-auto">
+                            <option value="">不启用</option>
+                            <option value="module/index/mx_chat.html">金融社交圈</option>
+                            <option value="module/index/mx_live_stream.html">财经直播</option>
+                            <option value="module/index/mx_days.html">理财规划工具</option>
+                            <option value="module/index/mx_weather.html">市场行情分析</option>
+                            <option value="module/index/mx_matrix.html">风险评估系统</option>
+                            <option value="module/index/mx_software_custom.html">技术支持中心</option>
+                            <option value="company/assets/index.html">个人资产管理</option>
+                            <option value="module/index/mx_qrcode_page.html">数字支付助手</option>
+                            <option value="module/index/mx_task.html" selected>任务中心</option>
+                        </select>
+                        <button id="save-default-feature" class="bg-primary hover:bg-primary/90 text-dark font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+                            保存设置
+                        </button>
+                        <button id="go-to-default-feature" class="bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+                            立即跳转
+                        </button>
+                    </div>
+                </div>
+                <div id="feature-save-message" class="mt-4 text-sm text-green-600 hidden">
+                    <i class="fa fa-check-circle mr-1"></i>默认功能设置已保存
+                </div>
+            </div>
+            
+        
+        </div>
+    </section>
+
+    <!-- 页脚 - DOTA风格门户版 -->
+    <footer class="bg-dark text-white py-16 relative">
+        <!-- 装饰性顶部边框 -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- 品牌区域 -->
+                <div class="md:col-span-1">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center mr-4 gold-glow">
+                    <i class="fa fa-line-chart text-white text-2xl"></i>
+                </div>
+                <span class="text-2xl font-bold">金零社</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        专业数字金融社交平台，为个人用户提供智能金融解决方案和社交服务，助力财富增长与社交连接
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors duration-200">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors duration-200">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors duration-200">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors duration-200">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 快速链接 -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6 text-primary">快速链接</h4>
+                <ul class="space-y-3">
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors duration-200">金融服务</a></li>
+                    <li><a href="#categories" class="text-gray-400 hover:text-white transition-colors duration-200">服务中心</a></li>
+                    <li><a href="#quick-access" class="text-gray-400 hover:text-white transition-colors duration-200">社交金融服务</a></li>
+                    <li><a href="module/index/mx_contact.html" class="text-gray-400 hover:text-white transition-colors duration-200">关于我们</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">帮助中心</a></li>
+                </ul>
+                </div>
+                
+                <!-- 联系方式 -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6 text-primary">联系我们</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <i class="fa fa-envelope-o text-primary mr-3"></i>
+                        <span class="text-gray-400">contact@jinlingshe.com</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa fa-phone text-primary mr-3"></i>
+                        <span class="text-gray-400">400-888-9999</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa fa-map-marker text-primary mr-3"></i>
+                        <span class="text-gray-400">上海市浦东新区陆家嘴金融中心</span>
+                    </li>
+                </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 mb-4 md:mb-0">© 2025 金零社金融服务平台. 保留所有权利.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-gray-400 transition-colors duration-200">隐私政策</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400 transition-colors duration-200">使用条款</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400 transition-colors duration-200">Cookie设置</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 添加关键CSS内联 - 优先渲染首屏内容
+        const criticalCSS = `
+            body {
+                font-family: 'Inter', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f8fafc;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            header {
+                background-color: #0f172a;
+                color: white;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 40;
+            }
+            .hero-section {
+                padding-top: 120px;
+                padding-bottom: 80px;
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                color: white;
+            }
+        `;
+        
+        // 动态添加关键CSS
+        const styleElement = document.createElement('style');
+        styleElement.textContent = criticalCSS;
+        document.head.appendChild(styleElement);
+        
+        // 函数防抖工具
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // 获取所有功能模块数据 - 核心模块优化版
+        function getAllFeatures() {
+            return [
+                // 社交金融类 (核心业务方向)
+                {
+                    id: 'mx_chat',
+                    name: '金融社交圈',
+                    description: '连接全球金融爱好者，分享投资见解和市场动态',
+                    icon: 'fa-comments',
+                    iconBgClass: 'bg-green-100',
+                    iconColorClass: 'text-green-600',
+                    link: 'module/index/mx_chat.html',
+                    category: 'feature',
+                    type: '社交金融'
+                },
+                {
+                    id: 'mx_live_stream',
+                    name: '财经直播',
+                    description: '实时财经直播，获取专家观点和市场分析',
+                    icon: 'fa-video-camera',
+                    iconBgClass: 'bg-pink-100',
+                    iconColorClass: 'text-pink-600',
+                    link: 'module/index/mx_live_stream.html',
+                    category: 'feature',
+                    type: '社交金融'
+                },
+                // 个人金融工具类
+                {
+                    id: 'mx_days',
+                    name: '理财规划工具',
+                    description: '智能理财规划，助您实现财富增长目标',
+                    icon: 'fa-line-chart',
+                    iconBgClass: 'bg-primary/10',
+                    iconColorClass: 'text-primary',
+                    link: 'module/index/mx_days.html',
+                    category: 'feature',
+                    type: '个人金融'
+                },
+                {
+                    id: 'mx_weather',
+                    name: '市场行情分析',
+                    description: '实时金融市场行情分析，助您把握投资时机',
+                    icon: 'fa-area-chart',
+                    iconBgClass: 'bg-blue-100',
+                    iconColorClass: 'text-blue-500',
+                    link: 'module/index/mx_weather.html',
+                    category: 'feature',
+                    type: '个人金融'
+                },
+                // 技术支持服务类
+                {
+                    id: 'mx_matrix',
+                    name: '风险评估系统',
+                    description: '基于AI的风险评估系统，保障您的金融安全',
+                    icon: 'fa-shield',
+                    iconBgClass: 'bg-purple-100',
+                    iconColorClass: 'text-purple-600',
+                    link: 'module/index/mx_matrix.html',
+                    category: 'feature',
+                    type: '金融科技'
+                },
+                {
+                    id: 'mx_software_custom',
+                    name: '技术支持中心',
+                    description: '专业技术支持与咨询服务',
+                    icon: 'fa-question-circle',
+                    iconBgClass: 'bg-blue-100',
+                    iconColorClass: 'text-blue-600',
+                    link: 'module/index/mx_software_custom.html',
+                    category: 'feature',
+                    type: '技术支持'
+                },
+                // 个人资产管理
+                {
+                    id: 'company_assets',
+                    name: '个人资产管理',
+                    description: '智能个人资产管理工具，优化资产配置',
+                    icon: 'fa-pie-chart',
+                    iconBgClass: 'bg-blue-100',
+                    iconColorClass: 'text-blue-600',
+                    link: 'company/assets/index.html',
+                    category: 'feature',
+                    type: '个人金融'
+                },
+                // 金融科技创新
+                {
+                    id: 'mx_qrcode_page',
+                    name: '数字支付助手',
+                    description: '安全便捷的数字支付解决方案',
+                    icon: 'fa-credit-card',
+                    iconBgClass: 'bg-secondary/10',
+                    iconColorClass: 'text-secondary',
+                    link: 'module/index/mx_qrcode_page.html',
+                    category: 'feature',
+                    type: '金融科技'
+                },
+                // 新增任务中心
+                {
+                    id: 'mx_task',
+                    name: '任务中心',
+                    description: '执行任务获取积分，积分可兑换礼品',
+                    icon: 'fa-tasks',
+                    iconBgClass: 'bg-indigo-100',
+                    iconColorClass: 'text-indigo-600',
+                    link: 'module/index/mx_task.html',
+                    category: 'feature',
+                    type: '个人金融'
+                }
+            ];
+        }
+
+        // 创建功能卡片 - 金融主题增强版
+        function createFeatureCard(feature, index) {
+            const card = document.createElement('a');
+            card.href = feature.link;
+            card.className = 'block bg-white rounded-xl p-6 hover-scale card-shadow border border-gray-100 transition-all duration-300 opacity-0 transform translate-y-4';
+            
+            // 添加渐入动画 - 优化为有序延迟，减少随机性带来的性能波动
+            setTimeout(() => {
+                card.classList.remove('opacity-0', 'translate-y-4');
+                card.classList.add('opacity-100', 'translate-y-0');
+            }, 30 * index); // 使用索引计算延迟，保证有序且性能稳定
+            
+            // 存储页面信息，用于快速返回功能
+            card.addEventListener('click', function(e) {
+                try {
+                    localStorage.setItem('last_visited_page', feature.link);
+                    localStorage.setItem('last_visited_page_name', feature.name);
+                } catch (error) {
+                    console.warn('无法保存页面信息到localStorage:', error);
+                }
+            });
+            
+            // 验证所有必要属性存在
+            const safeIcon = feature.icon || 'fa-cog';
+            const safeIconBgClass = feature.iconBgClass || 'bg-gray-100';
+            const safeIconColorClass = feature.iconColorClass || 'text-gray-500';
+            const safeType = feature.type || '未分类';
+            const safeName = feature.name || '未命名服务';
+            const safeDescription = feature.description || '暂无描述';
+            
+            card.innerHTML = `
+                <div class="w-16 h-16 ${safeIconBgClass} rounded-full flex items-center justify-center mb-6 shadow-sm">
+                    <i class="fa ${safeIcon} ${safeIconColorClass} text-2xl"></i>
+                </div>
+                <div class="inline-block px-3 py-1 bg-gray-100 text-xs font-medium text-gray-700 rounded-full mb-4">
+                    ${safeType}
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-dark">${safeName}</h3>
+                <p class="text-gray-600 mb-6 line-clamp-2">${safeDescription}</p>
+                <div class="flex items-center text-primary font-semibold group">
+                    <span>立即体验</span>
+                    <i class="fa fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // 渲染功能模块 - 支持分类筛选和加载状态
+        function renderFeatures(filterType = '全部产品') {
+            const featuresContainer = document.getElementById('features-container');
+            
+            try {
+                // 添加加载状态
+                featuresContainer.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                        <p class="text-gray-600">加载中，请稍候...</p>
+                    </div>
+                `;
+                
+                // 移除不必要的延迟，立即执行以加快响应
+                try {
+                    const allFeatures = getAllFeatures();
+                    
+                    // 根据筛选类型过滤功能
+                    const filteredFeatures = filterType === '全部服务' 
+                        ? allFeatures 
+                        : allFeatures.filter(feature => feature.type === filterType);
+                    
+                    // 清空容器
+                    featuresContainer.innerHTML = '';
+                        
+                        // 如果没有找到功能，显示空状态
+                        if (filteredFeatures.length === 0) {
+                            featuresContainer.innerHTML = `
+                                <div class="col-span-full text-center py-12">
+                                    <div class="inline-block p-6 bg-gray-100 rounded-full mb-4">
+                                        <i class="fa fa-search text-gray-400 text-3xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">未找到相关服务</h3>
+                                    <p class="text-gray-500">请尝试选择其他分类或返回全部服务</p>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        // 显示过滤后的功能
+                        filteredFeatures.forEach((feature, index) => {
+                            const card = createFeatureCard(feature, index);
+                            // 为每张卡片添加唯一ID，方便测试和调试
+                            card.id = `feature-card-${feature.id || index}`;
+                            featuresContainer.appendChild(card);
+                        });
+                    } catch (error) {
+                        console.error('渲染功能时出错:', error);
+                        featuresContainer.innerHTML = `
+                            <div class="col-span-full text-center py-12">
+                                <div class="inline-block p-6 bg-red-50 rounded-full mb-4">
+                                    <i class="fa fa-exclamation-circle text-red-400 text-3xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">加载失败</h3>
+                                <p class="text-gray-500">请刷新页面重试</p>
+                                <button onclick="renderFeatures('${filterType.replace(/'/g, "\\'")}')" class="mt-4 bg-primary text-dark font-semibold py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+                                    重试
+                                </button>
+                            </div>
+                        `;
+                    }
+                // 移除不必要的延迟，提高响应速度
+            } catch (error) {
+                console.error('初始化渲染时出错:', error);
+                featuresContainer.innerHTML = `<div class="text-center py-12 text-gray-500">加载服务列表失败</div>`;
+            }
+        }
+        
+        // 初始化分类筛选功能
+        function initCategoryFilters() {
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新按钮样式
+                    categoryBtns.forEach(b => {
+                        b.classList.remove('bg-primary', 'text-dark');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    this.classList.add('bg-primary', 'text-dark');
+                    
+                    // 渲染对应分类的产品
+                    renderFeatures(this.textContent.trim());
+                });
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化分类筛选功能
+            initCategoryFilters();
+            
+            // 渲染功能模块
+            renderFeatures();
+            
+            // 初始化默认功能选择器
+            initDefaultFeatureSelector();
+            
+            // 检查是否需要自动跳转到默认功能
+            checkAndRedirectToDefaultFeature();
+            
+            // 默认功能保存按钮点击事件
+            document.getElementById('save-default-feature').addEventListener('click', function() {
+                const selectedFeature = document.getElementById('default-feature-selector').value;
+                localStorage.setItem('default_feature', selectedFeature);
+                
+                // 显示保存成功提示
+                const messageEl = document.getElementById('feature-save-message');
+                messageEl.classList.remove('hidden');
+                
+                // 添加动画效果
+                messageEl.classList.add('animate-pulse');
+                setTimeout(() => {
+                    messageEl.classList.remove('animate-pulse');
+                    messageEl.classList.add('hidden');
+                }, 3000);
+            });
+            
+            // 立即跳转按钮点击事件
+            document.getElementById('go-to-default-feature').addEventListener('click', function() {
+                const selectedFeature = document.getElementById('default-feature-selector').value;
+                
+                // 如果选择了功能，则立即跳转
+                if (selectedFeature) {
+                    window.location.href = selectedFeature;
+                } else {
+                    // 显示提示信息
+                    const messageEl = document.getElementById('feature-save-message');
+                    messageEl.textContent = '请先选择一个默认功能';
+                    messageEl.classList.remove('hidden', 'text-green-600');
+                    messageEl.classList.add('text-red-600', 'animate-pulse');
+                    
+                    // 3秒后恢复原来的样式
+                    setTimeout(() => {
+                        messageEl.textContent = '默认功能设置已保存';
+                        messageEl.classList.add('hidden', 'text-green-600');
+                        messageEl.classList.remove('text-red-600', 'animate-pulse');
+                    }, 3000);
+                }
+            });
+            
+            // 添加滚动进度指示器
+            addScrollProgressIndicator();
+            
+            // 优化事件监听处理
+            optimizeEventListeners();
+            
+            // 修复固定导航栏遮挡问题
+            fixHashScrolling();
+            
+            // 初始化回到顶部按钮
+            initBackToTopButton();
+            
+            // 使用requestIdleCallback延迟非关键初始化，避免阻塞主线程
+            const initNonCritical = () => {
+                // 优化图片加载
+                optimizeImages();
+                
+                // 设置性能监控
+                setupPerformanceMonitoring();
+                
+                // 事件委托处理按钮点击
+                const quickAccessSection = document.getElementById('quick-access');
+                if (quickAccessSection) {
+                    quickAccessSection.addEventListener('click', function(e) {
+                        // 保存设置按钮
+                        if (e.target.closest('#save-default-feature')) {
+                            const selectedFeature = document.getElementById('default-feature-selector').value;
+                            localStorage.setItem('default_feature', selectedFeature);
+                            
+                            // 显示保存成功提示
+                            const messageEl = document.getElementById('feature-save-message');
+                            messageEl.textContent = '默认功能设置已保存';
+                            messageEl.classList.remove('hidden', 'text-red-600');
+                            messageEl.classList.add('text-green-600', 'animate-pulse');
+                            
+                            // 使用requestAnimationFrame优化动画
+                            requestAnimationFrame(() => {
+                                setTimeout(() => {
+                                    messageEl.classList.remove('animate-pulse');
+                                    messageEl.classList.add('hidden');
+                                }, 2000); // 减少显示时间
+                            });
+                        }
+                        
+                        // 立即跳转按钮
+                        if (e.target.closest('#go-to-default-feature')) {
+                            const selectedFeature = document.getElementById('default-feature-selector').value;
+                            
+                            // 如果选择了功能，则立即跳转
+                            if (selectedFeature) {
+                                window.location.href = selectedFeature;
+                            } else {
+                                // 显示提示信息
+                                const messageEl = document.getElementById('feature-save-message');
+                                messageEl.textContent = '请先选择一个默认功能';
+                                messageEl.classList.remove('hidden', 'text-green-600');
+                                messageEl.classList.add('text-red-600', 'animate-pulse');
+                                
+                                // 2秒后恢复原来的样式
+                                requestAnimationFrame(() => {
+                                    setTimeout(() => {
+                                        messageEl.textContent = '默认功能设置已保存';
+                                        messageEl.classList.add('hidden', 'text-green-600');
+                                        messageEl.classList.remove('text-red-600', 'animate-pulse');
+                                    }, 2000);
+                                });
+                            }
+                        }
+                    });
+                }
+                
+                // 防抖处理页面可见性变化
+                const handleVisibilityChange = debounce(() => {
+                    if (document.visibilityState === 'visible') {
+                        console.log('页面重新可见');
+                        // 只在必要时刷新数据，避免不必要的重新加载
+                    }
+                }, 1000);
+                
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+            };
+            
+            // 优先执行非关键初始化
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(initNonCritical);
+            } else {
+                // 降级方案 - 延迟执行但不阻塞
+                setTimeout(initNonCritical, 100);
+            }
+        });
+        
+        // 添加缓存控制和资源优化
+        (function() {
+            // 尝试使用Service Worker进行资源缓存（如果支持）
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js').catch(error => {
+                        console.warn('Service Worker注册失败:', error);
+                    });
+                });
+            }
+        })();
+        
+        // 优化事件监听处理
+        function optimizeEventListeners() {
+            // 使用事件委托处理导航链接，减少事件监听器数量
+            const navContainer = document.querySelector('header nav');
+            if (navContainer) {
+                navContainer.addEventListener('click', function(e) {
+                    const target = e.target.closest('a');
+                    if (target && target.getAttribute('href') && target.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = target.getAttribute('href');
+                        
+                        // 防止无效的锚点
+                        if (targetId === '#') return;
+                        
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            // 考虑固定导航栏的高度
+                            const navbarHeight = 64;
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                            
+                            // 平滑滚动
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        
+        // 修复固定导航栏遮挡问题
+        function fixHashScrolling() {
+            const hash = window.location.hash;
+            if (hash) {
+                const targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    // 使用requestAnimationFrame优化滚动性能
+                    requestAnimationFrame(() => {
+                        const navbarHeight = 64;
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    });
+                }
+            }
+        }
+
+        // 初始化默认功能选择器 - 增加错误处理
+        function initDefaultFeatureSelector() {
+            try {
+                const selector = document.getElementById('default-feature-selector');
+                if (!selector) {
+                    console.warn('未找到默认功能选择器元素');
+                    return;
+                }
+                
+                let savedFeature = '';
+                try {
+                    savedFeature = localStorage.getItem('default_feature') || 'module/index/mx_task.html';
+                } catch (storageError) {
+                    console.warn('无法从localStorage获取数据:', storageError);
+                    // 默认设置为任务中心
+                    savedFeature = 'module/index/mx_task.html';
+                }
+                
+                // 设置选择器的值
+                selector.value = savedFeature;
+            } catch (error) {
+                console.error('初始化默认功能选择器时出错:', error);
+            }
+        }
+        
+        // 检查并自动跳转到默认功能
+        function checkAndRedirectToDefaultFeature() {
+            try {
+                // 检查是否是从其他页面返回到首页的情况
+                const lastVisitedPage = localStorage.getItem('last_visited_page');
+                
+                // 如果是从具体功能页面返回，不自动跳转
+                if (lastVisitedPage && lastVisitedPage !== 'index.html' && lastVisitedPage !== window.location.pathname) {
+                    // 清除最后访问页面信息
+                    localStorage.removeItem('last_visited_page');
+                    return;
+                }
+                
+                // 检查当前是否直接访问的就是index.html
+                const isDirectIndexAccess = window.location.pathname.endsWith('index.html') || 
+                                          window.location.pathname === '/' || 
+                                          window.location.pathname === '';
+                
+                // 如果不是直接访问index.html，不自动跳转
+                if (!isDirectIndexAccess) {
+                    return;
+                }
+                
+                // 获取默认功能设置
+                const defaultFeature = localStorage.getItem('default_feature');
+                
+                // 如果设置了默认功能且不是空值，则自动跳转
+                if (defaultFeature && defaultFeature !== '') {
+                    // 稍微延迟跳转，让用户能看到页面
+                    setTimeout(() => {
+                        window.location.href = defaultFeature;
+                    }, 1000);
+                } else {
+                    // 如果没有设置默认功能，设置任务中心为默认功能
+                    localStorage.setItem('default_feature', 'module/index/mx_task.html');
+                    // 延迟跳转到任务中心
+                    setTimeout(() => {
+                        window.location.href = 'module/index/mx_task.html';
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('检查并跳转到默认功能时出错:', error);
+            }
+        }
+        
+        // 添加滚动进度指示器
+        function addScrollProgressIndicator() {
+            const progressBar = document.createElement('div');
+            progressBar.id = 'scroll-progress';
+            progressBar.className = 'fixed top-0 left-0 h-1 bg-primary z-50 transition-all duration-200';
+            document.body.appendChild(progressBar);
+            
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+            });
+        }
+        
+        // 添加回到顶部按钮功能
+        function initBackToTopButton() {
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            if (backToTopButton) {
+                // 监听滚动事件
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        // 显示按钮
+                        backToTopButton.classList.remove('translate-y-20', 'opacity-0');
+                        backToTopButton.classList.add('translate-y-0', 'opacity-100');
+                    } else {
+                        // 隐藏按钮
+                        backToTopButton.classList.add('translate-y-20', 'opacity-0');
+                        backToTopButton.classList.remove('translate-y-0', 'opacity-100');
+                    }
+                });
+                
+                // 点击事件
+                backToTopButton.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        }
+        
+        // 优化图片加载
+        function optimizeImages() {
+            // 获取所有图片
+            const images = Array.from(document.querySelectorAll('img'));
+            
+            // 批量处理函数，使用requestAnimationFrame避免阻塞主线程
+            function processImagesInBatches(imagesArray, batchSize = 5, callback) {
+                let index = 0;
+                
+                function processBatch() {
+                    const batch = imagesArray.slice(index, index + batchSize);
+                    
+                    batch.forEach(img => {
+                        callback(img);
+                    });
+                    
+                    index += batchSize;
+                    
+                    if (index < imagesArray.length) {
+                        requestAnimationFrame(processBatch);
+                    }
+                }
+                
+                requestAnimationFrame(processBatch);
+            }
+            
+            // 处理函数：添加懒加载和错误处理
+            function processImage(img) {
+                // 添加延迟加载属性 - 对于现代浏览器
+                if (!img.hasAttribute('loading') && typeof img.loading !== 'undefined') {
+                    img.setAttribute('loading', 'lazy');
+                }
+                
+                // 对于不支持loading属性的浏览器，使用IntersectionObserver实现懒加载
+                if (!img.complete && !img.hasAttribute('data-lazy-processed')) {
+                    img.setAttribute('data-lazy-processed', 'true');
+                    
+                    if ('IntersectionObserver' in window) {
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    const lazyImage = entry.target;
+                                    
+                                    // 如果有data-src属性，则使用它作为实际源
+                                    if (lazyImage.hasAttribute('data-src')) {
+                                        lazyImage.src = lazyImage.getAttribute('data-src');
+                                        lazyImage.removeAttribute('data-src');
+                                    }
+                                    
+                                    observer.unobserve(lazyImage);
+                                }
+                            });
+                        }, { rootMargin: '50px' }); // 添加预加载区域
+                        
+                        observer.observe(img);
+                    }
+                }
+                
+                // 添加错误处理 - 确保不会重复添加事件监听器
+                if (!img.hasAttribute('data-error-handled')) {
+                    img.setAttribute('data-error-handled', 'true');
+                    
+                    img.addEventListener('error', function onError() {
+                        // 移除事件监听器防止重复触发
+                        img.removeEventListener('error', onError);
+                        
+                        // 使用轻量级SVG占位图替代外部图片，减少额外请求
+                        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23e2e8f0"%3E%3C/rect%3E%3Ctext x="50" y="50" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="middle" fill="%2394a3b8"%3E图片加载失败%3C/text%3E%3C/svg%3E';
+                        img.alt = '图片加载失败';
+                        
+                        // 为图片添加错误样式
+                        img.style.opacity = '0.7';
+                    });
+                }
+                
+                // 压缩图片（针对本地图片）
+                if (img.src.startsWith(window.location.origin) && !img.hasAttribute('data-optimized')) {
+                    img.setAttribute('data-optimized', 'true');
+                    
+                    // 设置合理的响应式样式
+                    img.style.maxWidth = '100%';
+                    img.style.height = 'auto';
+                }
+            }
+            
+            // 分批处理所有图片
+            processImagesInBatches(images, 5, processImage);
+        }
+        
+        // 性能监控 - 优化版
+        function setupPerformanceMonitoring() {
+            if ('performance' in window && 'measure' in window.performance) {
+                try {
+                    // 使用requestIdleCallback避免影响主线程
+                    if ('requestIdleCallback' in window) {
+                        requestIdleCallback(() => {
+                            window.addEventListener('load', function() {
+                                // 测量关键性能指标
+                                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                                const domReadyTime = performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart;
+                                console.log(`页面加载时间: ${loadTime}ms`);
+                                console.log(`DOM就绪时间: ${domReadyTime}ms`);
+                            });
+                        });
+                    } else {
+                        // 降级方案
+                        window.addEventListener('load', function() {
+                            const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                            console.log(`页面加载时间: ${loadTime}ms`);
+                        });
+                    }
+                } catch (error) {
+                    console.warn('性能监控初始化失败:', error);
+                }
+            }
+        }
+        
+        // 初始化移动导航菜单
+        function initMobileNavigation() {
+            // 检查是否已存在汉堡菜单，如果没有则创建
+            let mobileMenuButton = document.querySelector('.mobile-menu-button');
+            if (!mobileMenuButton) {
+                // 创建汉堡菜单按钮
+                mobileMenuButton = document.createElement('button');
+                mobileMenuButton.className = 'mobile-menu-button md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors';
+                mobileMenuButton.innerHTML = '<i class="fa fa-bars text-xl"></i>';
+                
+                // 将按钮添加到导航栏
+                const navContainer = document.querySelector('header nav div.flex');
+                if (navContainer) {
+                    navContainer.appendChild(mobileMenuButton);
+                }
+            }
+            
+            // 创建移动菜单容器
+            let mobileMenu = document.querySelector('.mobile-menu');
+            if (!mobileMenu) {
+                mobileMenu = document.createElement('div');
+                mobileMenu.className = 'mobile-menu hidden md:hidden absolute top-full left-0 right-0 bg-dark border-t border-gray-800 shadow-lg z-50';
+                
+                // 复制桌面导航菜单链接
+                const desktopNavLinks = document.querySelectorAll('header nav div.hidden.md\:flex a');
+                const navLinksContainer = document.createElement('div');
+                navLinksContainer.className = 'px-4 py-3 space-y-3';
+                
+                desktopNavLinks.forEach(link => {
+                    const mobileLink = document.createElement('a');
+                    mobileLink.href = link.href;
+                    mobileLink.textContent = link.textContent;
+                    mobileLink.className = 'block text-white hover:text-primary px-3 py-2 rounded-lg hover:bg-white/10 transition-colors';
+                    navLinksContainer.appendChild(mobileLink);
+                });
+                
+                mobileMenu.appendChild(navLinksContainer);
+                
+                // 将移动菜单添加到导航栏下方
+                const header = document.querySelector('header');
+                if (header) {
+                    header.appendChild(mobileMenu);
+                }
+            }
+            
+            // 添加点击事件
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                // 切换图标
+                const icon = mobileMenuButton.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.className = 'fa fa-bars text-xl';
+                } else {
+                    icon.className = 'fa fa-times text-xl';
+                }
+            });
+            
+            // 点击菜单项后关闭菜单
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                    const icon = mobileMenuButton.querySelector('i');
+                    icon.className = 'fa fa-bars text-xl';
+                });
+            });
+        }
+        
+
+    </script>
+</body>
+</html>

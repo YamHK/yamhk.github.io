@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一年签到打卡 - 累积积分赢多重奖励</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF7A00',
+                        secondary: '#3B82F6',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                        accent: '#10B981'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+            }
+            .pulse-animation {
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            .prize-badge {
+                position: relative;
+                overflow: hidden;
+            }
+            .prize-badge::after {
+                content: "新";
+                position: absolute;
+                top: -15px;
+                right: -15px;
+                width: 60px;
+                height: 60px;
+                background-color: #EF4444;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: rotate(45deg);
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+<!-- 导航栏 -->
+<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <a href="../../../index.html" class="text-primary flex items-center" onclick="saveLastVisitedPage()">
+                <i class="fa fa-connectdevelop text-2xl mr-2"></i>
+                <span class="font-bold text-xl text-dark">ev</span>
+            </a>
+        </div>
+        <div class="hidden md:flex space-x-8">
+            <a href="#about" class="text-gray-600 hover:text-primary transition-colors">活动介绍</a>
+            <a href="#rules" class="text-gray-600 hover:text-primary transition-colors">签到规则</a>
+            <a href="#rewards" class="text-gray-600 hover:text-primary transition-colors">积分奖励</a>
+            <a href="#lotteries" class="text-gray-600 hover:text-primary transition-colors">多重抽奖</a>
+            <a href="#faq" class="text-gray-600 hover:text-primary transition-colors">常见问题</a>
+        </div>
+        <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full font-medium transition-all shadow-md hover:shadow-lg hidden md:block">
+            立即参与
+        </button>
+        <button class="md:hidden text-gray-600" id="menuToggle">
+            <i class="fa fa-bars text-xl"></i>
+        </button>
+    </div>
+    <!-- 移动端菜单 -->
+    <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
+        <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+            <a href="#about" class="text-gray-600 hover:text-primary transition-colors py-2">活动介绍</a>
+            <a href="#rules" class="text-gray-600 hover:text-primary transition-colors py-2">签到规则</a>
+            <a href="#rewards" class="text-gray-600 hover:text-primary transition-colors py-2">积分奖励</a>
+            <a href="#lotteries" class="text-gray-600 hover:text-primary transition-colors py-2">多重抽奖</a>
+            <a href="#faq" class="text-gray-600 hover:text-primary transition-colors py-2">常见问题</a>
+            <button class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md hover:shadow-lg">
+                立即参与
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- 英雄区域 -->
+<header class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-blue-50 to-orange-50">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-10 md:mb-0">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-dark mb-4">
+                坚持签到打卡<br>
+                <span class="bg-gradient-to-r from-primary to-accent text-gradient">赢取多重现金奖励</span>
+            </h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-lg">
+                从2025年9月1日开始，连续签到赢积分，累积100天可抽10元现金（1000份），坚持一整年更可抽100元现金（100份）！抽奖资格统一在2026年9月1日发放。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl text-center">
+                    预约提醒
+                </button>
+                <button class="bg-white hover:bg-gray-50 text-primary border-2 border-primary px-8 py-4 rounded-full font-semibold transition-all shadow-md hover:shadow-lg text-center">
+                    了解详情
+                </button>
+            </div>
+
+            <!-- 倒计时 -->
+            <div class="mt-12 bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-lg font-semibold mb-4 text-center">距离活动开始还有</h3>
+                <div class="flex justify-center gap-4 md:gap-6" id="countdown">
+                    <div class="text-center">
+                        <div class="bg-gray-100 rounded-lg p-3 min-w-[60px]">
+                            <span class="block text-2xl md:text-3xl font-bold text-primary" id="days">00</span>
+                        </div>
+                        <span class="text-sm text-gray-500 mt-1 block">天</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gray-100 rounded-lg p-3 min-w-[60px]">
+                            <span class="block text-2xl md:text-3xl font-bold text-primary" id="hours">00</span>
+                        </div>
+                        <span class="text-sm text-gray-500 mt-1 block">时</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gray-100 rounded-lg p-3 min-w-[60px]">
+                            <span class="block text-2xl md:text-3xl font-bold text-primary" id="minutes">00</span>
+                        </div>
+                        <span class="text-sm text-gray-500 mt-1 block">分</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gray-100 rounded-lg p-3 min-w-[60px]">
+                            <span class="block text-2xl md:text-3xl font-bold text-primary" id="seconds">00</span>
+                        </div>
+                        <span class="text-sm text-gray-500 mt-1 block">秒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="md:w-1/2 relative">
+            <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                <img src="https://picsum.photos/seed/checkin/600/400" alt="签到打卡活动展示" class="w-full h-auto">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                    <div class="p-6 text-white">
+                        <p class="font-medium">连续签到，多重惊喜等你拿</p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-2xl -z-10"></div>
+            <div class="absolute -top-6 -right-6 w-32 h-32 bg-accent/20 rounded-full blur-2xl -z-10"></div>
+        </div>
+    </div>
+</header>
+
+<!-- 活动介绍 -->
+<section id="about" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">活动介绍</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">一场为期一年的签到打卡挑战，见证坚持的力量，收获三重丰厚回报</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-gray-50 rounded-xl p-6 shadow-sm card-hover">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                    <i class="fa fa-calendar text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">一年挑战</h3>
+                <p class="text-gray-600">从2025年9月1日开始，持续一整年的签到活动，培养坚持的习惯，收获时间的奖励。</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-6 shadow-sm card-hover">
+                <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mb-5">
+                    <i class="fa fa-star text-secondary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">连续奖励</h3>
+                <p class="text-gray-600">连续签到天数越多，获得的积分越多。第一天1积分，第二天2积分，以此类推，中断则重新开始计数。</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-6 shadow-sm card-hover">
+                <div class="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mb-5">
+                    <i class="fa fa-money text-accent text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">三重奖励</h3>
+                <p class="text-gray-600">积分兑换现金（10000积分=1元），累积100天抽10元（1000份），完成全年抽100元（100份）。抽奖资格统一在2026年9月1日发放。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 签到规则 -->
+<section id="rules" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">签到规则</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">简单易懂的规则，让你轻松掌握积分获取方式和抽奖资格</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="p-8">
+                <div class="flex items-start mb-8">
+                    <div class="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                        <span class="font-bold text-primary">1</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">基础积分</h3>
+                        <p class="text-gray-600">首次签到或中断后重新签到，获得1积分。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start mb-8">
+                    <div class="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                        <span class="font-bold text-primary">2</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">连续递增</h3>
+                        <p class="text-gray-600">连续签到第二天获得2积分，第三天3积分，以此类推，每天增加1积分。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start mb-8">
+                    <div class="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                        <span class="font-bold text-primary">3</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">中断重置</h3>
+                        <p class="text-gray-600">如果某天未签到，连续签到计数将重置为0，下次签到将从1积分重新开始。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start mb-8">
+                    <div class="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                        <span class="font-bold text-primary">4</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">时间范围</h3>
+                        <p class="text-gray-600">活动从2025年9月1日00:00开始，到2026年8月31日23:59结束，共计1年时间。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start mb-8">
+                    <div class="flex-shrink-0 w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center mr-4">
+                        <span class="font-bold text-secondary">5</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">100天抽奖资格</h3>
+                        <p class="text-gray-600">累积签到达到100天的用户，将在2026年9月1日统一获得10元现金抽奖资格，共1000个中奖名额。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center mr-4">
+                        <span class="font-bold text-accent">6</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">全年抽奖资格</h3>
+                        <p class="text-gray-600">完成整个活动期（365天）签到的用户，将在2026年9月1日统一获得100元现金抽奖资格，共100个中奖名额。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 border-t">
+                <div class="flex items-center">
+                    <i class="fa fa-lightbulb-o text-yellow-500 text-xl mr-3"></i>
+                    <p class="text-gray-700 font-medium">小提示：设置每日提醒，确保签到不间断，获取最大收益和全部抽奖资格！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 积分奖励 -->
+<section id="rewards" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">积分奖励展示</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">坚持的力量：连续签到的积分增长与多重回报</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <!-- 积分计算结果 -->
+            <div class="bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl p-8 shadow-sm">
+                <h3 class="text-xl font-semibold mb-6">最优情况积分计算</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <p class="text-gray-500 mb-1">活动总天数</p>
+                        <p class="text-3xl font-bold text-dark">365天</p>
+                        <p class="text-sm text-gray-500 mt-2">1年时间</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <p class="text-gray-500 mb-1">总积分（连续签到）</p>
+                        <p class="text-3xl font-bold text-primary">66,795</p>
+                        <p class="text-sm text-gray-500 mt-2">积分</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-sm md:col-span-2">
+                        <p class="text-gray-500 mb-1">可兑换金额 + 双重抽奖机会（2026年9月1日发放）</p>
+                        <p class="text-4xl font-bold text-accent">¥6.68 + 两次抽奖资格</p>
+                        <p class="text-sm text-gray-500 mt-2">按10000积分=1元计算，完成目标可获得两次抽奖资格</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h4 class="font-medium mb-4">积分计算公式</h4>
+                    <p class="text-gray-600 mb-2">连续签到n天的总积分 = 1 + 2 + 3 + ... + n</p>
+                    <p class="text-gray-600">即 = n × (n + 1) ÷ 2</p>
+                    <p class="text-gray-600 mt-4">当n=100天时，总积分 = 100 × 101 ÷ 2 = 5,050</p>
+                    <p class="text-gray-600">当n=365天时，总积分 = 365 × 366 ÷ 2 = 66,795</p>
+                </div>
+            </div>
+
+            <!-- 积分增长图表 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm">
+                <h3 class="text-xl font-semibold mb-6">积分增长趋势</h3>
+                <div class="h-[300px]">
+                    <canvas id="pointsChart"></canvas>
+                </div>
+                <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">100天后</p>
+                        <p class="font-bold text-secondary">5,050</p>
+                        <p class="text-xs text-gray-500">积分 + 未来抽奖资格</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">6个月后</p>
+                        <p class="font-bold text-primary">33,210</p>
+                        <p class="text-xs text-gray-500">积分</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">12个月后</p>
+                        <p class="font-bold text-accent">66,795</p>
+                        <p class="text-xs text-gray-500">积分 + 抽奖资格（9月1日发放）</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 月度积分示例 -->
+        <div class="mt-16">
+            <h3 class="text-xl font-semibold mb-6 text-center">连续签到积分示例</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-xl shadow-sm">
+                    <thead>
+                    <tr class="bg-gray-50 border-b">
+                        <th class="py-4 px-6 text-left text-sm font-semibold text-gray-600">连续签到天数</th>
+                        <th class="py-4 px-6 text-left text-sm font-semibold text-gray-600">当日积分</th>
+                        <th class="py-4 px-6 text-left text-sm font-semibold text-gray-600">累计积分</th>
+                        <th class="py-4 px-6 text-left text-sm font-semibold text-gray-600">可兑换金额</th>
+                        <th class="py-4 px-6 text-left text-sm font-semibold text-gray-600">抽奖资格（2026年9月1日发放）</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-6 text-sm">第1天</td>
+                        <td class="py-3 px-6 text-sm">1</td>
+                        <td class="py-3 px-6 text-sm">1</td>
+                        <td class="py-3 px-6 text-sm">¥0.00</td>
+                        <td class="py-3 px-6 text-sm">-</td>
+                    </tr>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-6 text-sm">第30天</td>
+                        <td class="py-3 px-6 text-sm">30</td>
+                        <td class="py-3 px-6 text-sm">465</td>
+                        <td class="py-3 px-6 text-sm">¥0.05</td>
+                        <td class="py-3 px-6 text-sm">-</td>
+                    </tr>
+                    <tr class="border-b hover:bg-gray-50 bg-secondary/5">
+                        <td class="py-3 px-6 text-sm font-medium">第100天</td>
+                        <td class="py-3 px-6 text-sm font-medium">100</td>
+                        <td class="py-3 px-6 text-sm font-medium">5,050</td>
+                        <td class="py-3 px-6 text-sm font-medium">¥0.51</td>
+                        <td class="py-3 px-6 text-sm font-medium text-secondary">10元抽奖（待发放）</td>
+                    </tr>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-6 text-sm">第200天</td>
+                        <td class="py-3 px-6 text-sm">200</td>
+                        <td class="py-3 px-6 text-sm">20,100</td>
+                        <td class="py-3 px-6 text-sm">¥2.01</td>
+                        <td class="py-3 px-6 text-sm">10元抽奖（待发放）</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 bg-accent/5">
+                        <td class="py-3 px-6 text-sm font-medium">第365天</td>
+                        <td class="py-3 px-6 text-sm font-medium">365</td>
+                        <td class="py-3 px-6 text-sm font-medium">66,795</td>
+                        <td class="py-3 px-6 text-sm font-medium">¥6.68</td>
+                        <td class="py-3 px-6 text-sm font-medium text-accent">10元+100元抽奖（9月1日发放）</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 多重抽奖 -->
+<section id="lotteries" class="py-16 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute top-1/4 left-10 w-60 h-60 bg-secondary/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-10 w-60 h-60 bg-accent/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">特别奖励</span>
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">多重抽奖活动</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">达成不同阶段目标，抽奖资格统一在2026年9月1日发放</p>
+        </div>
+
+        <div class="max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- 100天抽奖 -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden pulse-animation prize-badge">
+                    <div class="md:flex">
+                        <div class="md:w-1/2 bg-gradient-to-br from-secondary to-blue-500 p-8 text-white flex flex-col justify-center">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-4">10元现金大奖</h3>
+                            <p class="mb-6 opacity-90">累积签到100天即可获得资格</p>
+                            <div class="flex items-center space-x-2">
+                                <i class="fa fa-trophy text-yellow-300 text-xl"></i>
+                                <span>1000个获奖名额</span>
+                            </div>
+                        </div>
+                        <div class="md:w-1/2 p-8">
+                            <h4 class="text-xl font-semibold mb-4">抽奖规则</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>累积签到达到100天的用户，将于2026年9月1日统一获得抽奖资格</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>2026年9月10日系统将随机抽取1000名幸运用户</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>中奖者将获得10元现金奖励，直接发放至账户</span>
+                                </li>
+                            </ul>
+                            <div class="mt-6 pt-6 border-t">
+                                <p class="text-gray-500 text-sm">* 抽奖结果将在抽奖日起3个工作日内公布</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 全年抽奖 -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden pulse-animation">
+                    <div class="md:flex">
+                        <div class="md:w-1/2 bg-gradient-to-br from-primary to-orange-500 p-8 text-white flex flex-col justify-center">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-4">100元现金大奖</h3>
+                            <p class="mb-6 opacity-90">完成全年365天签到即可获得资格</p>
+                            <div class="flex items-center space-x-2">
+                                <i class="fa fa-trophy text-yellow-300 text-xl"></i>
+                                <span>100个获奖名额</span>
+                            </div>
+                        </div>
+                        <div class="md:w-1/2 p-8">
+                            <h4 class="text-xl font-semibold mb-4">抽奖规则</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>活动结束时，完成365天签到的用户，将于2026年9月1日统一获得抽奖资格</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>2026年9月10日系统将随机抽取100名幸运用户</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>中奖者将获得100元现金奖励，直接发放至账户</span>
+                                </li>
+                            </ul>
+                            <div class="mt-6 pt-6 border-t">
+                                <p class="text-gray-500 text-sm">* 抽奖结果将在抽奖日起3个工作日内公布</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-white rounded-xl p-6 shadow-md">
+                <div class="flex flex-col md:flex-row items-start md:items-center">
+                    <div class="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 mb-4 md:mb-0">
+                        <i class="fa fa-info text-primary"></i>
+                    </div>
+                    <p class="text-gray-700">所有符合条件的用户抽奖资格将在2026年9月1日统一发放，同一用户可同时获得两种抽奖资格，有机会赢取两份现金奖励。即使未中奖，累积的积分仍然可以按照10000积分=1元的比例兑换现金或等值礼品。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 参与方式 -->
+<section class="py-16 bg-gradient-to-br from-primary/10 to-accent/10">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">如何参与</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">简单三步，开启你的一年签到之旅，赢取多重奖励</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl p-8 text-center shadow-sm card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">注册账号</h3>
+                    <p class="text-gray-600">活动开始前，注册并完善个人信息，设置提醒功能</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-8 text-center shadow-sm card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">每日签到</h3>
+                    <p class="text-gray-600">活动开始后，每天登录平台完成签到，累积天数</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-8 text-center shadow-sm card-hover">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">获取奖励</h3>
+                    <p class="text-gray-600">累积积分兑换现金，2026年9月1日获取抽奖资格</p>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <button class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl text-lg">
+                    立即预约活动 <i class="fa fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 常见问题 -->
+<section id="faq" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">常见问题</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">解答你可能有的疑问</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+            <div class="space-y-4">
+                <!-- FAQ 项目 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span class="font-medium">活动具体从什么时候开始和结束？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 border-t bg-white">
+                        <p class="text-gray-600">活动从2025年9月1日00:00开始，到2026年8月31日23:59结束，共计1年时间，总天数为365天。</p>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span class="font-medium">抽奖资格什么时候发放？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 border-t bg-white">
+                        <p class="text-gray-600">所有符合条件的用户抽奖资格将在2026年9月1日统一发放。这包括：累积签到达到100天的用户将获得10元现金抽奖资格；完成全部365天签到的用户将获得100元现金抽奖资格。两种资格可同时获得。</p>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span class="font-medium">抽奖和结果公布的时间是什么时候？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 border-t bg-white">
+                        <p class="text-gray-600">两种抽奖将在2026年9月10日同时进行，针对已在9月1日发放资格的用户。抽奖结果将在3个工作日内公布，中奖用户的现金奖励将在结果公布后的7个工作日内自动发放至用户账户。</p>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span class="font-medium">如果中途中断签到，会影响抽奖资格吗？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 border-t bg-white">
+                        <p class="text-gray-600">中断签到会影响连续积分增长，但不会影响累积签到天数统计。只要在活动期间累积签到达到100天，即可在2026年9月1日获得10元抽奖资格；只要最终完成365天签到（无论是否连续），即可获得100元抽奖资格。</p>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span class="font-medium">积分可以随时兑换吗？有有效期吗？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 border-t bg-white">
+                        <p class="text-gray-600">是的，积分可以随时兑换，10000积分兑换1元现金或等值礼品。活动期间积分长期有效，活动结束后积分将保留3个月的兑换期，逾期未兑换的积分将自动清零。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="bg-dark text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center space-x-2 mb-6">
+                    <i class="fa fa-calendar-check-o text-primary text-2xl"></i>
+                    <span class="font-bold text-xl">一年签到计划</span>
+                </div>
+                <p class="text-gray-400 mb-6">坚持签到，收获积分兑换现金，更有双重抽奖机会赢取额外现金奖励。抽奖资格统一在2026年9月1日发放。</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-weixin text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-weibo text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-qq text-xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-lg mb-6">快速链接</h4>
+                <ul class="space-y-3">
+                    <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">活动介绍</a></li>
+                    <li><a href="#rules" class="text-gray-400 hover:text-white transition-colors">签到规则</a></li>
+                    <li><a href="#rewards" class="text-gray-400 hover:text-white transition-colors">积分奖励</a></li>
+                    <li><a href="#lotteries" class="text-gray-400 hover:text-white transition-colors">多重抽奖</a></li>
+                    <li><a href="#faq" class="text-gray-400 hover:text-white transition-colors">常见问题</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-lg mb-6">联系我们</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <i class="fa fa-envelope-o text-primary mr-3"></i>
+                        <a href="mailto:support@example.com" class="text-gray-400 hover:text-white transition-colors">support@example.com</a>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa fa-phone text-primary mr-3"></i>
+                        <a href="tel:4001234567" class="text-gray-400 hover:text-white transition-colors">400-123-4567</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-lg mb-6">订阅通知</h4>
+                <p class="text-gray-400 mb-4">活动开始前获取提醒，不错过任何机会</p>
+                <form class="flex">
+                    <input type="email" placeholder="你的邮箱地址" class="px-4 py-2 rounded-l-lg w-full focus:outline-none text-gray-800">
+                    <button type="submit" class="bg-primary hover:bg-primary/90 px-4 py-2 rounded-r-lg transition-colors">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+            <p>© 2025 一年签到计划 版权所有</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // 保存最后访问的页面信息
+    function saveLastVisitedPage() {
+        const currentPage = window.location.href;
+        const currentPageName = "签到系统";
+        localStorage.setItem('last_visited_page', currentPage);
+        localStorage.setItem('last_visited_page_name', currentPageName);
+    }
+
+    // 移动端菜单切换
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('py-2', 'shadow');
+            navbar.classList.remove('py-3');
+        } else {
+            navbar.classList.add('py-3');
+            navbar.classList.remove('py-2', 'shadow');
+        }
+    });
+
+    // FAQ 折叠功能
+    document.querySelectorAll('.faq-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('i');
+
+            // 切换当前FAQ的显示状态
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+
+            // 关闭其他打开的FAQ
+            document.querySelectorAll('.faq-toggle').forEach(otherToggle => {
+                if (otherToggle !== toggle) {
+                    otherToggle.nextElementSibling.classList.add('hidden');
+                    otherToggle.querySelector('i').classList.remove('rotate-180');
+                }
+            });
+        });
+    });
+
+    // 倒计时功能
+    function updateCountdown() {
+        const eventDate = new Date('2025-09-01T00:00:00');
+        const now = new Date();
+        const diff = eventDate - now;
+
+        if (diff <= 0) {
+            document.getElementById('days').textContent = '00';
+            document.getElementById('hours').textContent = '00';
+            document.getElementById('minutes').textContent = '00';
+            document.getElementById('seconds').textContent = '00';
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+    }
+
+    // 初始化倒计时并每秒更新
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // 积分增长图表
+    const ctx = document.getElementById('pointsChart').getContext('2d');
+    const pointsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['开始', '1个月', '2个月', '3个月', '100天', '6个月', '9个月', '12个月'],
+            datasets: [{
+                label: '累计积分',
+                data: [0, 496, 1953, 13980, 5050, 33210, 50550, 66795],
+                borderColor: '#FF7A00',
+                backgroundColor: 'rgba(255, 122, 0, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `积分: ${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            if (value >= 1000) {
+                                return value / 1000 + 'k';
+                            }
+                            return value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+
+                // 关闭移动菜单（如果打开）
+                document.getElementById('mobileMenu').classList.add('hidden');
+            }
+        });
+    });
+</script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html>

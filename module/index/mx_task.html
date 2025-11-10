@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务中心 - 执行任务赢取积分</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                        accent: '#8B5CF6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+            }
+            .pulse-animation {
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+<!-- 导航栏 -->
+<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <a href="../../../index.html" class="text-primary flex items-center" onclick="saveLastVisitedPage()">
+                <i class="fa fa-tasks text-2xl mr-2"></i>
+                <span class="font-bold text-xl text-dark">任务中心</span>
+            </a>
+        </div>
+        <div class="hidden md:flex space-x-8">
+            <a href="#tasks" class="text-gray-600 hover:text-primary transition-colors">任务列表</a>
+            <a href="#repository" class="text-gray-600 hover:text-primary transition-colors">网址库</a>
+            <a href="#points" class="text-gray-600 hover:text-primary transition-colors">我的积分</a>
+        </div>
+        <button class="md:hidden text-gray-600" id="menuToggle">
+            <i class="fa fa-bars text-xl"></i>
+        </button>
+    </div>
+    <!-- 移动端菜单 -->
+    <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
+        <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+            <a href="#tasks" class="text-gray-600 hover:text-primary transition-colors py-2">任务列表</a>
+            <a href="#repository" class="text-gray-600 hover:text-primary transition-colors py-2">网址库</a>
+            <a href="#points" class="text-gray-600 hover:text-primary transition-colors py-2">我的积分</a>
+        </div>
+    </div>
+</nav>
+
+<!-- 英雄区域 -->
+<header class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-blue-50 to-purple-50">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-10 md:mb-0">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-dark mb-4">
+                执行任务<br>
+                <span class="bg-gradient-to-r from-primary to-accent text-gradient">赢取积分奖励</span>
+            </h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-lg">
+                完成各种任务，获取积分奖励。积分可兑换礼品，本地存储，无需服务器交互。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button onclick="scrollToSection('tasks')" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl text-center">
+                    开始任务
+                </button>
+                <button onclick="scrollToSection('repository')" class="bg-white hover:bg-gray-50 text-primary border-2 border-primary px-8 py-4 rounded-full font-semibold transition-all shadow-md hover:shadow-lg text-center">
+                    网址库
+                </button>
+                <a href="mx_chat.html?target=china" class="bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl text-center flex items-center justify-center">
+                    <i class="fa fa-comments mr-2"></i> 区域交流
+                </a>
+            </div>
+        </div>
+        <div class="md:w-1/2 relative">
+            <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                <img src="https://picsum.photos/seed/tasks/600/400" alt="任务中心展示" class="w-full h-auto">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                    <div class="p-6 text-white">
+                        <p class="font-medium">完成任务，轻松赚取积分</p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-2xl -z-10"></div>
+            <div class="absolute -top-6 -right-6 w-32 h-32 bg-accent/20 rounded-full blur-2xl -z-10"></div>
+        </div>
+    </div>
+</header>
+
+<!-- 任务列表 -->
+<section id="tasks" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">任务列表</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">完成以下任务获取积分奖励</p>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+            <div id="taskList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 任务项将通过JavaScript动态加载 -->
+                <p class="text-gray-500 text-center col-span-full py-8">加载中...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 网址库 -->
+<section id="repository" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">网址库</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">快速访问常用网站</p>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-8">
+                <div class="flex flex-wrap gap-2">
+                    <button class="category-btn active" data-category="all">全部</button>
+                    <button class="category-btn" data-category="development">开发</button>
+                    <button class="category-btn" data-category="entertainment">娱乐</button>
+                    <button class="category-btn" data-category="search_engines">搜索引擎</button>
+                </div>
+            </div>
+
+            <div id="urlRepository" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 网址项将通过JavaScript动态加载 -->
+                <p class="text-gray-500 text-center col-span-full py-8">加载中...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 我的积分 -->
+<section id="points" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">我的积分</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">查看当前积分余额和积分获取记录</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gradient-to-br from-primary/10 to-blue-100 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-star text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">当前积分</p>
+                            <p class="text-2xl font-bold text-dark" id="currentPoints">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-secondary/10 to-green-100 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-trophy text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">已完成任务</p>
+                            <p class="text-2xl font-bold text-dark" id="completedTasks">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-accent/10 to-purple-100 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-gift text-accent text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">可兑换奖励</p>
+                            <p class="text-2xl font-bold text-dark" id="redeemableRewards">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="mx_points_detail.html" class="inline-block bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl">
+                    查看积分详情
+                </a>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm mt-8">
+                <h3 class="text-xl font-semibold mb-4">积分获取记录</h3>
+                <div id="pointsHistory" class="space-y-3">
+                    <p class="text-gray-500 text-center py-8">暂无积分获取记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="bg-dark text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center space-x-2 mb-6">
+                    <i class="fa fa-tasks text-primary text-2xl"></i>
+                    <span class="font-bold text-xl">任务中心</span>
+                </div>
+                <p class="text-gray-400 mb-6">完成任务获取积分，积分本地存储，无需服务器交互。</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-weixin text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-weibo text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-qq text-xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-lg mb-6">快速链接</h4>
+                <ul class="space-y-3">
+                    <li><a href="#tasks" class="text-gray-400 hover:text-white transition-colors">任务列表</a></li>
+                    <li><a href="#repository" class="text-gray-400 hover:text-white transition-colors">网址库</a></li>
+                    <li><a href="#points" class="text-gray-400 hover:text-white transition-colors">我的积分</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-lg mb-6">联系我们</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <i class="fa fa-envelope-o text-primary mr-3"></i>
+                        <a href="mailto:support@example.com" class="text-gray-400 hover:text-white transition-colors">support@example.com</a>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa fa-phone text-primary mr-3"></i>
+                        <a href="tel:4001234567" class="text-gray-400 hover:text-white transition-colors">400-123-4567</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-lg mb-6">积分说明</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li>• 完成任务获得积分</li>
+                    <li>• 积分本地存储</li>
+                    <li>• 无需服务器交互</li>
+                    <li>• 可兑换礼品</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+            <p>© 2025 任务中心 版权所有</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // 保存最后访问的页面信息
+    function saveLastVisitedPage() {
+        const currentPage = window.location.href;
+        const currentPageName = "任务中心";
+        localStorage.setItem('last_visited_page', currentPage);
+        localStorage.setItem('last_visited_page_name', currentPageName);
+    }
+
+    // 移动端菜单切换
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('py-2', 'shadow');
+            navbar.classList.remove('py-3');
+        } else {
+            navbar.classList.add('py-3');
+            navbar.classList.remove('py-2', 'shadow');
+        }
+    });
+
+    // 平滑滚动到指定区域
+    function scrollToSection(sectionId) {
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            scrollToSection(targetId);
+            
+            // 关闭移动菜单（如果打开）
+            document.getElementById('mobileMenu').classList.add('hidden');
+        });
+    });
+
+    // 积分系统
+    class PointSystem {
+        constructor() {
+            this.points = 0;
+            this.completedTasks = 0;
+            this.pointsHistory = [];
+            this.loadFromLocalStorage();
+        }
+
+        // 从本地存储加载积分数据
+        loadFromLocalStorage() {
+            try {
+                const savedPoints = localStorage.getItem('taskPoints');
+                const savedTasks = localStorage.getItem('completedTasks');
+                const savedHistory = localStorage.getItem('pointsHistory');
+                
+                if (savedPoints) this.points = parseInt(savedPoints);
+                if (savedTasks) this.completedTasks = parseInt(savedTasks);
+                if (savedHistory) this.pointsHistory = JSON.parse(savedHistory);
+            } catch (e) {
+                console.error('加载积分数据失败:', e);
+            }
+        }
+
+        // 保存积分数据到本地存储
+        saveToLocalStorage() {
+            try {
+                localStorage.setItem('taskPoints', this.points.toString());
+                localStorage.setItem('completedTasks', this.completedTasks.toString());
+                localStorage.setItem('pointsHistory', JSON.stringify(this.pointsHistory));
+            } catch (e) {
+                console.error('保存积分数据失败:', e);
+            }
+        }
+
+        // 添加积分
+        addPoints(points, taskName) {
+            this.points += points;
+            this.completedTasks++;
+            
+            // 记录积分获取历史
+            this.pointsHistory.unshift({
+                id: Date.now(),
+                taskName: taskName,
+                points: points,
+                timestamp: new Date().toISOString()
+            });
+            
+            // 只保留最近50条记录
+            if (this.pointsHistory.length > 50) {
+                this.pointsHistory = this.pointsHistory.slice(0, 50);
+            }
+            
+            this.saveToLocalStorage();
+            this.updateUI();
+        }
+
+        // 更新UI显示
+        updateUI() {
+            document.getElementById('currentPoints').textContent = this.points;
+            document.getElementById('completedTasks').textContent = this.completedTasks;
+            document.getElementById('redeemableRewards').textContent = Math.floor(this.points / 100);
+            
+            // 更新积分历史
+            this.updatePointsHistory();
+        }
+
+        // 更新积分历史显示
+        updatePointsHistory() {
+            const historyContainer = document.getElementById('pointsHistory');
+            if (this.pointsHistory.length === 0) {
+                historyContainer.innerHTML = '<p class="text-gray-500 text-center py-8">暂无积分获取记录</p>';
+                return;
+            }
+            
+            let historyHTML = '';
+            this.pointsHistory.forEach(record => {
+                const date = new Date(record.timestamp);
+                const formattedDate = `${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                
+                historyHTML += `
+                <div class="flex items-center justify-between p-4 bg-white rounded-lg border">
+                    <div>
+                        <p class="font-medium">${record.taskName}</p>
+                        <p class="text-sm text-gray-500">${formattedDate}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold text-secondary">+${record.points}</p>
+                    </div>
+                </div>
+                `;
+            });
+            
+            historyContainer.innerHTML = historyHTML;
+        }
+    }
+
+    // 任务系统
+    class TaskSystem {
+        constructor(pointSystem) {
+            this.pointSystem = pointSystem;
+            this.tasks = [];
+            this.urlRepository = {};
+            this.loadTaskConfig();
+        }
+
+        // 加载任务配置
+        async loadTaskConfig() {
+            try {
+                // 在实际项目中，这里会从agent/data/task_config.json加载配置
+                // 由于跨域限制，我们在这里直接定义任务数据
+                const taskConfig = {
+                    "tasks": [
+                        {
+                            "id": "open_gitee",
+                            "name": "打开Gitee",
+                            "type": "open_browser",
+                            "parameters": {
+                                "url": "https://gitee.com"
+                            },
+                            "enabled": true,
+                            "description": "在浏览器中打开Gitee码云网站",
+                            "points": 10
+                        },
+                        {
+                            "id": "open_baidu",
+                            "name": "打开百度",
+                            "type": "open_browser",
+                            "parameters": {
+                                "url": "https://www.baidu.com"
+                            },
+                            "enabled": true,
+                            "description": "在浏览器中打开百度搜索引擎",
+                            "points": 10
+                        },
+                        {
+                            "id": "open_cnblogs",
+                            "name": "打开博客园",
+                            "type": "open_browser",
+                            "parameters": {
+                                "url": "https://www.cnblogs.com"
+                            },
+                            "enabled": true,
+                            "description": "在浏览器中打开博客园开发者社区",
+                            "points": 15
+                        },
+                        {
+                            "id": "open_bilibili",
+                            "name": "打开哔哩哔哩",
+                            "type": "open_browser",
+                            "parameters": {
+                                "url": "https://www.bilibili.com"
+                            },
+                            "enabled": true,
+                            "description": "在浏览器中打开哔哩哔哩视频网站",
+                            "points": 15
+                        },
+                        {
+                            "id": "open_taobao",
+                            "name": "打开淘宝",
+                            "type": "open_browser",
+                            "parameters": {
+                                "url": "https://www.taobao.com"
+                            },
+                            "enabled": true,
+                            "description": "在浏览器中打开淘宝购物网站",
+                            "points": 10
+                        }
+                    ],
+                    "url_repository": {
+                        "development": [
+                            {
+                                "name": "Gitee",
+                                "url": "https://gitee.com",
+                                "description": "国内知名代码托管平台"
+                            },
+                            {
+                                "name": "博客园",
+                                "url": "https://www.cnblogs.com",
+                                "description": "开发者技术博客社区"
+                            },
+                            {
+                                "name": "CSDN",
+                                "url": "https://www.csdn.net",
+                                "description": "专业IT技术社区"
+                            }
+                        ],
+                        "entertainment": [
+                            {
+                                "name": "哔哩哔哩",
+                                "url": "https://www.bilibili.com",
+                                "description": "年轻人的潮流文化娱乐社区"
+                            },
+                            {
+                                "name": "腾讯视频",
+                                "url": "https://v.qq.com",
+                                "description": "在线视频播放平台"
+                            }
+                        ],
+                        "search_engines": [
+                            {
+                                "name": "百度",
+                                "url": "https://www.baidu.com",
+                                "description": "全球最大的中文搜索引擎"
+                            },
+                            {
+                                "name": "搜狗",
+                                "url": "https://www.sogou.com",
+                                "description": "国内主流搜索引擎"
+                            }
+                        ]
+                    }
+                };
+                
+                this.tasks = taskConfig.tasks;
+                this.urlRepository = taskConfig.url_repository;
+                
+                this.renderTasks();
+                this.renderUrlRepository();
+            } catch (error) {
+                console.error('加载任务配置失败:', error);
+                document.getElementById('taskList').innerHTML = '<p class="text-red-500 text-center col-span-full py-8">加载任务配置失败，请刷新页面重试</p>';
+            }
+        }
+
+        // 渲染任务列表
+        renderTasks() {
+            const taskListContainer = document.getElementById('taskList');
+            if (this.tasks.length === 0) {
+                taskListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">暂无任务</p>';
+                return;
+            }
+            
+            let tasksHTML = '';
+            this.tasks.forEach(task => {
+                if (!task.enabled) return;
+                
+                tasksHTML += `
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-external-link text-primary"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-semibold mb-2">${task.name}</h3>
+                            <p class="text-gray-600 text-sm mb-4">${task.description}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="inline-block px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-medium">
+                                    +${task.points} 积分
+                                </span>
+                                <button onclick="taskSystem.executeTask('${task.id}')" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                    执行任务
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+            
+            taskListContainer.innerHTML = tasksHTML;
+        }
+
+        // 渲染网址库
+        renderUrlRepository() {
+            const repoContainer = document.getElementById('urlRepository');
+            let urlsHTML = '';
+            
+            // 收集所有网址
+            const allUrls = [];
+            for (const category in this.urlRepository) {
+                this.urlRepository[category].forEach(url => {
+                    allUrls.push({
+                        ...url,
+                        category: category
+                    });
+                });
+            }
+            
+            if (allUrls.length === 0) {
+                repoContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">暂无网址</p>';
+                return;
+            }
+            
+            allUrls.forEach(url => {
+                urlsHTML += `
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-link text-accent"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-semibold mb-1">${url.name}</h3>
+                            <p class="text-gray-500 text-sm mb-3">${url.description}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                                    ${url.category}
+                                </span>
+                                <a href="${url.url}" target="_blank" class="bg-accent hover:bg-accent/90 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition-colors">
+                                    访问网站
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+            
+            repoContainer.innerHTML = urlsHTML;
+            
+            // 绑定分类筛选事件
+            this.bindCategoryFilter();
+        }
+
+        // 绑定分类筛选事件
+        bindCategoryFilter() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 更新激活状态
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const category = button.getAttribute('data-category');
+                    this.filterUrlsByCategory(category);
+                });
+            });
+        }
+
+        // 按分类筛选网址
+        filterUrlsByCategory(category) {
+            const repoContainer = document.getElementById('urlRepository');
+            let urlsHTML = '';
+            
+            if (category === 'all') {
+                // 显示所有网址
+                const allUrls = [];
+                for (const cat in this.urlRepository) {
+                    this.urlRepository[cat].forEach(url => {
+                        allUrls.push({
+                            ...url,
+                            category: cat
+                        });
+                    });
+                }
+                
+                allUrls.forEach(url => {
+                    urlsHTML += `
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fa fa-link text-accent"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-semibold mb-1">${url.name}</h3>
+                                <p class="text-gray-500 text-sm mb-3">${url.description}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                                        ${url.category}
+                                    </span>
+                                    <a href="${url.url}" target="_blank" class="bg-accent hover:bg-accent/90 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition-colors">
+                                        访问网站
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+            } else {
+                // 只显示指定分类的网址
+                const urls = this.urlRepository[category] || [];
+                if (urls.length === 0) {
+                    urlsHTML = '<p class="text-gray-500 text-center col-span-full py-8">该分类下暂无网址</p>';
+                } else {
+                    urls.forEach(url => {
+                        urlsHTML += `
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa fa-link text-accent"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h3 class="text-lg font-semibold mb-1">${url.name}</h3>
+                                    <p class="text-gray-500 text-sm mb-3">${url.description}</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                                            ${category}
+                                        </span>
+                                        <a href="${url.url}" target="_blank" class="bg-accent hover:bg-accent/90 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition-colors">
+                                            访问网站
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                }
+            }
+            
+            repoContainer.innerHTML = urlsHTML;
+        }
+
+        // 执行任务
+        executeTask(taskId) {
+            const task = this.tasks.find(t => t.id === taskId);
+            if (!task) {
+                alert('任务未找到');
+                return;
+            }
+            
+            // 检查任务类型
+            if (task.type === 'open_browser') {
+                // 打开网页
+                window.open(task.parameters.url, '_blank');
+                
+                // 添加积分
+                this.pointSystem.addPoints(task.points, task.name);
+                
+                // 显示成功提示
+                this.showSuccessMessage(`任务"${task.name}"已完成，获得${task.points}积分！`);
+            } else {
+                alert('不支持的任务类型');
+            }
+        }
+
+        // 显示成功消息
+        showSuccessMessage(message) {
+            // 创建消息元素
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-20 right-4 bg-white shadow-lg rounded-lg p-4 border-l-4 border-secondary z-50';
+            messageEl.innerHTML = `
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fa fa-check-circle text-secondary text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">任务完成</p>
+                        <p class="text-sm text-gray-500">${message}</p>
+                    </div>
+                </div>
+            `;
+            
+            // 添加到页面
+            document.body.appendChild(messageEl);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                messageEl.remove();
+            }, 3000);
+        }
+    }
+
+    // 初始化系统
+    let pointSystem;
+    let taskSystem;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 初始化积分系统
+        pointSystem = new PointSystem();
+        pointSystem.updateUI();
+        
+        // 初始化任务系统
+        taskSystem = new TaskSystem(pointSystem);
+        
+        // 初始化ESC键监听
+        if (typeof initGlobalEscapeKeyListener === 'function') {
+            initGlobalEscapeKeyListener();
+        }
+    });
+
+    // 暴露到全局作用域
+    window.taskSystem = taskSystem;
+    window.scrollToSection = scrollToSection;
+</script>
+
+<script src="../../js/global_escape_listener.js"></script>
+</body>
+</html>

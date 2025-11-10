@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资产使用记录 - 固定资产管理系统</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #1890ff;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .header a:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .tab-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        select {
+            cursor: pointer;
+        }
+        button {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #40a9ff;
+        }
+        .btn-secondary {
+            background-color: #52c41a;
+        }
+        .btn-secondary:hover {
+            background-color: #73d13d;
+        }
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+        .btn-danger:hover {
+            background-color: #ff7875;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-group button {
+            flex: 1;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-container input {
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        th {
+            background-color: #fafafa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #fafafa;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .alert-success {
+            background-color: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+        .alert-error {
+            background-color: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+        .hidden {
+            display: none;
+        }
+        .export-btn {
+            margin-top: 20px;
+        }
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .date-filter input {
+            flex: 1;
+            max-width: 200px;
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-active {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        .status-returned {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border: 1px solid #91d5ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>资产使用记录</h1>
+            <div>
+                <a href="index.html" style="margin-right: 10px;">返回资管首页</a>
+                <a href="fixed_asset.html">固定资产管理</a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab" onclick="switchTab(0)">添加使用记录</button>
+            <button class="tab active" onclick="switchTab(1)">记录查询</button>
+        </div>
+
+        <!-- 添加使用记录表单 -->
+        <div class="tab-content" id="tab0">
+            <div class="form-container">
+                <h3>资产借用/归还记录</h3>
+                <div id="alertMessage" class="alert hidden"></div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assetCodeSelect">资产编码 <span style="color: red;">*</span></label>
+                        <select id="assetCodeSelect" onchange="onAssetSelectChange()">
+                            <option value="">请选择资产编码</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assetNameDisplay">资产名称</label>
+                        <input type="text" id="assetNameDisplay" readonly>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recordType">记录类型 <span style="color: red;">*</span></label>
+                        <select id="recordType">
+                            <option value="borrow">借用</option>
+                            <option value="return">归还</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordDate">记录日期 <span style="color: red;">*</span></label>
+                        <input type="date" id="recordDate">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="userName">使用人 <span style="color: red;">*</span></label>
+                        <input type="text" id="userName" placeholder="请输入使用人姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="userDepartment">使用部门 <span style="color: red;">*</span></label>
+                        <select id="userDepartment">
+                            <option value="">请选择使用部门</option>
+                            <option value="财务部">财务部</option>
+                            <option value="技术部">技术部</option>
+                            <option value="行政部">行政部</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expectedReturnDate">预计归还日期</label>
+                        <input type="date" id="expectedReturnDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="actualReturnDate">实际归还日期</label>
+                        <input type="date" id="actualReturnDate">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="usagePurpose">使用用途</label>
+                        <input type="text" id="usagePurpose" placeholder="请输入使用用途">
+                    </div>
+                    <div class="form-group">
+                        <label for="remark">备注</label>
+                        <input type="text" id="remark" placeholder="请输入备注信息">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="saveUsageRecord()">保存记录</button>
+                    <button type="button" onclick="resetForm()">重置表单</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 记录查询表格 -->
+        <div class="tab-content active" id="tab1">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="搜索资产编码或使用人">
+                <select id="statusFilter">
+                    <option value="">全部状态</option>
+                    <option value="active">使用中</option>
+                    <option value="returned">已归还</option>
+                </select>
+                <button onclick="searchRecords()">搜索</button>
+                <button type="button" onclick="clearSearch()">清除</button>
+            </div>
+
+            <div class="date-filter">
+                <input type="date" id="startDate" placeholder="开始日期">
+                <input type="date" id="endDate" placeholder="结束日期">
+                <button onclick="filterByDate()">日期筛选</button>
+            </div>
+
+            <table id="usageRecordsTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>资产编码</th>
+                        <th>资产名称</th>
+                        <th>记录类型</th>
+                        <th>记录日期</th>
+                        <th>使用人</th>
+                        <th>使用部门</th>
+                        <th>预计归还</th>
+                        <th>实际归还</th>
+                        <th>使用用途</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="usageRecordsTableBody">
+                    <!-- 数据将通过JavaScript动态生成 -->
+                </tbody>
+            </table>
+
+            <div class="btn-group">
+                <button class="btn-secondary export-btn" onclick="exportRecords()">导出记录</button>
+                <button class="btn-danger export-btn" onclick="deleteSelectedRecords()">删除选中记录</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 使用记录数据结构：
+        // {
+        //   id: 唯一标识
+        //   assetCode: 资产编码
+        //   assetName: 资产名称
+        //   recordType: 'borrow' | 'return'
+        //   recordDate: 记录日期
+        //   userName: 使用人
+        //   userDepartment: 使用部门
+        //   expectedReturnDate: 预计归还日期
+        //   actualReturnDate: 实际归还日期
+        //   usagePurpose: 使用用途
+        //   remark: 备注
+        //   status: 'active' | 'returned'
+        //   createdTime: 创建时间
+        // }
+
+        // 初始化
+        window.onload = function() {
+            // 设置默认日期为今天
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('recordDate').value = today;
+            
+            // 加载资产数据到下拉框
+            loadAssets();
+            
+            // 加载使用记录
+            loadUsageRecords();
+            
+            // 初始化测试数据
+            initTestData();
+            
+            // 检查是否有从固定资产页面传递过来的资产编码参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const assetCode = urlParams.get('assetCode');
+            if (assetCode) {
+                document.getElementById('searchInput').value = assetCode;
+                searchRecords();
+            }
+        };
+        
+        // 初始化测试数据
+        function initTestData() {
+            // 检查是否已有数据，如果没有则生成测试数据
+            const usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+            
+            if (usageRecords.length === 0) {
+                const testData = [
+                    {
+                        id: '1',
+                        assetCode: 'ZC001',
+                        assetName: '办公电脑',
+                        recordType: 'borrow',
+                        recordDate: '2025-05-01',
+                        userName: '张三',
+                        userDepartment: '技术部',
+                        expectedReturnDate: '2025-12-31',
+                        actualReturnDate: '',
+                        usagePurpose: '日常办公',
+                        remark: '技术部主要办公设备',
+                        status: 'active',
+                        createdTime: '2025-05-01T08:00:00Z'
+                    },
+                    {
+                        id: '2',
+                        assetCode: 'ZC002',
+                        assetName: '办公桌椅',
+                        recordType: 'borrow',
+                        recordDate: '2025-05-02',
+                        userName: '李四',
+                        userDepartment: '行政部',
+                        expectedReturnDate: '2025-12-31',
+                        actualReturnDate: '',
+                        usagePurpose: '日常办公',
+                        remark: '行政部主要办公设备',
+                        status: 'active',
+                        createdTime: '2025-05-02T09:00:00Z'
+                    },
+                    {
+                        id: '3',
+                        assetCode: 'ZC003',
+                        assetName: '打印机',
+                        recordType: 'borrow',
+                        recordDate: '2025-05-03',
+                        userName: '王五',
+                        userDepartment: '财务部',
+                        expectedReturnDate: '2025-08-31',
+                        actualReturnDate: '',
+                        usagePurpose: '打印财务报表',
+                        remark: '财务部专用设备',
+                        status: 'active',
+                        createdTime: '2025-05-03T10:00:00Z'
+                    }
+                ];
+                
+                // 保存测试数据到本地存储
+                localStorage.setItem('usageRecords', JSON.stringify(testData));
+            }
+        };
+        
+        // 切换标签页
+        function switchTab(index) {
+            // 隐藏所有标签内容
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // 移除所有标签的活跃状态
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 显示选中的标签内容
+            tabContents[index].classList.add('active');
+            tabs[index].classList.add('active');
+            
+            // 如果切换到记录查询标签，刷新表格数据
+            if (index === 1) {
+                loadUsageRecords();
+            }
+        }
+
+        // 显示提示信息
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            
+            setTimeout(() => {
+                alertDiv.className = 'alert hidden';
+            }, 3000);
+        }
+
+        // 加载资产数据到下拉框
+        function loadAssets() {
+            const assets = JSON.parse(localStorage.getItem('assets') || '[]');
+            const assetSelect = document.getElementById('assetCodeSelect');
+            
+            // 清空除第一个选项外的所有选项
+            while (assetSelect.options.length > 1) {
+                assetSelect.remove(1);
+            }
+            
+            // 添加资产选项
+            assets.forEach(asset => {
+                const option = document.createElement('option');
+                option.value = asset.assetCode;
+                option.textContent = asset.assetCode;
+                assetSelect.appendChild(option);
+            });
+        }
+
+        // 资产选择变化时更新资产名称
+        function onAssetSelectChange() {
+            const assetCode = document.getElementById('assetCodeSelect').value;
+            const assets = JSON.parse(localStorage.getItem('assets') || '[]');
+            const asset = assets.find(a => a.assetCode === assetCode);
+            
+            if (asset) {
+                document.getElementById('assetNameDisplay').value = asset.assetName;
+            } else {
+                document.getElementById('assetNameDisplay').value = '';
+            }
+        }
+
+        // 重置表单
+        function resetForm() {
+            document.getElementById('assetCodeSelect').value = '';
+            document.getElementById('assetNameDisplay').value = '';
+            document.getElementById('recordType').value = 'borrow';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('recordDate').value = today;
+            document.getElementById('userName').value = '';
+            document.getElementById('userDepartment').value = '';
+            document.getElementById('expectedReturnDate').value = '';
+            document.getElementById('actualReturnDate').value = '';
+            document.getElementById('usagePurpose').value = '';
+            document.getElementById('remark').value = '';
+        }
+
+        // 保存使用记录
+        function saveUsageRecord() {
+            // 获取表单数据
+            const assetCode = document.getElementById('assetCodeSelect').value;
+            const assetName = document.getElementById('assetNameDisplay').value;
+            const recordType = document.getElementById('recordType').value;
+            const recordDate = document.getElementById('recordDate').value;
+            const userName = document.getElementById('userName').value.trim();
+            const userDepartment = document.getElementById('userDepartment').value;
+            const expectedReturnDate = document.getElementById('expectedReturnDate').value;
+            const actualReturnDate = document.getElementById('actualReturnDate').value;
+            const usagePurpose = document.getElementById('usagePurpose').value.trim();
+            const remark = document.getElementById('remark').value.trim();
+            
+            // 验证必填字段
+            if (!assetCode || !userName || !userDepartment || !recordDate) {
+                showAlert('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            // 如果是归还记录，必须有实际归还日期
+            if (recordType === 'return' && !actualReturnDate) {
+                showAlert('归还记录必须填写实际归还日期', 'error');
+                return;
+            }
+            
+            // 如果是借用记录，建议填写预计归还日期
+            if (recordType === 'borrow' && !expectedReturnDate) {
+                if (!confirm('借用记录建议填写预计归还日期，确定继续吗？')) {
+                    return;
+                }
+            }
+            
+            // 从本地存储获取现有使用记录
+            const usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+            
+            // 创建使用记录对象
+            const newRecord = {
+                id: Date.now().toString(),
+                assetCode,
+                assetName,
+                recordType,
+                recordDate,
+                userName,
+                userDepartment,
+                expectedReturnDate,
+                actualReturnDate,
+                usagePurpose,
+                remark,
+                status: recordType === 'borrow' && !actualReturnDate ? 'active' : 'returned',
+                createdTime: new Date().toISOString()
+            };
+            
+            // 添加新记录
+            usageRecords.push(newRecord);
+            
+            // 保存回本地存储
+            localStorage.setItem('usageRecords', JSON.stringify(usageRecords));
+            
+            // 如果是借用或归还记录，更新资产状态
+            updateAssetStatus(assetCode, recordType);
+            
+            showAlert('使用记录保存成功');
+            resetForm();
+        }
+
+        // 更新资产状态
+        function updateAssetStatus(assetCode, recordType) {
+            // 更新固定资产表中的资产状态
+            const fixedAssets = JSON.parse(localStorage.getItem('fixedAssets') || '[]');
+            const assetIndex = fixedAssets.findIndex(a => a.assetCode === assetCode);
+            
+            if (assetIndex >= 0) {
+                fixedAssets[assetIndex].assetStatus = recordType === 'borrow' ? '在用' : '闲置';
+                localStorage.setItem('fixedAssets', JSON.stringify(fixedAssets));
+                
+                // 同时更新资产主表
+                const assets = JSON.parse(localStorage.getItem('assets') || '[]');
+                const mainAssetIndex = assets.findIndex(a => a.assetCode === assetCode);
+                if (mainAssetIndex >= 0) {
+                    assets[mainAssetIndex].assetStatus = recordType === 'borrow' ? '在用' : '闲置';
+                    localStorage.setItem('assets', JSON.stringify(assets));
+                }
+            }
+        }
+
+        // 加载使用记录
+        function loadUsageRecords(searchTerm = '', statusFilter = '', startDate = '', endDate = '') {
+            const usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+            const tableBody = document.getElementById('usageRecordsTableBody');
+            
+            // 清空表格
+            tableBody.innerHTML = '';
+            
+            // 过滤记录
+            let filteredRecords = usageRecords.filter(record => {
+                // 搜索词过滤
+                if (searchTerm && !record.assetCode.includes(searchTerm) && !record.userName.includes(searchTerm)) {
+                    return false;
+                }
+                
+                // 状态过滤
+                if (statusFilter && record.status !== statusFilter) {
+                    return false;
+                }
+                
+                // 日期范围过滤
+                if (startDate && record.recordDate < startDate) {
+                    return false;
+                }
+                if (endDate && record.recordDate > endDate) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // 按记录日期降序排序
+            filteredRecords.sort((a, b) => new Date(b.recordDate) - new Date(a.recordDate));
+            
+            // 如果没有数据
+            if (filteredRecords.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="13" style="text-align: center;">暂无数据</td></tr>';
+                return;
+            }
+            
+            // 填充表格
+            filteredRecords.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="record-checkbox" data-id="${record.id}"></td>
+                    <td>${record.assetCode}</td>
+                    <td>${record.assetName}</td>
+                    <td>${record.recordType === 'borrow' ? '借用' : '归还'}</td>
+                    <td>${record.recordDate}</td>
+                    <td>${record.userName}</td>
+                    <td>${record.userDepartment}</td>
+                    <td>${record.expectedReturnDate || '-'}</td>
+                    <td>${record.actualReturnDate || '-'}</td>
+                    <td>${record.usagePurpose || '-'}</td>
+                    <td><span class="status-badge status-${record.status}">${record.status === 'active' ? '使用中' : '已归还'}</span></td>
+                    <td>${record.remark || '-'}</td>
+                    <td>
+                        <button onclick="editUsageRecord('${record.id}')" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                        <button onclick="deleteUsageRecord('${record.id}')" style="padding: 4px 8px; font-size: 12px; background-color: #ff4d4f;">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 搜索记录
+        function searchRecords() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            loadUsageRecords(searchTerm, statusFilter);
+        }
+
+        // 按日期筛选
+        function filterByDate() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            loadUsageRecords(searchTerm, statusFilter, startDate, endDate);
+        }
+
+        // 清除搜索
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            loadUsageRecords();
+        }
+
+        // 编辑使用记录
+        function editUsageRecord(id) {
+            const usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+            const record = usageRecords.find(r => r.id === id);
+            
+            if (record) {
+                // 填充表单
+                document.getElementById('assetCodeSelect').value = record.assetCode;
+                document.getElementById('assetNameDisplay').value = record.assetName;
+                document.getElementById('recordType').value = record.recordType;
+                document.getElementById('recordDate').value = record.recordDate;
+                document.getElementById('userName').value = record.userName;
+                document.getElementById('userDepartment').value = record.userDepartment;
+                document.getElementById('expectedReturnDate').value = record.expectedReturnDate || '';
+                document.getElementById('actualReturnDate').value = record.actualReturnDate || '';
+                document.getElementById('usagePurpose').value = record.usagePurpose || '';
+                document.getElementById('remark').value = record.remark || '';
+                
+                // 切换到添加记录标签页
+                switchTab(0);
+                
+                // 滚动到表单顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // 提示用户正在编辑
+                showAlert(`正在编辑使用记录`);
+                
+                // 保存编辑状态
+                localStorage.setItem('editingUsageRecordId', id);
+            }
+        }
+
+        // 删除单个使用记录
+        function deleteUsageRecord(id) {
+            if (confirm('确定要删除这个使用记录吗？')) {
+                let usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+                usageRecords = usageRecords.filter(r => r.id !== id);
+                localStorage.setItem('usageRecords', JSON.stringify(usageRecords));
+                
+                showAlert('使用记录删除成功');
+                loadUsageRecords();
+            }
+        }
+
+        // 删除选中使用记录
+        function deleteSelectedRecords() {
+            const checkboxes = document.querySelectorAll('.record-checkbox:checked');
+            if (checkboxes.length === 0) {
+                showAlert('请先选择要删除的使用记录', 'error');
+                return;
+            }
+            
+            if (confirm(`确定要删除选中的 ${checkboxes.length} 个使用记录吗？`)) {
+                let usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+                const recordIds = Array.from(checkboxes).map(cb => cb.dataset.id);
+                
+                // 从记录中删除
+                usageRecords = usageRecords.filter(r => !recordIds.includes(r.id));
+                localStorage.setItem('usageRecords', JSON.stringify(usageRecords));
+                
+                showAlert(`成功删除 ${checkboxes.length} 个使用记录`);
+                loadUsageRecords();
+            }
+        }
+
+        // 全选/取消全选
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.record-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = this.checked;
+            });
+        });
+
+        // 导出使用记录
+        function exportRecords() {
+            const usageRecords = JSON.parse(localStorage.getItem('usageRecords') || '[]');
+            
+            // 构建CSV内容
+            let csvContent = "资产编码,资产名称,记录类型,记录日期,使用人,使用部门,预计归还日期,实际归还日期,使用用途,状态,备注\n";
+            
+            if (usageRecords.length > 0) {
+                usageRecords.forEach(record => {
+                    const row = [
+                        record.assetCode,
+                        record.assetName,
+                        record.recordType === 'borrow' ? '借用' : '归还',
+                        record.recordDate,
+                        record.userName,
+                        record.userDepartment,
+                        record.expectedReturnDate || '',
+                        record.actualReturnDate || '',
+                        record.usagePurpose || '',
+                        record.status === 'active' ? '使用中' : '已归还',
+                        record.remark || ''
+                    ];
+                    csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
+                });
+            }
+            
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `资产使用记录_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.display = "none";
+            
+            // 添加到页面并触发下载
+            document.body.appendChild(link);
+            link.click();
+            
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            showAlert('使用记录导出成功');
+        }
+    </script>
+</body>
+</html>

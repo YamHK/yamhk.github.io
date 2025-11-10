@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>十二生肖主题交流 - 兴趣交友平台</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 配置Tailwind主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#6B7280',
+                        accent: '#FF6B6B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+            }
+            .form-input-focus {
+                @apply focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all duration-200;
+            }
+            .hero-gradient {
+                background: linear-gradient(135deg, #165DFF 0%, #0040C1 100%);
+            }
+            .zodiac-shadow {
+                filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.1));
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="flex items-center">
+                        <i class="fa fa-paw text-primary text-2xl mr-2"></i>
+                        <span class="text-lg font-bold text-dark">生肖交流</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="user-profile-btn" class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-colors duration-200">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <span class="text-sm font-medium">个人中心</span>
+                    </button>
+                    <!-- 移动端菜单按钮 -->
+                    <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:text-primary hover:bg-gray-100 focus:outline-none transition-colors duration-200">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                            <p class="text-gray-700 mb-4">
+                                研究生肖运势多年，发现生肖文化确实有其独特的魅力。最近我总结了一些预测运势的经验，想和大家分享一下。首先，不能完全依赖生肖运势，它更多是一种参考；其次，要结合个人的实际情况来看待运势预测...
+                            </p>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-800"># 运势预测</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-800"># 生肖文化</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-800"># 经验分享</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-thumbs-up mr-1"></i>
+                                    <span>78</span>
+                                </button>
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-comment mr-1"></i>
+                                    <span>32</span>
+                                </button>
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-share-alt mr-1"></i>
+                                    <span>分享</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 话题 3 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <div class="flex items-start mb-4">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 mr-3 flex-shrink-0 flex items-center justify-center">
+                                    <i class="fa fa-user text-gray-500"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium">虎虎生威</p>
+                                            <p class="text-xs text-gray-500">2天前</p>
+                                        </div>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-3">属虎的朋友们，最近有什么开心的事情吗？</h3>
+                            <p class="text-gray-700 mb-4">
+                                作为一个属虎的人，最近感觉运势不错，工作上有了新的机遇，生活也很顺利。想看看属虎的朋友们最近都过得怎么样，有什么开心的事情可以分享一下吗？
+                            </p>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-800"># 虎</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-800"># 生活分享</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-800"># 交友互动</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-thumbs-up mr-1"></i>
+                                    <span>56</span>
+                                </button>
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-comment mr-1"></i>
+                                    <span>27</span>
+                                </button>
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-share-alt mr-1"></i>
+                                    <span>分享</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center">
+                <button class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-6 rounded-lg transition-colors duration-200">
+                    加载更多话题
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户匹配 -->
+    <section id="user-matching" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">生肖主题用户匹配</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">寻找与您兴趣相投的朋友，基于生肖文化建立连接</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 匹配用户卡片 1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                    <div class="relative">
+                        <div class="h-40 bg-gradient-to-br from-blue-500 to-blue-700"></div>
+                        <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
+                            <div class="w-20 h-20 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center">
+                                <div class="text-4xl">🐉</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-12 pb-6 px-6">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-bold mb-1">龙的传人</h3>
+                            <p class="text-sm text-gray-500">属龙 | 26岁</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">兴趣爱好</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-800">生肖文化</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-800">历史</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-800">旅行</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">关于我</h4>
+                            <p class="text-sm text-gray-600 line-clamp-3">
+                                热爱中国传统文化，尤其对生肖文化有深入研究。喜欢旅行，希望能结交志同道合的朋友一起探索中国文化的魅力。
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <button class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors duration-200">
+                                查看详情
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-primary hover:bg-primary/90 rounded-lg text-white transition-colors duration-200">
+                                打招呼
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 匹配用户卡片 2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                    <div class="relative">
+                        <div class="h-40 bg-gradient-to-br from-pink-500 to-pink-700"></div>
+                        <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
+                            <div class="w-20 h-20 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center">
+                                <div class="text-4xl">🐰</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-12 pb-6 px-6">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-bold mb-1">玉兔仙子</h3>
+                            <p class="text-sm text-gray-500">属兔 | 24岁</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">兴趣爱好</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-pink-100 text-pink-800">生肖配对</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-pink-100 text-pink-800">绘画</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-pink-100 text-pink-800">音乐</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">关于我</h4>
+                            <p class="text-sm text-gray-600 line-clamp-3">
+                                喜欢研究生肖配对和性格分析，擅长绘画和音乐。希望能找到有共同兴趣的朋友交流分享。
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <button class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors duration-200">
+                                查看详情
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-primary hover:bg-primary/90 rounded-lg text-white transition-colors duration-200">
+                                打招呼
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 匹配用户卡片 3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                    <div class="relative">
+                        <div class="h-40 bg-gradient-to-br from-orange-500 to-orange-700"></div>
+                        <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
+                            <div class="w-20 h-20 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center">
+                                <div class="text-4xl">🐯</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-12 pb-6 px-6">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-bold mb-1">猛虎下山</h3>
+                            <p class="text-sm text-gray-500">属虎 | 28岁</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">兴趣爱好</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-orange-100 text-orange-800">运动</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-orange-100 text-orange-800">健身</span>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-orange-100 text-orange-800">运势预测</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">关于我</h4>
+                            <p class="text-sm text-gray-600 line-clamp-3">
+                                热爱运动和健身，对生肖运势预测有浓厚兴趣。性格开朗，喜欢结交新朋友。
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <button class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors duration-200">
+                                查看详情
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-primary hover:bg-primary/90 rounded-lg text-white transition-colors duration-200">
+                                打招呼
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center">
+                <button class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-6 rounded-lg transition-colors duration-200">
+                    发现更多匹配用户
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">常见问题</h2>
+                <p class="text-gray-600">了解更多关于生肖交流平台的信息</p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- FAQ 1 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-4 text-left font-medium focus:outline-none hover:bg-gray-50">
+                        <span>如何完善我的个人生肖信息？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-4 pt-0 text-gray-600">
+                            您可以在页面顶部的"个人生肖信息"部分填写您的昵称、出生年份、个人简介，以及选择您感兴趣的生肖和兴趣标签。完成后点击"更新个人信息"按钮即可保存。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-4 text-left font-medium focus:outline-none hover:bg-gray-50">
+                        <span>生肖配对分析的准确性如何？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-4 pt-0 text-gray-600">
+                            生肖配对分析是基于中国传统生肖文化的参考，它提供的是一种文化上的见解，而不是绝对的预测。每个人都是独一无二的，实际人际关系还需要考虑更多因素，如个人性格、价值观等。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-4 text-left font-medium focus:outline-none hover:bg-gray-50">
+                        <span>如何在话题讨论区发布新话题？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-4 pt-0 text-gray-600">
+                            在"生肖话题讨论区"页面顶部，您可以看到"发布新话题"区域，输入您想要分享的内容，选择相关标签，然后点击"发布话题"按钮即可。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-4 text-left font-medium focus:outline-none hover:bg-gray-50">
+                        <span>用户匹配功能是如何工作的？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-4 pt-0 text-gray-600">
+                            用户匹配功能基于您填写的个人信息和兴趣标签，为您推荐具有相似兴趣和生肖背景的用户。系统会优先匹配与您兴趣标签重合度高的用户，帮助您找到志同道合的朋友。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 5 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-4 text-left font-medium focus:outline-none hover:bg-gray-50">
+                        <span>如何与其他用户建立联系？</span>
+                        <i class="fa fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-4 pt-0 text-gray-600">
+                            在"用户匹配"页面，您可以浏览推荐的用户，点击"打招呼"按钮向感兴趣的用户发送消息，或者通过"查看详情"了解更多信息后再决定是否建立联系。您也可以在话题讨论区通过评论和回复与其他用户互动。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-12 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fa fa-paw text-primary text-2xl mr-2"></i>
+                        <span class="font-bold text-xl">生肖交流</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        探索十二生肖文化，结交志同道合的朋友，分享生肖文化的魅力，发现更多精彩与乐趣。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-wechat text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-qq text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#zodiac-intro" class="text-gray-400 hover:text-white transition-colors duration-200">生肖文化</a></li>
+                        <li><a href="#zodiac-compatibility" class="text-gray-400 hover:text-white transition-colors duration-200">配对分析</a></li>
+                        <li><a href="#zodiac-fortune" class="text-gray-400 hover:text-white transition-colors duration-200">运势分享</a></li>
+                        <li><a href="#topic-discussion" class="text-gray-400 hover:text-white transition-colors duration-200">话题讨论</a></li>
+                        <li><a href="#user-matching" class="text-gray-400 hover:text-white transition-colors duration-200">用户匹配</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">支持与帮助</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">常见问题</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">使用帮助</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">联系我们</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">隐私政策</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">用户协议</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">订阅更新</h3>
+                    <p class="text-gray-400 mb-4">
+                        订阅我们的 newsletter，获取最新的生肖运势和活动信息。
+                    </p>
+                    <form class="flex">
+                        <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 rounded-l-lg focus:outline-none flex-1 text-gray-800">
+                        <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-r-lg transition-colors duration-200">
+                            订阅
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 mt-8 text-center text-gray-500 text-sm">
+                <p>© 2023 生肖交流平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                nav.classList.add('shadow-md');
+                nav.classList.remove('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-md');
+                nav.classList.add('shadow-sm');
+            }
+        });
+        
+        // 移动端菜单
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 关闭移动菜单当点击链接时
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // 个人信息表单提交
+        const zodiacProfileForm = document.getElementById('zodiac-profile-form');
+        zodiacProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // 显示成功消息
+            alert('个人信息更新成功！');
+        });
+        
+        // 生肖轮播
+        const carouselInner = document.getElementById('carousel-inner');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentIndex = 0;
+        const totalSlides = document.querySelectorAll('#carousel-inner > div').length;
+        
+        // 根据屏幕尺寸确定一次滚动的卡片数量
+        function getSlidesToShow() {
+            if (window.innerWidth >= 1024) return 3; // lg
+            if (window.innerWidth >= 768) return 2;  // md
+            return 1;                                // sm
+        }
+        
+        function updateCarousel() {
+            const slidesToShow = getSlidesToShow();
+            const maxIndex = Math.max(0, totalSlides - slidesToShow);
+            
+            if (currentIndex > maxIndex) {
+                currentIndex = maxIndex;
+            }
+            
+            // 计算滚动距离
+            const slideWidth = 100 / slidesToShow;
+            carouselInner.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+        }
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            const slidesToShow = getSlidesToShow();
+            if (currentIndex < totalSlides - slidesToShow) {
+                currentIndex++;
+                updateCarousel();
+            }
+        });
+        
+        // 窗口大小改变时更新轮播
+        window.addEventListener('resize', updateCarousel);
+        
+        // 配对分析
+        const matchBtn = document.getElementById('match-btn');
+        const matchResult = document.getElementById('match-result');
+        const zodiac1 = document.getElementById('zodiac1');
+        const zodiac2 = document.getElementById('zodiac2');
+        const matchTitle = document.getElementById('match-title');
+        const compatibilityScore = document.getElementById('compatibility-score');
+        const compatibilityBar = document.getElementById('compatibility-bar');
+        const matchAdvantages = document.getElementById('match-advantages');
+        const matchNotes = document.getElementById('match-notes');
+        const matchAdvice = document.getElementById('match-advice');
+        
+        matchBtn.addEventListener('click', () => {
+            // 显示结果区域
+            matchResult.classList.remove('hidden');
+            
+            // 更新标题
+            matchTitle.textContent = `${zodiac1.value}与${zodiac2.value}配对分析`;
+            
+            // 生成随机匹配度(60-100之间)
+            const score = Math.floor(Math.random() * 41) + 60;
+            compatibilityScore.textContent = `${score}%`;
+            compatibilityBar.style.width = `${score}%`;
+            
+            // 根据匹配度设置颜色
+            if (score >= 80) {
+                compatibilityBar.classList.remove('bg-yellow-500', 'bg-red-500');
+                compatibilityBar.classList.add('bg-green-500');
+            } else if (score >= 70) {
+                compatibilityBar.classList.remove('bg-green-500', 'bg-red-500');
+                compatibilityBar.classList.add('bg-yellow-500');
+            } else {
+                compatibilityBar.classList.remove('bg-green-500', 'bg-yellow-500');
+                compatibilityBar.classList.add('bg-red-500');
+            }
+            
+            // 更新分析内容
+            matchAdvantages.textContent = `${zodiac1.value}和${zodiac2.value}在某些方面有很好的互补性，能够相互理解和支持。`;
+            matchNotes.textContent = `${zodiac1.value}可能会觉得${zodiac2.value}有些方面需要改进，而${zodiac2.value}也可能对${zodiac1.value}有一些不同的看法。`;
+            matchAdvice.textContent = `在日常生活中，双方应该多进行坦诚的交流，学会欣赏彼此的优点，共同成长。`;
+            
+            // 滚动到结果区域
+            matchResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        
+        // 发布话题
+        const postTopicBtn = document.getElementById('post-topic-btn');
+        const newTopicContent = document.getElementById('new-topic-content');
+        
+        postTopicBtn.addEventListener('click', () => {
+            if (newTopicContent.value.trim() === '') {
+                alert('请输入话题内容');
+                return;
+            }
+            
+            alert('话题发布成功！');
+            newTopicContent.value = '';
+        });
+        
+        // FAQ 手风琴效果
+        const faqToggles = document.querySelectorAll('.faq-toggle');
+        
+        faqToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i');
+                
+                // 切换当前FAQ的状态
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+        
+        // 返回顶部按钮
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html> <i class="fa fa-user"></i>
+                        </div>
+                        <span class="text-sm font-medium">个人中心</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero-gradient pt-32 pb-20 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-block p-3 bg-white/10 rounded-2xl mb-6">
+                <i class="fa fa-calendar-check-o text-5xl"></i>
+            </div>
+            <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold mb-4 leading-tight">
+                十二生肖主题交流
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
+                发现相同生肖爱好者，交流生肖文化，寻找志同道合的朋友
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#zodiac-intro" class="bg-white text-primary hover:bg-white/90 px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
+                    探索生肖文化
+                </a>
+                <a href="#topic-discussion" class="bg-transparent border-2 border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium transition-all duration-200">
+                    加入讨论
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 个人生肖信息设置 -->
+    <section id="user-profile" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">个人生肖信息</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">设置您的生肖信息，帮助我们为您匹配志同道合的朋友</p>
+            </div>
+            
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                <form id="zodiac-profile-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="nickname" class="block text-sm font-medium text-gray-700 mb-1">昵称 <span class="text-red-500">*</span></label>
+                            <input type="text" id="nickname" name="nickname" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                                placeholder="请输入您的昵称">
+                        </div>
+                        <div>
+                            <label for="birth-year" class="block text-sm font-medium text-gray-700 mb-1">出生年份 <span class="text-red-500">*</span></label>
+                            <select id="birth-year" name="birth-year" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus">
+                                <option value="">请选择出生年份</option>
+                                <option value="2012">2012年 (龙)</option>
+                                <option value="2000">2000年 (龙)</option>
+                                <option value="1988">1988年 (龙)</option>
+                                <option value="1976">1976年 (龙)</option>
+                                <option value="1964">1964年 (龙)</option>
+                                <option value="1952">1952年 (龙)</option>
+                                <option value="2011">2011年 (兔)</option>
+                                <option value="1999">1999年 (兔)</option>
+                                <option value="1987">1987年 (兔)</option>
+                                <option value="1975">1975年 (兔)</option>
+                                <option value="1963">1963年 (兔)</option>
+                                <option value="1951">1951年 (兔)</option>
+                                <option value="2010">2010年 (虎)</option>
+                                <option value="1998">1998年 (虎)</option>
+                                <option value="1986">1986年 (虎)</option>
+                                <option value="1974">1974年 (虎)</option>
+                                <option value="1962">1962年 (虎)</option>
+                                <option value="1950">1950年 (虎)</option>
+                                <option value="2009">2009年 (牛)</option>
+                                <option value="1997">1997年 (牛)</option>
+                                <option value="1985">1985年 (牛)</option>
+                                <option value="1973">1973年 (牛)</option>
+                                <option value="1961">1961年 (牛)</option>
+                                <option value="1949">1949年 (牛)</option>
+                                <option value="2008">2008年 (鼠)</option>
+                                <option value="1996">1996年 (鼠)</option>
+                                <option value="1984">1984年 (鼠)</option>
+                                <option value="1972">1972年 (鼠)</option>
+                                <option value="1960">1960年 (鼠)</option>
+                                <option value="1948">1948年 (鼠)</option>
+                                <option value="2007">2007年 (猪)</option>
+                                <option value="1995">1995年 (猪)</option>
+                                <option value="1983">1983年 (猪)</option>
+                                <option value="1971">1971年 (猪)</option>
+                                <option value="1959">1959年 (猪)</option>
+                                <option value="1947">1947年 (猪)</option>
+                                <option value="2006">2006年 (狗)</option>
+                                <option value="1994">1994年 (狗)</option>
+                                <option value="1982">1982年 (狗)</option>
+                                <option value="1970">1970年 (狗)</option>
+                                <option value="1958">1958年 (狗)</option>
+                                <option value="1946">1946年 (狗)</option>
+                                <option value="2005">2005年 (鸡)</option>
+                                <option value="1993">1993年 (鸡)</option>
+                                <option value="1981">1981年 (鸡)</option>
+                                <option value="1969">1969年 (鸡)</option>
+                                <option value="1957">1957年 (鸡)</option>
+                                <option value="1945">1945年 (鸡)</option>
+                                <option value="2004">2004年 (猴)</option>
+                                <option value="1992">1992年 (猴)</option>
+                                <option value="1980">1980年 (猴)</option>
+                                <option value="1968">1968年 (猴)</option>
+                                <option value="1956">1956年 (猴)</option>
+                                <option value="1944">1944年 (猴)</option>
+                                <option value="2003">2003年 (羊)</option>
+                                <option value="1991">1991年 (羊)</option>
+                                <option value="1979">1979年 (羊)</option>
+                                <option value="1967">1967年 (羊)</option>
+                                <option value="1955">1955年 (羊)</option>
+                                <option value="1943">1943年 (羊)</option>
+                                <option value="2002">2002年 (马)</option>
+                                <option value="1990">1990年 (马)</option>
+                                <option value="1978">1978年 (马)</option>
+                                <option value="1966">1966年 (马)</option>
+                                <option value="1954">1954年 (马)</option>
+                                <option value="1942">1942年 (马)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="personal-intro" class="block text-sm font-medium text-gray-700 mb-1">个人简介</label>
+                        <textarea id="personal-intro" name="personal-intro"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus"
+                            rows="3" placeholder="介绍一下自己，让更多朋友认识你（选填）"></textarea>
+                    </div>
+                    
+                    <!-- 兴趣标签 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">生肖兴趣标签（可多选）</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖运势" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖运势</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖配对" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖配对</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖文化" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖文化</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖传说" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖传说</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖艺术" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖艺术</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖收藏" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖收藏</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="生肖命理" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">生肖命理</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 提交按钮 -->
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+                            <i class="fa fa-paper-plane mr-2"></i>
+                            更新个人信息
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 生肖文化介绍 -->
+    <section id="zodiac-intro" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">生肖文化介绍</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">探索中国传统文化中的十二生肖，了解每个生肖的特点和象征意义</p>
+            </div>
+            
+            <!-- 生肖轮播 -->
+            <div class="relative mb-16">
+                <div class="overflow-hidden" id="zodiac-carousel">
+                    <div class="flex transition-transform duration-300" id="carousel-inner">
+                        <!-- 鼠 -->
+                        <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-mouse-pointer text-primary text-5xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-dark">鼠</h3>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    鼠在十二生肖中居首位，象征着机智、灵活和创造力。属鼠的人通常聪明机智，善于应变，具有敏锐的直觉和洞察力。
+                                </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
+                                    <p class="text-gray-600 text-sm">机智灵活、聪明过人、善于社交、适应力强、洞察力敏锐</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 牛 -->
+                        <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-bullseye text-primary text-5xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-dark">牛</h3>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    牛象征着勤劳、坚韧和可靠。属牛的人通常踏实稳重，做事认真负责，具有坚韧不拔的毅力和吃苦耐劳的精神。
+                                </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
+                                    <p class="text-gray-600 text-sm">勤劳踏实、坚韧不拔、稳重可靠、责任感强、有耐心</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 虎 -->
+                        <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-paw text-primary text-5xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-dark">虎</h3>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    虎象征着勇气、力量和领导力。属虎的人通常自信勇敢，具有很强的领导能力和决断力，喜欢接受挑战。
+                                </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
+                                    <p class="text-gray-600 text-sm">勇敢自信、热情豪爽、领导才能、决断力强、有冒险精神</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 兔 -->
+                        <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-home text-primary text-5xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-dark">兔</h3>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    兔象征着温和、善良和细心。属兔的人通常性格温和，待人和善，心思细腻，善于察言观色。
+                                </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
+                                    <p class="text-gray-600 text-sm">温柔善良、心思细腻、机智灵敏、善解人意、注重和谐</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 龙 -->
+                        <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-star text-primary text-5xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-dark">龙</h3>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    龙象征着权威、尊贵和力量。属龙的人通常自信大方，具有领导才能和创造力，喜欢追求卓越。
+                                </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
+                                    <p class="text-gray-600 text-sm">自信大方、创造力强、领导力佳、雄心勃勃、乐观向上</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 蛇 -->
+                        <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-code-fork text-primary text-5xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-dark">蛇</h3>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    蛇象征着智慧、神秘和直觉。属蛇的人通常聪明智慧，思维缜密，具有很强的直觉和洞察力。
+                                </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
+                                    <p class="text-gray-600 text-sm">智慧敏锐、思维缜密、直觉力强、冷静理性、神秘内敛</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 轮播控制按钮 -->
+                <button id="prev-btn" class="absolute top-1/2 left-2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors duration-200">
+                    <i class="fa fa-chevron-left text-gray-600"></i>
+                </button>
+                <button id="next-btn" class="absolute top-1/2 right-2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors duration-200">
+                    <i class="fa fa-chevron-right text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 生肖配对分析 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">生肖配对分析</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">探索不同生肖之间的匹配度，找到与您最契合的朋友</p>
+            </div>
+            
+            <!-- 配对查询工具 -->
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-100 mb-12">
+                <h3 class="text-xl font-bold text-dark mb-6 text-center">生肖配对查询</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="zodiac1" class="block text-sm font-medium text-gray-700 mb-1">您的生肖</label>
+                        <select id="zodiac1" name="zodiac1"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus">
+                            <option value="鼠">鼠</option>
+                            <option value="牛">牛</option>
+                            <option value="虎">虎</option>
+                            <option value="兔">兔</option>
+                            <option value="龙">龙</option>
+                            <option value="蛇">蛇</option>
+                            <option value="马">马</option>
+                            <option value="羊">羊</option>
+                            <option value="猴">猴</option>
+                            <option value="鸡">鸡</option>
+                            <option value="狗">狗</option>
+                            <option value="猪">猪</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="zodiac2" class="block text-sm font-medium text-gray-700 mb-1">对方生肖</label>
+                        <select id="zodiac2" name="zodiac2"
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus">
+                            <option value="鼠">鼠</option>
+                            <option value="牛">牛</option>
+                            <option value="虎">虎</option>
+                            <option value="兔">兔</option>
+                            <option value="龙">龙</option>
+                            <option value="蛇">蛇</option>
+                            <option value="马">马</option>
+                            <option value="羊">羊</option>
+                            <option value="猴">猴</option>
+                            <option value="鸡">鸡</option>
+                            <option value="狗">狗</option>
+                            <option value="猪">猪</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-6">
+                    <button id="match-btn" class="w-full bg-primary hover:bg-primary/90 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+                        <i class="fa fa-heart mr-2"></i>
+                        查看配对分析
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 配对结果展示 -->
+            <div id="match-result" class="max-w-3xl mx-auto hidden">
+                <div class="bg-white rounded-xl p-8 shadow-md border border-gray-100">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-dark" id="match-title">鼠与牛配对分析</h3>
+                        <div class="flex justify-center items-center gap-2 mt-4">
+                            <div id="zodiac1-icon" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fa fa-mouse-pointer text-primary text-2xl"></i>
+                            </div>
+                            <i class="fa fa-heart text-red-500 text-xl"></i>
+                            <div id="zodiac2-icon" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fa fa-bullseye text-primary text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">匹配度</span>
+                            <span class="text-sm font-semibold text-primary" id="compatibility-score">85%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 85%" id="compatibility-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-dark mb-2">配对优势</h4>
+                            <p class="text-gray-600 text-sm" id="match-advantages">鼠的机智与牛的稳重形成互补，在性格和能力上能够相互支持和理解，共同应对生活中的各种挑战。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-dark mb-2">需要注意</h4>
+                            <p class="text-gray-600 text-sm" id="match-notes">鼠可能会觉得牛过于保守，而牛可能认为鼠过于急躁。双方需要学会理解和包容对方的不同之处。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-dark mb-2">相处建议</h4>
+                            <p class="text-gray-600 text-sm" id="match-advice">鼠可以多学习牛的稳重和耐心，而牛可以尝试接受鼠的创新思维。相互理解和尊重是维持良好关系的关键。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 生肖运势分享 -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">生肖运势分享</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">了解每个生肖的最新运势，分享您的运势体验</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 鼠运势 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-mouse-pointer text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark">鼠 - 本周运势</h3>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">运势上升</span>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">事业运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">财运运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">感情运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">健康运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4">
+                        本周属鼠的朋友运势整体上升，事业上可能会有新的机会出现，财运平稳，感情方面需要多一些沟通和理解，健康方面要注意休息。
+                    </p>
+                    
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-thumbs-up mr-1"></i>
+                                <span>有用(86)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-comment-o mr-1"></i>
+                                <span>评论(23)</span>
+                            </button>
+                        </div>
+                        <button class="text-sm text-primary hover:text-primary/80 transition-colors duration-200">
+                            分享
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 牛运势 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-bullseye text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark">牛 - 本周运势</h3>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">平稳发展</span>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">事业运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">财运运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">感情运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">健康运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4">
+                        本周属牛的朋友运势平稳，事业上会有一些小的进展，财运不错，适合投资理财，感情方面需要多一些浪漫和惊喜，健康状况良好。
+                    </p>
+                    
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-thumbs-up mr-1"></i>
+                                <span>有用(92)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-comment-o mr-1"></i>
+                                <span>评论(18)</span>
+                            </button>
+                        </div>
+                        <button class="text-sm text-primary hover:text-primary/80 transition-colors duration-200">
+                            分享
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 虎运势 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-paw text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark">虎 - 本周运势</h3>
+                        </div>
+                        <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">谨慎行事</span>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">事业运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">财运运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">感情运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">健康运势</span>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4">
+                        本周属虎的朋友需要谨慎行事，事业上可能会遇到一些小的挑战，财运一般，不宜大额投资，感情方面发展顺利，健康方面要注意饮食和休息。
+                    </p>
+                    
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-thumbs-up mr-1"></i>
+                                <span>有用(78)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-comment-o mr-1"></i>
+                                <span>评论(27)</span>
+                            </button>
+                        </div>
+                        <button class="text-sm text-primary hover:text-primary/80 transition-colors duration-200">
+                            分享
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 生肖话题讨论区 -->
+    <section id="topic-discussion" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">生肖话题讨论区</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">参与生肖相关话题讨论，结交志同道合的朋友</p>
+            </div>
+            
+            <!-- 发布话题 -->
+            <div class="bg-white rounded-xl p-6 shadow-md border border-gray-100 mb-8">
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa fa-user text-primary text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <textarea id="new-topic-content" placeholder="分享您关于生肖的想法或问题..." class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus resize-none" rows="3"></textarea>
+                        <div class="flex justify-between items-center mt-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-smile-o mr-1"></i>
+                                    <span>表情</span>
+                                </button>
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-picture-o mr-1"></i>
+                                    <span>图片</span>
+                                </button>
+                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                    <i class="fa fa-tag mr-1"></i>
+                                    <span>话题</span>
+                                </button>
+                            </div>
+                            <button id="post-topic-btn" class="bg-primary hover:bg-primary/90 text-white py-2 px-6 rounded-lg font-medium transition-colors duration-200">
+                                发布话题
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 话题列表 -->
+            <div class="space-y-6">
+                <!-- 话题1 -->
+                <div class="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-user text-gray-500 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-dark">龙的传人</h4>
+                                <span class="text-xs text-gray-500">2小时前</span>
+                            </div>
+                            <p class="text-gray-600 mt-2">
+                                作为属龙的人，我一直觉得自己性格比较开朗自信，大家觉得属龙的人还有哪些典型特点呢？欢迎分享交流！
+                            </p>
+                            <div class="flex items-center space-x-3 mt-3">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">#龙</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">#性格分析</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-thumbs-up mr-1"></i>
+                                <span>赞同(42)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-comment-o mr-1"></i>
+                                <span>回复(16)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-share-alt mr-1"></i>
+                                <span>分享</span>
+                            </button>
+                        </div>
+                        <button class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 话题2 -->
+                <div class="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-user text-gray-500 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-dark">生肖配对爱好者</h4>
+                                <span class="text-xs text-gray-500">昨天</span>
+                            </div>
+                            <p class="text-gray-600 mt-2">
+                                大家觉得十二生肖中，哪些生肖组合是最匹配的呢？我觉得鼠和牛的组合很不错，一个机智灵活，一个稳重踏实，互补性很强。
+                            </p>
+                            <div class="flex items-center space-x-3 mt-3">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">#生肖配对</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">#交友匹配</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-thumbs-up mr-1"></i>
+                                <span>赞同(68)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-comment-o mr-1"></i>
+                                <span>回复(32)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-share-alt mr-1"></i>
+                                <span>分享</span>
+                            </button>
+                        </div>
+                        <button class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 话题3 -->
+                <div class="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-user text-gray-500 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-dark">传统文化研究者</h4>
+                                <span class="text-xs text-gray-500">3天前</span>
+                            </div>
+                            <p class="text-gray-600 mt-2">
+                                最近在研究十二生肖的起源和文化内涵，发现每个生肖背后都有丰富的神话传说和文化象征。大家对哪个生肖的传说最感兴趣呢？
+                            </p>
+                            <div class="flex items-center space-x-3 mt-3">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">#生肖文化</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">#神话传说</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-thumbs-up mr-1"></i>
+                                <span>赞同(54)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-comment-o mr-1"></i>
+                                <span>回复(28)</span>
+                            </button>
+                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                <i class="fa fa-share-alt mr-1"></i>
+                                <span>分享</span>
+                            </button>
+                        </div>
+                        <button class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 加载更多 -->
+            <div class="text-center mt-8">
+                <button id="load-more-btn" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                    加载更多
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户匹配推荐 -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">生肖好友推荐</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">根据您的生肖和兴趣，为您推荐志同道合的朋友</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 推荐用户1 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="text-center mb-4">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-user text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">小龙人</h3>
+                        <p class="text-sm text-gray-500">属龙 · 28岁</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                        <h4 class="text-sm font-semibold text-dark mb-2">兴趣标签</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">生肖文化</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">生肖运势</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">传统文化</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        热爱中国传统文化，特别是生肖文化，希望认识更多志同道合的朋友一起交流学习。
+                    </p>
+                    
+                    <div class="flex justify-between">
+                        <button class="bg-primary/10 text-primary hover:bg-primary/20 py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            打招呼
+                        </button>
+                        <button class="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            加好友
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">常见问题</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">关于十二生肖主题交流模块的常见问题解答</p>
+            </div>
+            
+            <div class="space-y-4" id="faq-container">
+                <!-- FAQ 1 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full text-left px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-center">
+                        <span class="font-medium text-dark">如何修改我的个人生肖信息？</span>
+                        <i class="fa fa-chevron-down text-gray-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 bg-white hidden">
+                        <p class="text-gray-600">
+                            您可以在页面顶部的"个人生肖信息"区域，填写您的昵称、出生年份和个人简介，选择感兴趣的生肖标签，然后点击"更新个人信息"按钮保存。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full text-left px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-center">
+                        <span class="font-medium text-dark">生肖配对分析的依据是什么？</span>
+                        <i class="fa fa-chevron-down text-gray-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 bg-white hidden">
+                        <p class="text-gray-600">
+                            生肖配对分析主要基于中国传统生肖文化中对各生肖性格特点的描述，以及它们之间的相生相克关系，仅供参考和娱乐。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full text-left px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-center">
+                        <span class="font-medium text-dark">如何发布生肖相关话题？</span>
+                        <i class="fa fa-chevron-down text-gray-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 bg-white hidden">
+                        <p class="text-gray-600">
+                            在"生肖话题讨论区"，您可以在输入框中分享您关于生肖的想法或问题，添加相关话题标签，然后点击"发布话题"按钮即可。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full text-left px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-center">
+                        <span class="font-medium text-dark">生肖好友推荐的匹配机制是什么？</span>
+                        <i class="fa fa-chevron-down text-gray-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 bg-white hidden">
+                        <p class="text-gray-600">
+                            生肖好友推荐主要基于您设置的生肖信息和兴趣标签，为您推荐具有相似兴趣爱好的用户，帮助您找到志同道合的朋友。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 5 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full text-left px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-center">
+                        <span class="font-medium text-dark">如何参与生肖运势讨论？</span>
+                        <i class="fa fa-chevron-down text-gray-500 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 bg-white hidden">
+                        <p class="text-gray-600">
+                            您可以在"生肖运势分享"区域查看各生肖的最新运势，通过点赞、评论和分享按钮参与讨论，也可以在"生肖话题讨论区"发布关于运势的话题。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fa fa-paw text-primary text-2xl mr-2"></i>
+                        <span class="text-lg font-bold">生肖交流</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        探索十二生肖文化，结交志同道合的朋友，分享生肖文化的魅力。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-qq text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#user-profile" class="text-gray-400 hover:text-white transition-colors duration-200">个人信息</a></li>
+                        <li><a href="#zodiac-intro" class="text-gray-400 hover:text-white transition-colors duration-200">生肖文化</a></li>
+                        <li><a href="#topic-discussion" class="text-gray-400 hover:text-white transition-colors duration-200">话题讨论</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">关于我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">联系我们</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400">
+                            <i class="fa fa-envelope-o mr-2"></i>
+                            <span>contact@zodiacchat.com</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fa fa-phone mr-2"></i>
+                            <span>400-123-4567</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fa fa-map-marker mr-2"></i>
+                            <span>北京市海淀区中关村大街1号</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+                <p>&copy; 2023 生肖交流平台 版权所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+                nav.classList.remove('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-md');
+                nav.classList.add('shadow-sm');
+            }
+        });
+
+        // 个人信息表单提交
+        document.getElementById('zodiac-profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nickname = document.getElementById('nickname').value;
+            const birthYear = document.getElementById('birth-year').value;
+            
+            // 显示提交成功提示
+            alert(`个人信息更新成功！\n昵称：${nickname}\n出生年份：${birthYear}`);
+            
+            // 存储到本地存储（模拟）
+            localStorage.setItem('zodiac_user_nickname', nickname);
+            localStorage.setItem('zodiac_user_birthYear', birthYear);
+        });
+
+        // 生肖轮播功能
+        const carousel = document.getElementById('carousel-inner');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentIndex = 0;
+        let itemsPerView = 1;
+        
+        // 根据屏幕尺寸确定每页显示的项目数
+        function updateItemsPerView() {
+            if (window.innerWidth >= 1024) {
+                itemsPerView = 3;
+            } else if (window.innerWidth >= 768) {
+                itemsPerView = 2;
+            } else {
+                itemsPerView = 1;
+            }
+            // 重置轮播位置
+            currentIndex = 0;
+            updateCarouselPosition();
+        }
+        
+        function updateCarouselPosition() {
+            const itemWidth = 100 / itemsPerView;
+            carousel.style.transform = `translateX(-${currentIndex * itemWidth}%)`;
+        }
+        
+        prevBtn.addEventListener('click', function() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarouselPosition();
+            }
+        });
+        
+        nextBtn.addEventListener('click', function() {
+            const totalItems = document.querySelectorAll('#carousel-inner > div').length;
+            if (currentIndex < totalItems - itemsPerView) {
+                currentIndex++;
+                updateCarouselPosition();
+            }
+        });
+        
+        // 初始化和窗口大小改变时更新
+        updateItemsPerView();
+        window.addEventListener('resize', updateItemsPerView);
+
+        // 生肖配对分析
+        document.getElementById('match-btn').addEventListener('click', function() {
+            const zodiac1 = document.getElementById('zodiac1').value;
+            const zodiac2 = document.getElementById('zodiac2').value;
+            
+            // 更新配对结果显示
+            document.getElementById('match-title').textContent = `${zodiac1}与${zodiac2}配对分析`;
+            
+            // 设置生肖图标（简化版）
+            const getZodiacIcon = (zodiac) => {
+                const iconMap = {
+                    '鼠': 'fa-mouse-pointer',
+                    '牛': 'fa-bullseye',
+                    '虎': 'fa-paw',
+                    '兔': 'fa-home',
+                    '龙': 'fa-star',
+                    '蛇': 'fa-code-fork',
+                    '马': 'fa-car',
+                    '羊': 'fa-paw',
+                    '猴': 'fa-code-fork',
+                    '鸡': 'fa-cutlery',
+                    '狗': 'fa-paw',
+                    '猪': 'fa-cutlery'
+                };
+                return iconMap[zodiac] || 'fa-question';
+            };
+            
+            document.getElementById('zodiac1-icon').innerHTML = `<i class="fa ${getZodiacIcon(zodiac1)} text-primary text-2xl"></i>`;
+            document.getElementById('zodiac2-icon').innerHTML = `<i class="fa ${getZodiacIcon(zodiac2)} text-primary text-2xl"></i>`;
+            
+            // 生成随机匹配度（实际应用中应基于更复杂的算法）
+            const compatibility = Math.floor(Math.random() * 20) + 70; // 70-89之间的随机数
+            document.getElementById('compatibility-score').textContent = `${compatibility}%`;
+            document.getElementById('compatibility-bar').style.width = `${compatibility}%`;
+            
+            // 更新配对分析内容（简化版，实际应用中应基于生肖组合提供不同内容）
+            const matchAdvantages = `${zodiac1}的特点与${zodiac2}的特点形成良好的互补，能够相互理解和支持。`;
+            const matchNotes = `${zodiac1}可能会觉得${zodiac2}有些地方需要改进，而${zodiac2}也可能对${zodiac1}有类似感觉，需要相互包容。`;
+            const matchAdvice = `${zodiac1}和${zodiac2}在相处过程中，应该多一些沟通和理解，尊重彼此的差异，这样才能建立更加牢固的关系。`;
+            
+            document.getElementById('match-advantages').textContent = matchAdvantages;
+            document.getElementById('match-notes').textContent = matchNotes;
+            document.getElementById('match-advice').textContent = matchAdvice;
+            
+            // 显示结果
+            document.getElementById('match-result').classList.remove('hidden');
+            
+            // 滚动到结果区域
+            document.getElementById('match-result').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 话题发布功能
+        document.getElementById('post-topic-btn').addEventListener('click', function() {
+            const topicContent = document.getElementById('new-topic-content').value.trim();
+            if (!topicContent) {
+                alert('请输入话题内容');
+                return;
+            }
+            
+            alert('话题发布成功！');
+            document.getElementById('new-topic-content').value = '';
+        });
+
+        // 加载更多话题
+        document.getElementById('load-more-btn').addEventListener('click', function() {
+            // 模拟加载中
+            this.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
+            
+            // 模拟网络请求延迟
+            setTimeout(() => {
+                this.innerHTML = '加载更多';
+                alert('已加载全部话题');
+            }, 1000);
+        });
+
+        // FAQ 手风琴效果
+        document.querySelectorAll('.faq-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                // 切换内容显示状态
+                content.classList.toggle('hidden');
+                
+                // 旋转图标
+                if (content.classList.contains('hidden')) {
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // 初始化页面时，尝试从本地存储加载用户信息
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedNickname = localStorage.getItem('zodiac_user_nickname');
+            const savedBirthYear = localStorage.getItem('zodiac_user_birthYear');
+            
+            if (savedNickname) {
+                document.getElementById('nickname').value = savedNickname;
+            }
+            
+            if (savedBirthYear) {
+                document.getElementById('birth-year').value = savedBirthYear;
+            }
+        });
+    </script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html>
+                </div>
+                
+                <!-- 推荐用户2 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="text-center mb-4">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-user text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">虎虎生威</h3>
+                        <p class="text-sm text-gray-500">属虎 · 32岁</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                        <h4 class="text-sm font-semibold text-dark mb-2">兴趣标签</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">生肖配对</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">命理研究</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">传统文化</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        对生肖配对和命理研究有浓厚兴趣，希望通过交流找到更多关于生肖文化的见解。
+                    </p>
+                    
+                    <div class="flex justify-between">
+                        <button class="bg-primary/10 text-primary hover:bg-primary/20 py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            打招呼
+                        </button>
+                        <button class="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            加好友
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 推荐用户3 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="text-center mb-4">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-user text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">玉兔呈祥</h3>
+                        <p class="text-sm text-gray-500">属兔 · 26岁</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                        <h4 class="text-sm font-semibold text-dark mb-2">兴趣标签</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">生肖传说</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">生肖艺术</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">文化交流</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        喜欢收集各种生肖艺术品和传说故事，希望和同样热爱生肖文化的朋友们交流分享。
+                    </p>
+                    
+                    <div class="flex justify-between">
+                        <button class="bg-primary/10 text-primary hover:bg-primary/20 py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            打招呼
+                        </button>
+                        <button class="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            加好友
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 推荐用户4 -->
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                    <div class="text-center mb-4">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-user text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">子鼠旺财</h3>
+                        <p class="text-sm text-gray-500">属鼠 · 30岁</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                        <h4 class="text-sm font-semibold text-dark mb-2">兴趣标签</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">生肖运势</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">投资理财</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">文化交流</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        结合生肖运势研究投资理财，希望找到同样对生肖文化和投资理财感兴趣的朋友。
+                    </p>
+                    
+                    <div class="flex justify-between">
+                        <button class="bg-primary/10 text-primary hover:bg-primary/20 py-2 px-4 rounded-lg font-medium transition-colors duration-200 text-sm">
+                            打招呼
+                        </button>
+                        <button class="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-

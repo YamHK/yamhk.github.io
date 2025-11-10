@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人联系</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 引入环境配置 -->
+    <script src="../../js/environment.js"></script>
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F1F5F9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: scale(1.03);
+            }
+            .qr-container {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 主要内容 -->
+    <main class="pt-8 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- 引入全局ESC键监听脚本 -->
+    <script src="../../js/global_escape_listener.js"></script>
+        
+        <!-- 页面标题 -->
+        <div class="text-center mb-16">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-4 tracking-tight">
+                客服支持
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                扫描二维码联系客服获取帮助
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-1 gap-12">
+            <!-- 二维码展示区 -->
+            <section id="contact" class="bg-white rounded-2xl p-8 card-shadow hover-scale transition-all duration-300">
+                <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-dark mb-2 flex items-center justify-center">
+                            <i class="fa fa-weixin text-green-500 text-3xl mr-2"></i>联系客服微信
+                        </h2>
+                    <div class="h-1 w-20 bg-primary mx-auto rounded-full"></div>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <div class="qr-container rounded-xl p-6 mb-6">
+                        <!-- 微信二维码 -->
+                        <div class="w-64 h-64 bg-white rounded-lg p-2">
+                            <!-- 使用实际的微信二维码图片 -->
+                            <img src="../../../wx.jpg" alt="微信二维码" class="w-full h-full object-contain">
+                        </div>
+                        <!-- 提示文字 -->
+                        <p class="text-center mt-3 font-medium text-gray-700">请使用微信扫描二维码联系客服</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-gray-700 mb-3">我们的客服团队随时为您提供帮助</p>
+                        <div class="flex items-center justify-center space-x-3 text-sm text-gray-500">
+                            <span class="flex items-center"><i class="fa fa-headphones text-xl mr-1"></i>专业支持</span>
+                            <span class="text-gray-300">|</span>
+                            <span class="flex items-center"><i class="fa fa-clock-o text-xl mr-1"></i>快速响应</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 软件通知区 -->
+            <section class="bg-white rounded-2xl p-8 card-shadow hover-scale transition-all duration-300">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-dark mb-2 flex items-center justify-center">
+                        <i class="fa fa-info-circle text-orange-500 text-3xl mr-2"></i>软件通知
+                    </h2>
+                    <div class="h-1 w-20 bg-orange-500 mx-auto rounded-full"></div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-1">
+                                <i class="fa fa-exclamation-triangle text-orange-500 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-orange-700">EV Windows版本暂时有问题，技术团队正在紧急修复中。</p>
+                                <p class="text-orange-600 text-sm mt-1">请通过微信联系客服获取最新进展。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600">感谢您的理解与支持，我们将尽快恢复软件服务。</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- 软件特点介绍 -->
+        <section class="mt-16">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-dark mb-2">EV 软件特点</h2>
+                <div class="h-1 w-20 bg-primary mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 特点 1 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover-scale">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa fa-bolt text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">高效便捷</h3>
+                    <p class="text-gray-600 text-sm">简洁直观的用户界面，操作流畅，提高工作效率</p>
+                </div>
+
+                <!-- 特点 2 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover-scale">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa fa-shield text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">安全可靠</h3>
+                    <p class="text-gray-600 text-sm">多重安全保障，保护用户数据隐私和信息安全</p>
+                </div>
+
+                <!-- 特点 3 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover-scale">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa fa-cogs text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">功能丰富</h3>
+                    <p class="text-gray-600 text-sm">多样化的功能模块，满足不同用户的需求</p>
+                </div>
+
+                <!-- 特点 4 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover-scale">
+                        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-users text-orange-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">优质服务</h3>
+                        <p class="text-gray-600 text-sm">专业客服团队，为您提供贴心细致的使用指导</p>
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-400">© 2025 EV 软件服务中心. 我们致力于为您提供最优质的服务.</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <i class="fa fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <i class="fa fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <i class="fa fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

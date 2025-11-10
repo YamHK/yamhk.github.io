@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>静态压强标定台</title>
+  <!-- 引入Chart.js -->
+  <!--    <script src="http://yamhk.2288.org:8090/chart.js"></script>-->
+<!--  <script src="https://bc.yamhk.top/chart.js"></script>-->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!--    <script src="/chart.js"></script>-->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .config-container {
+      /*居左悬浮固定*/
+      position: fixed;
+      top: 2px;
+      left: 20px;
+      justify-content: flex-start;
+    }
+
+    .chart-container {
+      /*展示在最底层*/
+      z-index: 999;
+      display: inline-block;
+      background-color: #f0f0f0;
+      width: 82%;
+      height: 60%;
+      /*靠右悬浮固定*/
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      justify-content: flex-end;
+    }
+
+    .form-container {
+      width: 100%;
+    }
+
+    /* 弹出表单的样式 */
+    .modal {
+      display: none; /* 默认不显示 */
+      /*最顶层*/
+      z-index: 1;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding-top: 60px;
+      background: grey;
+    }
+
+    /* 表单内容的样式 */
+    .modal-content {
+      z-index: 1;
+      margin: 5% auto;
+      padding: 20px;
+      width: 80%;
+      border: 1px solid #888;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      text-align: center;
+      border-radius: 5px;
+      box-sizing: border-box;
+      background: beige;
+    }
+
+    #label, input {
+      text-align: left;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div style="width: 100%;height: 100%;display: flex">
+  <div class="config-container" style="width: 12%;height: 100%">
+    <!--表单接收输入项-->
+    <div class="form-container">
+      <!--按钮-查看产品库 -->
+      <button class="el-button el-button--primary el-button--small" id="openModalFormBtn">产品信息</button>
+    </div>
+    <!-- 弹出表单 -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <form id="productFormSubmit" style="display: flex">
+          <div>
+            <label style="width: 120px" for="productName">产品名称:</label>
+            <input type="text" id="productName" name="productName" value="压力传感器"><br><br>
+            <label for="accuracy">精度:</label>
+            <input type="text" id="accuracy" name="accuracy" value="0.25‰"><br><br>
+            <label for="sensitivity">灵敏度:</label>
+            <input type="text" id="sensitivity" name="sensitivity" value="100"><br><br>
+            <label for="excitationVoltage">激励电压(V):</label>
+            <input type="text" id="excitationVoltage" name="excitationVoltage" value="10"><br><br>
+            <label for="amplification">放大倍数:</label>
+            <input type="text" id="amplification" name="amplification" value="100"><br><br>
+            <label for="range">量程:</label>
+            <input type="text" id="range" name="range" value="10000"><br><br>
+            <label for="resolution">分辨率:</label>
+            <input type="text" id="resolution" name="resolution" value="1080"><br><br>
+            <label for="fullScaleVoltage">满电压(V):</label>
+            <input type="text" id="fullScaleVoltage" name="fullScaleVoltage" value="10"><br><br>
+            <label for="powerSupply">供电(V):</label>
+            <input type="text" id="powerSupply" name="powerSupply" value="240"><br><br>
+            <label for="output">输出:</label>
+            <input type="text" id="output" name="output" value="24"><br><br>
+            <label for="serialNumber">编号:</label>
+            <input type="text" id="serialNumber" name="serialNumber" value="95278"><br><br>
+            <label for="manufacturingDate">采购日期:</label>
+            <input type="text" id="manufacturingDate" name="manufacturingDate" value="20241224"><br><br>
+          </div>
+          <div>
+            <label for="manufacturer">制造单位:</label>
+            <input type="text" id="manufacturer" name="manufacturer" value="巨匠"><br><br>
+            <label for="inspectionDate">检测日期:</label>
+            <input type="text" id="inspectionDate" name="inspectionDate" value="20241224"><br><br>
+            <label for="correctedPressure">修正气压(Pa):</label>
+            <input type="text" id="correctedPressure" name="correctedPressure" value="1"><br><br>
+            <label for="inspectionTemperature">检测温度(℃):</label>
+            <input type="text" id="inspectionTemperature" name="inspectionTemperature" value="26"><br><br>
+            <label for="samplingFrequency">采集频率():</label>
+            <input type="text" id="samplingFrequency" name="samplingFrequency" value="60"><br><br>
+            <label for="coefficient">系数:</label>
+            <input type="text" id="coefficient" name="coefficient"><br><br>
+            <label for="intercept">截距:</label>
+            <input type="text" id="intercept" name="intercept"><br><br>
+            <label for="maximumDeviation">最大偏差:</label>
+            <input type="text" id="maximumDeviation" name="maximumDeviation"><br><br>
+            <label for="minimumDeviation">最小偏差:</label>
+            <input type="text" id="minimumDeviation" name="minimumDeviation"><br><br>
+            <label for="compliance">是否合格:</label>
+            <input type="text" id="compliance" name="compliance"><br><br>
+            <label for="deviationRatio">偏差占比:</label>
+            <input type="text" id="deviationRatio" name="deviationRatio"><br><br>
+            <input type="submit" value="保存">
+          </div>
+        </form>
+      </div>
+    </div>
+    <!--居中展示-->
+    <div style="align-content: center">
+      <button class="el-button el-button--primary el-button--small" onclick="getDataClean()">清除结果</button>
+      <button class="el-button el-button--primary el-button--small" onclick="getDataCollect()">数据采集</button>
+    </div>
+  </div>
+  <div class="chart-container" id="chartContainer">
+    <canvas id="lineChart" width="800" height="400"></canvas>
+  </div>
+</div>
+<script>
+  // 获取图表上下文并初始化图表
+  var chartContainer = document.getElementById('chartContainer');
+  // 获取弹出表单元素
+  var modal = document.getElementById("myModal");
+  // 获取打开弹出表单的按钮元素
+  var btn = document.getElementById("openModalFormBtn");
+  // 获取关闭按钮元素
+  // 点击打开按钮时，显示弹出表单
+  btn.onclick = function () {
+    modal.style.display = "block";
+    //隐藏ctx
+    chartContainer.style.display = "none";
+  }
+  // 获取弹出表格元素
+  var modalTable = document.getElementById("modalTable");
+  // 在用户点击弹出表单外部时，隐藏弹出表单
+  window.onclick = function (event) {
+    if (event.target == modalTable) {
+      modalTable.style.display = "none";
+      //展示ctx
+      chartContainer.style.display = "block";
+    }
+    if (event.target == modal) {
+      modal.style.display = "none";
+      chartContainer.style.display = "block";
+    }
+  }
+  // 表单提交事件
+  document.getElementById('productFormSubmit').addEventListener('submit', function (e) {
+    e.preventDefault();
+    // 处理表单提交逻辑，例如发送数据到服务器
+    console.log('表单已提交');
+    dataSave();
+    alert('提交成功')
+    modal.style.display = "none"; // 提交后隐藏弹出表单
+    chartContainer.style.display = "block";
+  });
+  // 初始化图表的函数
+  var ctx = document.getElementById('lineChart').getContext('2d');
+
+  function initChart(ctx, data) {
+    return new Chart(ctx, {
+      type: 'line', // 选择图表类型
+      data: {
+        datasets: [{
+          label: '压力传感器校准',
+          data: [], // 这里将存放{x, y}点
+          fill: false,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1,
+          pointRadius: 0, // 设置点的半径为0，隐藏点
+          tension: 0,
+          pointStyle: '' // 或者设置点的样式为空字符串
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            position: 'bottom',
+            suggestedMin: 0, // 根据需要调整
+            suggestedMax: 25, // 根据需要调整
+          }
+        }
+      }
+    });
+  }
+
+
+  var lineChart = initChart(ctx, {
+    labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    datasets: [
+      {
+        label: '压力传感器校准',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        data: [],
+        pointRadius: 0, // 设置点的半径为0，隐藏点
+        tension: 0,
+        pointStyle: '' // 或者设置点的样式为空字符串
+      }
+    ]
+  });
+
+  // 从服务器获取数据并更新图表的函数
+  function getDataClean() {
+    lineChart.data.labels = null;
+    lineChart.data.datasets[0].data = null;
+    lineChart.update();
+    var apiUrl = 'http://127.0.0.1:55055/v1/binding/dataClean';  // 修正URL拼接
+    fetch(apiUrl)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Network response was not ok.');
+      })
+      .then(data => {
+        //alert("串口绑定-" + data.comBinding);
+        //提示采集成功
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        //alert("初始化失败");
+      });
+  }
+
+  function getDataSelect() {
+    var apiUrl = 'http://127.0.0.1:55055/v1/binding/demo/1';
+    //请求服务器
+    fetch(apiUrl)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Network response was not ok.');
+      }).then(data => {
+      //alert("数据获取成功");
+      //清空lineChart
+      lineChart.data.labels = null;
+      lineChart.data.datasets[0].data = null;
+      lineChart.clear();
+      //设置图表刷新不闪动
+      lineChart.options.animation = false;
+      lineChart.update();
+      // 根据data中的z生成数据点
+      var dataPoints = [];
+      for (var key in data.z) {
+        x = parseInt(key);
+        y = data.z[key];
+        dataPoints.push({x: x, y: y});
+      }
+      for (var key in data.f) {
+        x = parseInt(key);
+        y = data.f[key];
+        dataPoints.push({x: x, y: y});
+      }
+      //根据y从大到小排序
+      dataPoints.sort(function (a, b) {
+        // return a.y - b.y;
+        return a.x - b.x;
+      });
+      //输出数据
+      //循环将dataPoints的数据插入到图表中
+      for (var i = 0; i < dataPoints.length; i++) {
+        lineChart.data.datasets[0].data.push(dataPoints[i]);
+      }
+      lineChart.update();
+      //填充表单中的系数截距等参数
+      document.getElementById('inspectionDate').value = new Date().toLocaleString();
+      document.getElementById('coefficient').value = data.k;
+      document.getElementById('intercept').value = data.b;
+      document.getElementById('maximumDeviation').value = data.max;
+      document.getElementById('minimumDeviation').value = data.min;
+      document.getElementById('compliance').value = data.ok;
+      document.getElementById('deviationRatio').value = data.precision;
+    }).catch(error => {
+      console.error('There has been a problem with your fetch operation:', error);
+      alert("数据获取失败");
+    });
+  }
+
+  // 从服务器获取数据并更新图表的函数
+  function getDataCollect() {
+    //
+    // var weight = document.getElementById('weight').value;
+    // var jzSelector = document.getElementById('jzSelector').value;
+    //保存变量到本地
+    var apiUrl = 'http://127.0.0.1:55055/v1/binding/dataMatch';
+    var form = document.getElementById('productFormSubmit');
+    var formData = new FormData(form);
+    //往formData中追加字段
+    // formData.append('weight', weight);
+    // formData.append('jzSelector', jzSelector);
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Network response was not ok.');
+    }).then(data => {
+    }).catch(error => {
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+  }
+
+  function dataSave() {
+    //
+    // var weight = document.getElementById('weight').value;
+    // var jzSelector = document.getElementById('jzSelector').value;
+    //保存变量到本地
+    var apiUrl = 'http://127.0.0.1:55055/v1/binding/dataSave';
+    var form = document.getElementById('productFormSubmit');
+    var formData = new FormData(form);
+
+    // 将 FormData 转换为对象
+    var formObject = {};
+    formData.forEach((value, key) => {
+      formObject[key] = value;
+    });
+    // 追加额外的字段
+    // formObject.weight = weight;
+    // formObject.jzSelector = jzSelector;
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formObject) // 发送 JSON 字符串
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Network response was not ok.');
+    }).then(data => {
+      console.log(data); // 处理返回的数据
+    }).catch(error => {
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+  }
+
+  //页面加载的时候初始化
+  window.onload = function () {
+    //从url中获取参数model
+    var url = new URL(window.location.href);
+    var model = url.searchParams.get('model');
+    //每三秒调用一次getDataSelect
+    setInterval(getDataSelect, 3000);
+  };
+</script>
+</body>
+</html>

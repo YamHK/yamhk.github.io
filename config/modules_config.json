@@ -1,0 +1,350 @@
+{
+  "modules": [
+    {
+      "id": "mx_50ok",
+      "name": "公司图腾展示",
+      "file": "mx_50OK.html",
+      "description": "展示公司图腾和相关信息",
+      "database_tables": []
+    },
+    {
+      "id": "mx_calendar",
+      "name": "万年历",
+      "file": "mx_calendar.html",
+      "description": "日历功能，支持农历显示和日期选择",
+      "database_tables": []
+    },
+    {
+      "id": "mx_chat",
+      "name": "地区群聊",
+      "file": "mx_chat.html",
+      "description": "基于地理位置的实时聊天功能",
+      "database_tables": [
+        {
+          "name": "chat_messages",
+          "description": "聊天消息记录",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "发送用户ID"},
+            {"name": "region", "type": "VARCHAR(100)", "description": "地区标识"},
+            {"name": "message", "type": "TEXT", "description": "消息内容"},
+            {"name": "timestamp", "type": "DATETIME", "description": "发送时间"},
+            {"name": "status", "type": "VARCHAR(20)", "description": "消息状态"}
+          ]
+        },
+        {
+          "name": "chat_users",
+          "description": "聊天室用户信息",
+          "columns": [
+            {"name": "id", "type": "VARCHAR(50)", "primary_key": true, "description": "用户ID"},
+            {"name": "nickname", "type": "VARCHAR(100)", "description": "用户昵称"},
+            {"name": "region", "type": "VARCHAR(100)", "description": "所在地区"},
+            {"name": "avatar", "type": "VARCHAR(255)", "description": "头像URL"},
+            {"name": "last_active", "type": "DATETIME", "description": "最后活跃时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_constellation_chat",
+      "name": "星座主题交流",
+      "file": "mx_constellation_chat.html",
+      "description": "基于星座的社交交流平台",
+      "database_tables": [
+        {
+          "name": "constellation_posts",
+          "description": "星座主题帖子",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "发布用户ID"},
+            {"name": "title", "type": "VARCHAR(255)", "description": "帖子标题"},
+            {"name": "content", "type": "TEXT", "description": "帖子内容"},
+            {"name": "constellation", "type": "VARCHAR(20)", "description": "相关星座"},
+            {"name": "created_at", "type": "DATETIME", "description": "创建时间"},
+            {"name": "updated_at", "type": "DATETIME", "description": "更新时间"}
+          ]
+        },
+        {
+          "name": "constellation_users",
+          "description": "星座平台用户信息",
+          "columns": [
+            {"name": "id", "type": "VARCHAR(50)", "primary_key": true, "description": "用户ID"},
+            {"name": "nickname", "type": "VARCHAR(100)", "description": "用户昵称"},
+            {"name": "constellation", "type": "VARCHAR(20)", "description": "星座"},
+            {"name": "birth_date", "type": "DATE", "description": "出生日期"},
+            {"name": "avatar", "type": "VARCHAR(255)", "description": "头像URL"},
+            {"name": "bio", "type": "TEXT", "description": "个人简介"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_contact",
+      "name": "个人联系",
+      "file": "mx_contact.html",
+      "description": "联系方式展示页面",
+      "database_tables": []
+    },
+    {
+      "id": "mx_days",
+      "name": "重要日子记录",
+      "file": "mx_days.html",
+      "description": "记录重要日子和倒计时功能",
+      "database_tables": [
+        {
+          "name": "important_days",
+          "description": "重要日子记录",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "用户ID"},
+            {"name": "title", "type": "VARCHAR(100)", "description": "日子标题"},
+            {"name": "date", "type": "DATE", "description": "日期"},
+            {"name": "type", "type": "VARCHAR(50)", "description": "类型（生日、纪念日等）"},
+            {"name": "created_at", "type": "DATETIME", "description": "创建时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_junjie",
+      "name": "俊杰服务平台",
+      "file": "mx_junjie.html",
+      "description": "为台湾同胞提供大陆生活信息服务",
+      "database_tables": [
+        {
+          "name": "junjie_registrations",
+          "description": "服务登记信息",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "name", "type": "VARCHAR(100)", "description": "姓名"},
+            {"name": "contact", "type": "VARCHAR(100)", "description": "联系方式"},
+            {"name": "location", "type": "VARCHAR(100)", "description": "意向地区"},
+            {"name": "interest", "type": "VARCHAR(100)", "description": "关注领域"},
+            {"name": "message", "type": "TEXT", "description": "留言"},
+            {"name": "created_at", "type": "DATETIME", "description": "登记时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_live_stream",
+      "name": "随机直播视频播放器",
+      "file": "mx_live_stream.html",
+      "description": "直播视频播放功能",
+      "database_tables": []
+    },
+    {
+      "id": "mx_matrix",
+      "name": "矩阵雨效果",
+      "file": "mx_matrix.html",
+      "description": "矩阵雨动画效果展示",
+      "database_tables": []
+    },
+    {
+      "id": "mx_page_hub",
+      "name": "页面收录中心",
+      "file": "mx_page_hub.html",
+      "description": "集中管理和访问平台功能页面",
+      "database_tables": []
+    },
+    {
+      "id": "mx_qrcode_page",
+      "name": "二维码生成",
+      "file": "mx_qrcode_page.html",
+      "description": "二维码生成和自定义功能",
+      "database_tables": []
+    },
+    {
+      "id": "mx_redirect",
+      "name": "页面跳转器",
+      "file": "mx_redirect.html",
+      "description": "页面重定向功能",
+      "database_tables": []
+    },
+    {
+      "id": "mx_region_select",
+      "name": "区域选择",
+      "file": "mx_region_select.html",
+      "description": "地区选择组件",
+      "database_tables": []
+    },
+    {
+      "id": "mx_seasonal_products",
+      "name": "正当季商品展示",
+      "file": "mx_seasonal_products.html",
+      "description": "当季商品展示平台",
+      "database_tables": []
+    },
+    {
+      "id": "mx_sign",
+      "name": "签到打卡系统",
+      "file": "mx_sign.html",
+      "description": "用户签到打卡和积分系统",
+      "database_tables": [
+        {
+          "name": "user_checkins",
+          "description": "用户签到记录",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "用户ID"},
+            {"name": "checkin_date", "type": "DATE", "description": "签到日期"},
+            {"name": "points", "type": "INTEGER", "description": "获得积分"},
+            {"name": "streak", "type": "INTEGER", "description": "连续签到天数"},
+            {"name": "created_at", "type": "DATETIME", "description": "签到时间"}
+          ]
+        },
+        {
+          "name": "user_points",
+          "description": "用户积分汇总",
+          "columns": [
+            {"name": "user_id", "type": "VARCHAR(50)", "primary_key": true, "description": "用户ID"},
+            {"name": "total_points", "type": "INTEGER", "description": "总积分"},
+            {"name": "current_streak", "type": "INTEGER", "description": "当前连续签到天数"},
+            {"name": "longest_streak", "type": "INTEGER", "description": "最长连续签到天数"},
+            {"name": "last_checkin", "type": "DATE", "description": "最后签到日期"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_software_custom",
+      "name": "软件定制服务",
+      "file": "mx_software_custom.html",
+      "description": "软件私人定制预约服务",
+      "database_tables": [
+        {
+          "name": "custom_requests",
+          "description": "定制需求请求",
+          "columns": [
+            {"name": "id", "type": "VARCHAR(50)", "primary_key": true, "description": "订单ID"},
+            {"name": "name", "type": "VARCHAR(100)", "description": "客户姓名"},
+            {"name": "phone", "type": "VARCHAR(20)", "description": "联系电话"},
+            {"name": "email", "type": "VARCHAR(100)", "description": "电子邮箱"},
+            {"name": "company", "type": "VARCHAR(100)", "description": "公司名称"},
+            {"name": "software_type", "type": "VARCHAR(50)", "description": "软件类型"},
+            {"name": "requirements", "type": "TEXT", "description": "需求描述"},
+            {"name": "budget", "type": "VARCHAR(50)", "description": "预算范围"},
+            {"name": "delivery_time", "type": "DATE", "description": "期望交付时间"},
+            {"name": "additional_info", "type": "TEXT", "description": "其他需求"},
+            {"name": "created_at", "type": "DATETIME", "description": "提交时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_travel_map",
+      "name": "旅行地图",
+      "file": "mx_travel_map.html",
+      "description": "旅游地图和信息展示",
+      "database_tables": []
+    },
+    {
+      "id": "mx_user_directory",
+      "name": "用户目录",
+      "file": "mx_user_directory.html",
+      "description": "系统用户目录和好友关系",
+      "database_tables": [
+        {
+          "name": "users",
+          "description": "系统用户信息",
+          "columns": [
+            {"name": "id", "type": "VARCHAR(50)", "primary_key": true, "description": "用户ID"},
+            {"name": "name", "type": "VARCHAR(100)", "description": "用户名"},
+            {"name": "avatar", "type": "VARCHAR(255)", "description": "头像URL"},
+            {"name": "status", "type": "VARCHAR(20)", "description": "在线状态"},
+            {"name": "department", "type": "VARCHAR(100)", "description": "部门"},
+            {"name": "position", "type": "VARCHAR(100)", "description": "职位"},
+            {"name": "last_active", "type": "DATETIME", "description": "最后活跃时间"}
+          ]
+        },
+        {
+          "name": "friendships",
+          "description": "用户好友关系",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "用户ID"},
+            {"name": "friend_id", "type": "VARCHAR(50)", "description": "好友ID"},
+            {"name": "status", "type": "VARCHAR(20)", "description": "关系状态"},
+            {"name": "group_name", "type": "VARCHAR(50)", "description": "好友分组"},
+            {"name": "created_at", "type": "DATETIME", "description": "创建时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_weather",
+      "name": "关注地区天气",
+      "file": "mx_weather.html",
+      "description": "关注地区天气信息展示",
+      "database_tables": [
+        {
+          "name": "user_weather_locations",
+          "description": "用户关注的天气地区",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "用户ID"},
+            {"name": "location_name", "type": "VARCHAR(100)", "description": "地区名称"},
+            {"name": "added_at", "type": "DATETIME", "description": "添加时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_welfare_collection",
+      "name": "福利品领取",
+      "file": "mx_welfare_collection.html",
+      "description": "福利品抽奖和领取活动",
+      "database_tables": [
+        {
+          "name": "welfare_applications",
+          "description": "福利品申请记录",
+          "columns": [
+            {"name": "id", "type": "VARCHAR(50)", "primary_key": true, "description": "申请ID"},
+            {"name": "name", "type": "VARCHAR(100)", "description": "申请人姓名"},
+            {"name": "phone", "type": "VARCHAR(20)", "description": "手机号码"},
+            {"name": "email", "type": "VARCHAR(100)", "description": "电子邮箱"},
+            {"name": "department", "type": "VARCHAR(100)", "description": "所属部门"},
+            {"name": "employee_id", "type": "VARCHAR(50)", "description": "员工编号"},
+            {"name": "contact_method", "type": "VARCHAR(20)", "description": "联系方式"},
+            {"name": "delivery_address", "type": "TEXT", "description": "配送地址"},
+            {"name": "notes", "type": "TEXT", "description": "备注信息"},
+            {"name": "created_at", "type": "DATETIME", "description": "申请时间"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mx_zodiac_chat",
+      "name": "生肖主题交流",
+      "file": "mx_zodiac_chat.html",
+      "description": "基于生肖的社交交流平台",
+      "database_tables": [
+        {
+          "name": "zodiac_posts",
+          "description": "生肖主题帖子",
+          "columns": [
+            {"name": "id", "type": "INTEGER", "primary_key": true, "auto_increment": true},
+            {"name": "user_id", "type": "VARCHAR(50)", "description": "发布用户ID"},
+            {"name": "title", "type": "VARCHAR(255)", "description": "帖子标题"},
+            {"name": "content", "type": "TEXT", "description": "帖子内容"},
+            {"name": "zodiac", "type": "VARCHAR(20)", "description": "相关生肖"},
+            {"name": "created_at", "type": "DATETIME", "description": "创建时间"},
+            {"name": "updated_at", "type": "DATETIME", "description": "更新时间"}
+          ]
+        },
+        {
+          "name": "zodiac_users",
+          "description": "生肖平台用户信息",
+          "columns": [
+            {"name": "id", "type": "VARCHAR(50)", "primary_key": true, "description": "用户ID"},
+            {"name": "nickname", "type": "VARCHAR(100)", "description": "用户昵称"},
+            {"name": "zodiac", "type": "VARCHAR(20)", "description": "生肖"},
+            {"name": "birth_year", "type": "INTEGER", "description": "出生年份"},
+            {"name": "avatar", "type": "VARCHAR(255)", "description": "头像URL"},
+            {"name": "bio", "type": "TEXT", "description": "个人简介"}
+          ]
+        }
+      ]
+    }
+  ]
+}

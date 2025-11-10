@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>十二星座主题交流 - 兴趣交友平台</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 配置Tailwind主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#9C27B0',
+                        secondary: '#6B7280',
+                        accent: '#FF4081',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-5px);
+            }
+            .form-input-focus {
+                @apply focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all duration-200;
+            }
+            .hero-gradient {
+                background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            }
+            .constellation-shadow {
+                filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.1));
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="flex items-center">
+                        <i class="fa fa-star text-primary text-2xl mr-2"></i>
+                        <span class="text-lg font-bold text-dark">星座交流</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#constellation-intro" class="text-gray-600 hover:text-primary transition-colors duration-200">星座文化</a>
+                    <a href="#constellation-analysis" class="text-gray-600 hover:text-primary transition-colors duration-200">性格分析</a>
+                    <a href="#constellation-fortune" class="text-gray-600 hover:text-primary transition-colors duration-200">运势分享</a>
+                    <a href="#topic-discussion" class="text-gray-600 hover:text-primary transition-colors duration-200">话题讨论</a>
+                    <a href="#user-matching" class="text-gray-600 hover:text-primary transition-colors duration-200">用户匹配</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="user-profile-btn" class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-colors duration-200">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <span class="text-sm font-medium">个人中心</span>
+                    </button>
+                    <!-- 移动端菜单按钮 -->
+                    <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:text-primary hover:bg-gray-100 focus:outline-none transition-colors duration-200">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#constellation-intro" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">星座文化</a>
+                <a href="#constellation-analysis" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">性格分析</a>
+                <a href="#constellation-fortune" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">运势分享</a>
+                <a href="#topic-discussion" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">话题讨论</a>
+                <a href="#user-matching" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">用户匹配</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <header class="hero-gradient pt-24 pb-20 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">探索星座的奥秘，结识有缘人</h1>
+                    <p class="text-lg text-purple-100 mb-8">在这个充满星光的平台，发现星座文化的魅力，与志同道合的朋友交流分享，开启一段奇妙的星座之旅。</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#constellation-profile" class="bg-white text-primary font-medium px-6 py-3 rounded-lg hover:bg-purple-50 transition-colors duration-200 shadow-lg">
+                            设置个人星座信息
+                        </a>
+                        <a href="#topic-discussion" class="bg-transparent border-2 border-white text-white font-medium px-6 py-3 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                            进入讨论区
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative w-64 h-64 mx-auto constellation-shadow">
+                        <!-- 星座图标 -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fa fa-star-o text-9xl text-white/80"></i>
+                        </div>
+                        <!-- 装饰星光 -->
+                        <div class="absolute top-0 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                        <div class="absolute bottom-1/3 right-0 w-3 h-3 bg-white rounded-full animate-pulse" style="animation-delay: 0.5s"></div>
+                        <div class="absolute top-1/2 left-0 w-2 h-2 bg-white rounded-full animate-pulse" style="animation-delay: 1s"></div>
+                        <div class="absolute bottom-1/4 right-1/4 w-3 h-3 bg-white rounded-full animate-pulse" style="animation-delay: 1.5s"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 个人星座信息 -->
+    <section id="constellation-profile" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">个人星座信息</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">设置您的星座信息和兴趣标签，帮助我们为您推荐合适的交流对象</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8">
+                <form id="constellation-profile-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="nickname" class="block text-sm font-medium text-gray-700 mb-1">昵称</label>
+                            <input type="text" id="nickname" name="nickname" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus" placeholder="请输入您的昵称">
+                        </div>
+                        
+                        <div>
+                            <label for="birth-date" class="block text-sm font-medium text-gray-700 mb-1">出生日期</label>
+                            <input type="date" id="birth-date" name="birth-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                        </div>
+                        
+                        <div>
+                            <label for="constellation" class="block text-sm font-medium text-gray-700 mb-1">星座</label>
+                            <select id="constellation" name="constellation" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                                <option value="">请选择您的星座</option>
+                                <option value="白羊座">白羊座 (3/21-4/19)</option>
+                                <option value="金牛座">金牛座 (4/20-5/20)</option>
+                                <option value="双子座">双子座 (5/21-6/21)</option>
+                                <option value="巨蟹座">巨蟹座 (6/22-7/22)</option>
+                                <option value="狮子座">狮子座 (7/23-8/22)</option>
+                                <option value="处女座">处女座 (8/23-9/22)</option>
+                                <option value="天秤座">天秤座 (9/23-10/23)</option>
+                                <option value="天蝎座">天蝎座 (10/24-11/22)</option>
+                                <option value="射手座">射手座 (11/23-12/21)</option>
+                                <option value="摩羯座">摩羯座 (12/22-1/19)</option>
+                                <option value="水瓶座">水瓶座 (1/20-2/18)</option>
+                                <option value="双鱼座">双鱼座 (2/19-3/20)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">性别</label>
+                            <select id="gender" name="gender" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                                <option value="">请选择性别</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                                <option value="保密">保密</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">个人简介</label>
+                        <textarea id="bio" name="bio" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus" placeholder="介绍一下自己吧..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">感兴趣的星座</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="白羊座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">白羊座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="金牛座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">金牛座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="双子座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">双子座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="巨蟹座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">巨蟹座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="狮子座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">狮子座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="处女座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">处女座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="天秤座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">天秤座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="天蝎座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">天蝎座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="射手座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">射手座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="摩羯座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">摩羯座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="水瓶座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">水瓶座</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-constellations" value="双鱼座" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">双鱼座</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">兴趣标签</label>
+                        <div class="flex flex-wrap gap-3">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="星座性格分析" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">星座性格分析</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="星座配对" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">星座配对</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="星座运势" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">星座运势</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="星座文化" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">星座文化</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="星座交友" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">星座交友</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="interest-tags" value="星座测试" class="form-checkbox text-primary h-4 w-4 rounded border-gray-300 focus:ring-primary">
+                                <span class="ml-2 text-gray-700">星座测试</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 shadow-md">
+                            更新个人信息
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 星座文化介绍 -->
+    <section id="constellation-intro" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">星座文化科普</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">探索十二星座的历史渊源、神话传说和文化内涵</p>
+            </div>
+            
+            <div class="relative">
+                <!-- 星座知识轮播 -->
+                <div class="overflow-hidden">
+                    <div id="carousel-inner" class="flex transition-transform duration-500 ease-in-out">
+                        <!-- 白羊座 -->
+                        <div class="min-w-full md:min-w-[33.333%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                                <div class="h-48 bg-gradient-to-r from-red-400 to-red-600 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-8xl">♈</div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2">白羊座</h3>
+                                    <p class="text-sm text-gray-500 mb-4">3月21日 - 4月19日</p>
+                                    <p class="text-gray-700 mb-4">
+                                        白羊座是黄道十二宫的第一宫，守护星为火星。白羊座象征着新生与开始，代表着勇气和行动力。在古希腊神话中，白羊座与伊阿宋寻找金羊毛的故事有关。
+                                    </p>
+                                    <button class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors duration-200">
+                                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 金牛座 -->
+                        <div class="min-w-full md:min-w-[33.333%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                                <div class="h-48 bg-gradient-to-r from-green-400 to-green-600 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-8xl">♉</div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2">金牛座</h3>
+                                    <p class="text-sm text-gray-500 mb-4">4月20日 - 5月20日</p>
+                                    <p class="text-gray-700 mb-4">
+                                        金牛座是黄道十二宫的第二宫，守护星为金星。金牛座象征着物质与资源，代表着稳定和坚持。在古希腊神话中，金牛座与宙斯化身为白牛劫持欧罗巴的传说有关。
+                                    </p>
+                                    <button class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors duration-200">
+                                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 双子座 -->
+                        <div class="min-w-full md:min-w-[33.333%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                                <div class="h-48 bg-gradient-to-r from-yellow-400 to-yellow-600 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-8xl">♊</div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2">双子座</h3>
+                                    <p class="text-sm text-gray-500 mb-4">5月21日 - 6月21日</p>
+                                    <p class="text-gray-700 mb-4">
+                                        双子座是黄道十二宫的第三宫，守护星为水星。双子座象征着沟通与变化，代表着机智和适应力。在古希腊神话中，双子座与宙斯的双胞胎儿子卡斯托耳和波吕克斯有关。
+                                    </p>
+                                    <button class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors duration-200">
+                                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 巨蟹座 -->
+                        <div class="min-w-full md:min-w-[33.333%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                                <div class="h-48 bg-gradient-to-r from-blue-400 to-blue-600 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-8xl">♋</div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2">巨蟹座</h3>
+                                    <p class="text-sm text-gray-500 mb-4">6月22日 - 7月22日</p>
+                                    <p class="text-gray-700 mb-4">
+                                        巨蟹座是黄道十二宫的第四宫，守护星为月亮。巨蟹座象征着家庭与情感，代表着关怀和保护。在古希腊神话中，巨蟹座与赫拉克勒斯与九头蛇许德拉的战斗有关。
+                                    </p>
+                                    <button class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors duration-200">
+                                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 狮子座 -->
+                        <div class="min-w-full md:min-w-[33.333%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                                <div class="h-48 bg-gradient-to-r from-orange-400 to-orange-600 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-8xl">♌</div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2">狮子座</h3>
+                                    <p class="text-sm text-gray-500 mb-4">7月23日 - 8月22日</p>
+                                    <p class="text-gray-700 mb-4">
+                                        狮子座是黄道十二宫的第五宫，守护星为太阳。狮子座象征着自信与领导力，代表着勇气和创造力。在古希腊神话中，狮子座与赫拉克勒斯杀死的尼米亚猛狮有关。
+                                    </p>
+                                    <button class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors duration-200">
+                                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 处女座 -->
+                        <div class="min-w-full md:min-w-[33.333%] lg:min-w-[33.333%] p-4">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                                <div class="h-48 bg-gradient-to-r from-gray-400 to-gray-600 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-8xl">♍</div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2">处女座</h3>
+                                    <p class="text-sm text-gray-500 mb-4">8月23日 - 9月22日</p>
+                                    <p class="text-gray-700 mb-4">
+                                        处女座是黄道十二宫的第六宫，守护星为水星。处女座象征着完美与服务，代表着分析和组织能力。在古希腊神话中，处女座与农业女神得墨忒耳的女儿珀耳塞福涅有关。
+                                    </p>
+                                    <button class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors duration-200">
+                                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 轮播控制按钮 -->
+                <button id="prev-btn" class="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors duration-200 focus:outline-none z-10">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button id="next-btn" class="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors duration-200 focus:outline-none z-10">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- 星座文化资料 -->
+            <div class="mt-16">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-6">星座文化的历史渊源</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <p class="text-gray-700 mb-4">
+                                    星座文化的起源可以追溯到古埃及时期，当时人们通过观察天象来预测季节变化和农业活动。后来，古希腊人将星座与神话故事结合，形成了我们今天所熟知的十二星座体系。
+                                </p>
+                                <p class="text-gray-700 mb-4">
+                                    古希腊天文学家托勒密在其著作《天文学大成》中记录了48个星座，其中就包括了现代黄道十二宫的雏形。这些星座后来经过阿拉伯学者的传承，最终在文艺复兴时期传入欧洲。
+                                </p>
+                                <p class="text-gray-700">
+                                    现代星座学结合了天文学、心理学和占星学的元素，成为一种流行的文化现象。虽然在科学上缺乏实证，但星座文化在心理学和社会学层面有其独特的价值和意义。
+                                </p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h4 class="text-lg font-semibold mb-4">星座文化的现代意义</h4>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                            <i class="fa fa-check text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-gray-800">自我认知</h5>
+                                            <p class="text-sm text-gray-600">帮助人们更好地了解自己的性格特点和行为模式</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                            <i class="fa fa-check text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-gray-800">社交纽带</h5>
+                                            <p class="text-sm text-gray-600">星座话题成为现代社交中的破冰工具和交流媒介</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                            <i class="fa fa-check text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-gray-800">文化传承</h5>
+                                            <p class="text-sm text-gray-600">延续和发展了古老的天文知识和神话传说</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                            <i class="fa fa-check text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-gray-800">心理调适</h5>
+                                            <p class="text-sm text-gray-600">在面对生活压力时提供一种心理寄托和安慰</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 星座性格分析 -->
+    <section id="constellation-analysis" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">星座性格分析</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">深入了解十二星座的性格特点、行为模式和情感表达方式</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- 选择星座进行分析 -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-md p-6 sticky top-24">
+                        <h3 class="text-xl font-bold mb-6">选择星座进行分析</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="constellation-select" class="block text-sm font-medium text-gray-700 mb-1">星座</label>
+                                <select id="constellation-select" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                                    <option value="">请选择星座</option>
+                                    <option value="白羊座">白羊座</option>
+                                    <option value="金牛座">金牛座</option>
+                                    <option value="双子座">双子座</option>
+                                    <option value="巨蟹座">巨蟹座</option>
+                                    <option value="狮子座">狮子座</option>
+                                    <option value="处女座">处女座</option>
+                                    <option value="天秤座">天秤座</option>
+                                    <option value="天蝎座">天蝎座</option>
+                                    <option value="射手座">射手座</option>
+                                    <option value="摩羯座">摩羯座</option>
+                                    <option value="水瓶座">水瓶座</option>
+                                    <option value="双鱼座">双鱼座</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="analysis-type" class="block text-sm font-medium text-gray-700 mb-1">分析类型</label>
+                                <select id="analysis-type" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                                    <option value="personality">性格特点</option>
+                                    <option value="career">事业发展</option>
+                                    <option value="relationship">情感关系</option>
+                                    <option value="life">生活习惯</option>
+                                </select>
+                            </div>
+                            
+                            <button id="analyze-btn" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-lg transition-colors duration-200 shadow-sm">
+                                开始分析
+                            </button>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <h4 class="font-semibold mb-4">最近热门分析</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+                                    <span class="text-gray-700">狮子座恋爱性格分析</span>
+                                    <i class="fa fa-angle-right text-gray-400"></i>
+                                </li>
+                                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+                                    <span class="text-gray-700">处女座职场表现</span>
+                                    <i class="fa fa-angle-right text-gray-400"></i>
+                                </li>
+                                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+                                    <span class="text-gray-700">双鱼座社交技巧</span>
+                                    <i class="fa fa-angle-right text-gray-400"></i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分析结果 -->
+                <div class="lg:col-span-2">
+                    <div id="analysis-result" class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <!-- 分析结果头部 -->
+                        <div class="bg-primary/10 p-6">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <h3 id="analysis-title" class="text-2xl font-bold mb-1">白羊座性格特点分析</h3>
+                                    <p class="text-gray-600">探索白羊座的核心性格特质和行为模式</p>
+                                </div>
+                                <div class="mt-4 md:mt-0 flex space-x-3">
+                                    <button class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                        <i class="fa fa-share-alt"></i>
+                                    </button>
+                                    <button class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                                        <i class="fa fa-bookmark-o"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 分析内容 -->
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="font-semibold mb-3">核心性格特质</h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-2 flex-shrink-0">
+                                                <i class="fa fa-star text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">热情开朗，充满活力</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-2 flex-shrink-0">
+                                                <i class="fa fa-star text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">勇敢果断，行动力强</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-2 flex-shrink-0">
+                                                <i class="fa fa-star text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">坦诚直接，不喜欢拐弯抹角</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-2 flex-shrink-0">
+                                                <i class="fa fa-star text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">独立自主，喜欢挑战</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-2 flex-shrink-0">
+                                                <i class="fa fa-star text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">乐观积极，充满自信</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold mb-3">潜在挑战</h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-2 flex-shrink-0">
+                                                <i class="fa fa-exclamation-triangle text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">容易冲动，缺乏耐心</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-2 flex-shrink-0">
+                                                <i class="fa fa-exclamation-triangle text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">过于自我中心，忽视他人感受</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-2 flex-shrink-0">
+                                                <i class="fa fa-exclamation-triangle text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">三分钟热度，持久性较差</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-2 flex-shrink-0">
+                                                <i class="fa fa-exclamation-triangle text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">争强好胜，容易与人发生冲突</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-2 flex-shrink-0">
+                                                <i class="fa fa-exclamation-triangle text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">不善于接受批评和建议</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold mb-3">性格详细分析</h4>
+                                <div class="prose max-w-none">
+                                    <p class="text-gray-700 mb-4">
+                                        白羊座是黄道十二宫的第一个星座，由火星守护，代表着新生与开始。白羊座的人通常精力充沛，充满热情，有着强烈的好奇心和探索欲望。他们喜欢挑战，追求刺激，对新鲜事物充满兴趣。
+                                    </p>
+                                    <p class="text-gray-700 mb-4">
+                                        在人际关系中，白羊座的人坦诚直接，不喜欢拐弯抹角，有什么想法就会直接表达。这种直率的性格让他们很容易结交朋友，但有时也会因为过于直接而得罪人。他们重视朋友的真诚，讨厌虚伪和做作。
+                                    </p>
+                                    <p class="text-gray-700">
+                                        在工作中，白羊座的人充满创造力和行动力，能够快速启动项目并推动其发展。他们不喜欢等待，总是希望能够立即看到结果。然而，他们的耐心有限，对于需要长期坚持的工作可能会感到枯燥和不耐烦。
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="bg-gray-50 rounded-lg p-5">
+                                    <h4 class="font-semibold mb-3">与白羊座相处的建议</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                                <i class="fa fa-lightbulb-o text-sm"></i>
+                                            </div>
+                                            <p class="text-gray-700 text-sm">给予他们足够的自由空间，不要试图过多控制他们</p>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                                <i class="fa fa-lightbulb-o text-sm"></i>
+                                            </div>
+                                            <p class="text-gray-700 text-sm">用坦诚的方式与他们沟通，避免隐瞒和拐弯抹角</p>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                                <i class="fa fa-lightbulb-o text-sm"></i>
+                                            </div>
+                                            <p class="text-gray-700 text-sm">欣赏他们的热情和创造力，给予积极的反馈和鼓励</p>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-0.5 flex-shrink-0">
+                                                <i class="fa fa-lightbulb-o text-sm"></i>
+                                            </div>
+                                            <p class="text-gray-700 text-sm">在他们冲动行事时，适当给予提醒和建议</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-semibold mb-3">性格匹配度</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">水瓶座</span>
+                                                <span class="text-sm text-gray-600">95%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 95%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">狮子座</span>
+                                                <span class="text-sm text-gray-600">90%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">射手座</span>
+                                                <span class="text-sm text-gray-600">85%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">天蝎座</span>
+                                                <span class="text-sm text-gray-600">60%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">金牛座</span>
+                                                <span class="text-sm text-gray-600">50%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 50%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 星座配对分析 -->
+                    <div class="mt-8">
+                        <div class="bg-white rounded-xl shadow-md p-6">
+                            <h3 class="text-xl font-bold mb-6">星座配对分析</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="constellation1" class="block text-sm font-medium text-gray-700 mb-1">第一个星座</label>
+                                    <select id="constellation1" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                                        <option value="">请选择星座</option>
+                                        <option value="白羊座">白羊座</option>
+                                        <option value="金牛座">金牛座</option>
+                                        <option value="双子座">双子座</option>
+                                        <option value="巨蟹座">巨蟹座</option>
+                                        <option value="狮子座">狮子座</option>
+                                        <option value="处女座">处女座</option>
+                                        <option value="天秤座">天秤座</option>
+                                        <option value="天蝎座">天蝎座</option>
+                                        <option value="射手座">射手座</option>
+                                        <option value="摩羯座">摩羯座</option>
+                                        <option value="水瓶座">水瓶座</option>
+                                        <option value="双鱼座">双鱼座</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="constellation2" class="block text-sm font-medium text-gray-700 mb-1">第二个星座</label>
+                                    <select id="constellation2" class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus">
+                                        <option value="">请选择星座</option>
+                                        <option value="白羊座">白羊座</option>
+                                        <option value="金牛座">金牛座</option>
+                                        <option value="双子座">双子座</option>
+                                        <option value="巨蟹座">巨蟹座</option>
+                                        <option value="狮子座">狮子座</option>
+                                        <option value="处女座">处女座</option>
+                                        <option value="天秤座">天秤座</option>
+                                        <option value="天蝎座">天蝎座</option>
+                                        <option value="射手座">射手座</option>
+                                        <option value="摩羯座">摩羯座</option>
+                                        <option value="水瓶座">水瓶座</option>
+                                        <option value="双鱼座">双鱼座</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-6 text-center">
+                                <button id="match-btn" class="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 shadow-sm">
+                                    分析配对关系
+                                </button>
+                            </div>
+                            
+                            <!-- 配对分析结果 -->
+                            <div id="match-result" class="mt-8 hidden">
+                                <div class="border-t border-gray-200 pt-6">
+                                    <h4 id="match-title" class="text-lg font-semibold mb-4">白羊座与双子座配对分析</h4>
+                                    <div class="mb-6">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-700">匹配度</span>
+                                            <span id="compatibility-score" class="font-bold text-primary">85%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-3">
+                                            <div id="compatibility-bar" class="bg-primary h-3 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h5 class="font-medium text-gray-800 mb-2">相配优势</h5>
+                                            <p id="match-advantages" class="text-gray-700">
+                                                白羊座和双子座都充满活力和好奇心，他们在一起总是有很多有趣的事情可以做。白羊座的直率和双子座的机智相得益彰，能够相互理解和支持。
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-gray-800 mb-2">需要注意</h5>
+                                            <p id="match-notes" class="text-gray-700">
+                                                白羊座可能会觉得双子座变化太快，而双子座可能会认为白羊座过于冲动。双方都需要学会耐心和理解，给对方足够的空间。
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-gray-800 mb-2">相处建议</h5>
+                                            <p id="match-advice" class="text-gray-700">
+                                                多进行坦诚的交流，学会欣赏彼此的优点。白羊座可以尝试更加包容双子座的多变，而双子座也可以在做出决定前考虑白羊座的感受。
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 星座运势分享 -->
+    <section id="constellation-fortune" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">星座运势分享</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">了解十二星座的每日、每周、每月运势预测</p>
+            </div>
+            
+            <!-- 运势导航 -->
+            <div class="flex justify-center mb-8">
+                <div class="bg-white rounded-lg shadow-md flex p-1">
+                    <button class="px-6 py-2 rounded-md bg-primary text-white font-medium">每日运势</button>
+                    <button class="px-6 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100 transition-colors duration-200">每周运势</button>
+                    <button class="px-6 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100 transition-colors duration-200">每月运势</button>
+                    <button class="px-6 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100 transition-colors duration-200">年度运势</button>
+                </div>
+            </div>
+            
+            <!-- 今日运势概览 -->
+            <div class="bg-white rounded-xl shadow-md p-8 mb-12">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">今日运势概览</h3>
+                        <p class="text-gray-600"><span id="current-date">2023年6月15日</span> | 星期四</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <div class="relative">
+                            <select id="fortune-constellation" class="appearance-none px-6 py-2 border border-gray-300 rounded-lg form-input-focus pr-10">
+                                <option value="全部">全部星座</option>
+                                <option value="白羊座">白羊座</option>
+                                <option value="金牛座">金牛座</option>
+                                <option value="双子座">双子座</option>
+                                <option value="巨蟹座">巨蟹座</option>
+                                <option value="狮子座">狮子座</option>
+                                <option value="处女座">处女座</option>
+                                <option value="天秤座">天秤座</option>
+                                <option value="天蝎座">天蝎座</option>
+                                <option value="射手座">射手座</option>
+                                <option value="摩羯座">摩羯座</option>
+                                <option value="水瓶座">水瓶座</option>
+                                <option value="双鱼座">双鱼座</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fa fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 运势卡片网格 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- 白羊座运势 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-3">
+                                    <div class="text-xl">♈</div>
+                                </div>
+                                <h4 class="font-bold text-lg">白羊座</h4>
+                            </div>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-1">综合运势</h5>
+                            <p class="text-gray-600">今天的你充满活力，思维敏捷，适合开展新计划。</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">事业</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">爱情</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">财运</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-half-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 金牛座运势 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                                    <div class="text-xl">♉</div>
+                                </div>
+                                <h4 class="font-bold text-lg">金牛座</h4>
+                            </div>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-1">综合运势</h5>
+                            <p class="text-gray-600">今天适合稳扎稳打，关注细节，可能会有意外收获。</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">事业</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">爱情</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">财运</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 双子座运势 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
+                                    <div class="text-xl">♊</div>
+                                </div>
+                                <h4 class="font-bold text-lg">双子座</h4>
+                            </div>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-half-o text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-1">综合运势</h5>
+                            <p class="text-gray-600">今天沟通能力强，适合与人交流合作，可能会有新思路。</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">事业</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-half-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">爱情</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">财运</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 巨蟹座运势 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                    <div class="text-xl">♋</div>
+                                </div>
+                                <h4 class="font-bold text-lg">巨蟹座</h4>
+                            </div>
+                            <div class="flex">
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star text-yellow-400"></i>
+                                <i class="fa fa-star-o text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-1">综合运势</h5>
+                            <p class="text-gray-600">今天情绪较为敏感，适合关注家庭和个人情感需求。</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">事业</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">爱情</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-half-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2">
+                                <p class="text-xs text-gray-500">财运</p>
+                                <div class="flex justify-center mt-1">
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star text-yellow-400"></i>
+                                    <i class="fa fa-star-o text-yellow-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="text-primary hover:text-primary/80 font-medium flex items-center justify-center mx-auto transition-colors duration-200">
+                        查看全部星座运势 <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 星座运势图表 -->
+            <div class="bg-white rounded-xl shadow-md p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-6">星座运势趋势</h3>
+                <div class="h-80">
+                    <canvas id="fortuneChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 运势分享区 -->
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold">用户运势分享</h3>
+                    <button class="bg-primary/10 text-primary font-medium px-5 py-2 rounded-lg hover:bg-primary/20 transition-colors duration-200">
+                        分享我的运势
+                    </button>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- 分享1 -->
+                    <div class="border-b border-gray-100 pb-6">
+                        <div class="flex items-start">
+                            <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-10 h-10 rounded-full mr-4">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">星光闪闪</h4>
+                                        <p class="text-xs text-gray-500">白羊座 | 2小时前</p>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <button class="text-gray-500 hover:text-primary transition-colors duration-200">
+                                            <i class="fa fa-thumbs-up"></i> <span class="ml-1 text-sm">42</span>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-primary transition-colors duration-200">
+                                            <i class="fa fa-comment-o"></i> <span class="ml-1 text-sm">8</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 mb-4">
+                                    今天白羊座运势超准！早上被领导表扬了，下午还收到了暗恋对象的消息，简直太开心了！大家今天都怎么样？
+                                </p>
+                                <div class="flex space-x-2 flex-wrap">
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">白羊座运势</span>
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">今日好运</span>
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">星座准准准</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 分享2 -->
+                    <div class="border-b border-gray-100 pb-6">
+                        <div class="flex items-start">
+                            <img src="https://picsum.photos/id/26/40/40" alt="用户头像" class="w-10 h-10 rounded-full mr-4">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">星座控</h4>
+                                        <p class="text-xs text-gray-500">金牛座 | 5小时前</p>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <button class="text-gray-500 hover:text-primary transition-colors duration-200">
+                                            <i class="fa fa-thumbs-up"></i> <span class="ml-1 text-sm">28</span>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-primary transition-colors duration-200">
+                                            <i class="fa fa-comment-o"></i> <span class="ml-1 text-sm">5</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 mb-4">
+                                    金牛座今天财运不错，果然如运势所说，下午收到了一笔意外之财！不过在感情上还是需要主动一些，加油吧！
+                                </p>
+                                <div class="flex space-x-2 flex-wrap">
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">金牛座</span>
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">财运亨通</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 分享3 -->
+                    <div>
+                        <div class="flex items-start">
+                            <img src="https://picsum.photos/id/91/40/40" alt="用户头像" class="w-10 h-10 rounded-full mr-4">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">双子星</h4>
+                                        <p class="text-xs text-gray-500">双子座 | 昨天</p>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <button class="text-gray-500 hover:text-primary transition-colors duration-200">
+                                            <i class="fa fa-thumbs-up"></i> <span class="ml-1 text-sm">56</span>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-primary transition-colors duration-200">
+                                            <i class="fa fa-comment-o"></i> <span class="ml-1 text-sm">12</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 mb-4">
+                                    分享一下我整理的双子座本周运势要点：周一宜沟通，周二防小人，周三有惊喜，周四需谨慎，周五财运旺，周末感情升温！
+                                </p>
+                                <div class="flex space-x-2 flex-wrap">
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">双子座</span>
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">每周运势</span>
+                                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">运势整理</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="border border-gray-300 text-gray-700 font-medium px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                        加载更多
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 话题讨论区 -->
+    <section id="topic-discussion" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">星座话题讨论区</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">加入讨论，分享你的星座见解和经验，与志同道合的朋友交流互动</p>
+            </div>
+            
+            <!-- 话题筛选 -->
+            <div class="mb-8 bg-white rounded-xl shadow-md p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="flex flex-wrap gap-3 mb-4 md:mb-0">
+                        <button class="px-4 py-2 bg-primary text-white rounded-lg font-medium">全部话题</button>
+                        <button class="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 font-medium hover:border-primary/30 hover:text-primary transition-colors duration-200">星座性格</button>
+                        <button class="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 font-medium hover:border-primary/30 hover:text-primary transition-colors duration-200">星座配对</button>
+                        <button class="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 font-medium hover:border-primary/30 hover:text-primary transition-colors duration-200">星座运势</button>
+                        <button class="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 font-medium hover:border-primary/30 hover:text-primary transition-colors duration-200">星座问答</button>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <input type="text" placeholder="搜索话题..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg form-input-focus w-full md:w-64">
+                            <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        <button class="ml-4 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200">
+                            发布话题
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 热门话题 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fa fa-fire text-orange-500 mr-2"></i> 热门话题
+                </h3>
+                
+                <div class="space-y-4">
+                    <!-- 话题1 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-start">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                                    白羊座和什么星座最配？来分享你的恋爱经验吧！
+                                </h4>
+                                <p class="text-gray-600 mb-4 line-clamp-2">
+                                    最近有朋友问我白羊座和什么星座最配，作为一个谈过几段恋爱的白羊，我觉得和射手座、狮子座相处都很不错，大家有什么不同的看法吗？
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-6">
+                                        <div class="flex items-center">
+                                            <img src="https://picsum.photos/id/64/32/32" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                                            <span class="text-sm text-gray-700">白羊小王子</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-500 text-sm">
+                                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs mr-3">白羊座</span>
+                                            <span>2小时前</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-6 text-gray-500 text-sm">
+                                        <div class="flex items-center">
+                                            <i class="fa fa-eye mr-1"></i> 1.2k
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-comment-o mr-1"></i> 56
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-heart-o mr-1"></i> 128
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 话题2 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-start">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                                    如何与处女座同事相处？他们总是太挑剔了！
+                                </h4>
+                                <p class="text-gray-600 mb-4 line-clamp-2">
+                                    最近和一个处女座同事合作，他总是对我做的事情挑三拣四，虽然知道他是为了工作好，但真的让人很有压力。大家有什么和处女座相处的好方法吗？
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-6">
+                                        <div class="flex items-center">
+                                            <img src="https://picsum.photos/id/26/32/32" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                                            <span class="text-sm text-gray-700">职场新人</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-500 text-sm">
+                                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs mr-3">职场星座</span>
+                                            <span>昨天</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-6 text-gray-500 text-sm">
+                                        <div class="flex items-center">
+                                            <i class="fa fa-eye mr-1"></i> 2.5k
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-comment-o mr-1"></i> 89
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-heart-o mr-1"></i> 156
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 话题3 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-start">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                                    十二星座最适合养什么宠物？我觉得双鱼座适合养猫！
+                                </h4>
+                                <p class="text-gray-600 mb-4 line-clamp-2">
+                                    刚刚看到一个有趣的话题，想问问大家觉得各个星座最适合养什么宠物？我是双鱼座，我觉得我超适合养猫，因为我们都很敏感和有爱心。
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-6">
+                                        <div class="flex items-center">
+                                            <img src="https://picsum.photos/id/91/32/32" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                                            <span class="text-sm text-gray-700">双鱼猫咪控</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-500 text-sm">
+                                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs mr-3">双鱼座</span>
+                                            <span>3天前</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-6 text-gray-500 text-sm">
+                                        <div class="flex items-center">
+                                            <i class="fa fa-eye mr-1"></i> 3.8k
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-comment-o mr-1"></i> 142
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-heart-o mr-1"></i> 231
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="border border-gray-300 text-gray-700 font-medium px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                        查看更多热门话题
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 最新话题 -->
+            <div>
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fa fa-clock-o text-blue-500 mr-2"></i> 最新话题
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 话题4 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <h4 class="text-base font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                            天蝎座的神秘感真的是天生的吗？
+                        </h4>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            作为天蝎座，经常被人说很神秘，但我觉得我只是比较内向而已。大家觉得天蝎座的神秘感是天生的还是后天养成的？
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img src="https://picsum.photos/id/42/32/32" alt="用户头像" class="w-6 h-6 rounded-full mr-2">
+                                <span class="text-xs text-gray-700">神秘天蝎</span>
+                                <span class="mx-2 text-gray-300">|</span>
+                                <span class="text-xs text-gray-500">30分钟前</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-500 text-xs">
+                                <div class="flex items-center">
+                                    <i class="fa fa-comment-o mr-1"></i> 12
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-heart-o mr-1"></i> 28
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 话题5 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <h4 class="text-base font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                            狮子座的领导风格有什么特点？
+                        </h4>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            我的领导是狮子座，感觉他总是充满自信和热情，但有时候也会比较强势。大家遇到过狮子座的领导吗？来说说他们的领导风格吧。
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img src="https://picsum.photos/id/65/32/32" alt="用户头像" class="w-6 h-6 rounded-full mr-2">
+                                <span class="text-xs text-gray-700">职场观察家</span>
+                                <span class="mx-2 text-gray-300">|</span>
+                                <span class="text-xs text-gray-500">1小时前</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-500 text-xs">
+                                <div class="flex items-center">
+                                    <i class="fa fa-comment-o mr-1"></i> 18
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-heart-o mr-1"></i> 32
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 话题6 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <h4 class="text-base font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                            水瓶座真的很难理解吗？我觉得我只是思想比较超前而已！
+                        </h4>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            经常听到别人说水瓶座很难理解，思维跳跃。但我觉得我只是思想比较开放和超前，喜欢探索新事物而已。同为水瓶座的朋友们有同感吗？
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img src="https://picsum.photos/id/36/32/32" alt="用户头像" class="w-6 h-6 rounded-full mr-2">
+                                <span class="text-xs text-gray-700">水瓶先锋</span>
+                                <span class="mx-2 text-gray-300">|</span>
+                                <span class="text-xs text-gray-500">2小时前</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-500 text-xs">
+                                <div class="flex items-center">
+                                    <i class="fa fa-comment-o mr-1"></i> 24
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-heart-o mr-1"></i> 45
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 话题7 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                        <h4 class="text-base font-semibold mb-2 hover:text-primary transition-colors duration-200 cursor-pointer">
+                            金牛座的理财能力真的很强吗？
+                        </h4>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            都说金牛座善于理财，但我作为金牛座感觉自己并没有特别擅长管理钱。大家觉得星座和理财能力真的有关系吗？
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img src="https://picsum.photos/id/77/32/32" alt="用户头像" class="w-6 h-6 rounded-full mr-2">
+                                <span class="text-xs text-gray-700">小金牛</span>
+                                <span class="mx-2 text-gray-300">|</span>
+                                <span class="text-xs text-gray-500">3小时前</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-500 text-xs">
+                                <div class="flex items-center">
+                                    <i class="fa fa-comment-o mr-1"></i> 15
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-heart-o mr-1"></i> 22
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="border border-gray-300 text-gray-700 font-medium px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                        加载更多话题
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户匹配 -->
+    <section id="user-matching" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">星座匹配推荐</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">根据您的星座和兴趣，我们为您推荐以下志同道合的朋友</p>
+            </div>
+            
+            <!-- 匹配用户卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- 用户1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                    <div class="relative h-48 bg-gradient-to-r from-pink-400 to-purple-500">
+                        <img src="https://picsum.photos/id/64/300/200" alt="用户封面" class="absolute inset-0 w-full h-full object-cover opacity-50">
+                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <h3 class="text-white font-bold">星光闪闪</h3>
+                                    <div class="flex items-center text-white/80 text-sm">
+                                        <div class="mr-2">♈</div>
+                                        <span>白羊座</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star-half-o text-yellow-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-map-marker text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">匹配标签</h4>
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座性格分析</span>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座配对</span>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座运势</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            热爱星座文化，喜欢研究星座性格和配对，对占星学有浓厚兴趣。希望能认识更多志同道合的朋友！
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-primary/10 text-primary font-medium py-2 rounded-lg hover:bg-primary/20 transition-colors duration-200 mr-2">
+                                    打招呼
+                                </button>
+                                <button class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:text-primary hover:border-primary transition-colors duration-200">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 用户2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                    <div class="relative h-48 bg-gradient-to-r from-blue-400 to-teal-500">
+                        <img src="https://picsum.photos/id/26/300/200" alt="用户封面" class="absolute inset-0 w-full h-full object-cover opacity-50">
+                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <h3 class="text-white font-bold">星座控</h3>
+                                    <div class="flex items-center text-white/80 text-sm">
+                                        <div class="mr-2">♉</div>
+                                        <span>金牛座</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star-o text-yellow-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-map-marker text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">匹配标签</h4>
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座文化</span>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座测试</span>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座交友</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            金牛座男生，喜欢研究星座和心理学的关系，相信星座可以帮助我们更好地了解自己和他人。
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-primary/10 text-primary font-medium py-2 rounded-lg hover:bg-primary/20 transition-colors duration-200 mr-2">
+                                    打招呼
+                                </button>
+                                <button class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:text-primary hover:border-primary transition-colors duration-200">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 用户3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                    <div class="relative h-48 bg-gradient-to-r from-yellow-400 to-orange-500">
+                        <img src="https://picsum.photos/id/91/300/200" alt="用户封面" class="absolute inset-0 w-full h-full object-cover opacity-50">
+                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <h3 class="text-white font-bold">双子星</h3>
+                                    <div class="flex items-center text-white/80 text-sm">
+                                        <div class="mr-2">♊</div>
+                                        <span>双子座</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                    <i class="fa fa-star text-yellow-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-map-marker text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">匹配标签</h4>
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座运势</span>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座配对</span>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">星座文化</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                            专业星座运势分析师，每天更新星座运势，擅长星座配对分析。欢迎大家一起交流星座知识！
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-primary/10 text-primary font-medium py-2 rounded-lg hover:bg-primary/20 transition-colors duration-200 mr-2">
+                                    打招呼
+                                </button>
+                                <button class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:text-primary hover:border-primary transition-colors duration-200">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 shadow-md">
+                    发现更多匹配用户
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">常见问题</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">关于星座交流平台的常见问题解答</p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- FAQ 1 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-white hover:bg-gray-50 transition-colors duration-200">
+                        <span class="font-medium text-lg">如何设置个人星座信息？</span>
+                        <i class="fa fa-plus text-primary transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 pt-0 border-t border-gray-100">
+                        <p class="text-gray-600">
+                            在页面顶部的导航栏点击"个人中心"，或者向下滚动到"个人星座信息"部分，填写您的昵称、出生日期、星座、性别等信息，然后选择您感兴趣的星座和标签，最后点击"更新个人信息"按钮即可完成设置。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-white hover:bg-gray-50 transition-colors duration-200">
+                        <span class="font-medium text-lg">如何发布星座话题？</span>
+                        <i class="fa fa-plus text-primary transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 pt-0 border-t border-gray-100">
+                        <p class="text-gray-600">
+                            进入"星座话题讨论区"页面，点击右上角的"发布话题"按钮，在弹出的对话框中输入话题标题和内容，选择相关标签，然后点击"发布"按钮即可。发布的话题需要经过审核后才能在平台上显示。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-white hover:bg-gray-50 transition-colors duration-200">
+                        <span class="font-medium text-lg">星座匹配是如何计算的？</span>
+                        <i class="fa fa-plus text-primary transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 pt-0 border-t border-gray-100">
+                        <p class="text-gray-600">
+                            我们的星座匹配系统基于多个因素进行计算，包括您设置的星座信息、感兴趣的星座、兴趣标签等。系统会分析这些信息，为您推荐在星座性格、兴趣爱好等方面相似度较高的用户，帮助您找到志同道合的朋友。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-white hover:bg-gray-50 transition-colors duration-200">
+                        <span class="font-medium text-lg">星座运势预测的依据是什么？</span>
+                        <i class="fa fa-plus text-primary transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 pt-0 border-t border-gray-100">
+                        <p class="text-gray-600">
+                            我们的星座运势预测基于传统占星学理论，结合星座的守护星、元素属性、宫位等因素进行分析。需要注意的是，星座运势仅供参考，不能完全决定一个人的命运，每个人的人生都由自己掌握。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 5 -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left bg-white hover:bg-gray-50 transition-colors duration-200">
+                        <span class="font-medium text-lg">如何与平台上的其他用户互动？</span>
+                        <i class="fa fa-plus text-primary transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden p-6 pt-0 border-t border-gray-100">
+                        <p class="text-gray-600">
+                            您可以通过多种方式与其他用户互动：在话题讨论区评论、点赞他人的分享，在用户匹配推荐中向感兴趣的用户发送打招呼消息，或者点击用户头像查看其详细资料后发送私信。请记住保持友好和尊重，共同维护良好的社区氛围。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fa fa-star text-primary text-3xl mr-3"></i>
+                        <span class="text-xl font-bold">星座交流</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        探索星座的奥秘，结识有缘人。在这个充满星光的平台，发现星座文化的魅力。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-200">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-200">
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-200">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-200">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">快速链接</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#constellation-intro" class="text-gray-400 hover:text-primary transition-colors duration-200">星座文化</a></li>
+                        <li><a href="#constellation-analysis" class="text-gray-400 hover:text-primary transition-colors duration-200">性格分析</a></li>
+                        <li><a href="#constellation-fortune" class="text-gray-400 hover:text-primary transition-colors duration-200">运势分享</a></li>
+                        <li><a href="#topic-discussion" class="text-gray-400 hover:text-primary transition-colors duration-200">话题讨论</a></li>
+                        <li><a href="#user-matching" class="text-gray-400 hover:text-primary transition-colors duration-200">用户匹配</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">星座导航</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">白羊座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">金牛座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">双子座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">巨蟹座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">狮子座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">处女座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">天秤座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">天蝎座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">射手座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">摩羯座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">水瓶座</a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">双鱼座</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">联系我们</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope text-primary mr-3"></i>
+                            <span class="text-gray-400">contact@xingzuo.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone text-primary mr-3"></i>
+                            <span class="text-gray-400">400-123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-map-marker text-primary mr-3"></i>
+                            <span class="text-gray-400">北京市海淀区星光大厦</span>
+                        </li>
+                    </ul>
+                    <div class="mt-6">
+                        <h4 class="text-sm font-medium mb-3">订阅星座资讯</h4>
+                        <div class="flex">
+                            <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 bg-white/10 border border-white/20 rounded-l-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary w-full">
+                            <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-r-lg transition-colors duration-200">
+                                订阅
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2023 星座交流平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <!-- 主要JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.add('bg-white/95', 'backdrop-blur-sm', 'shadow-md');
+                nav.classList.remove('bg-white', 'shadow-sm');
+            } else {
+                nav.classList.add('bg-white', 'shadow-sm');
+                nav.classList.remove('bg-white/95', 'backdrop-blur-sm', 'shadow-md');
+            }
+        });
+
+        // 移动端菜单
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 表单提交
+        const profileForm = document.getElementById('constellation-profile-form');
+        if (profileForm) {
+            profileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('个人信息已更新！');
+            });
+        }
+
+        // 星座轮播
+        const carouselInner = document.getElementById('carousel-inner');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('#carousel-inner > div').length;
+        const slidesToShow = window.innerWidth >= 768 ? 3 : 1;
+
+        function updateCarousel() {
+            const slideWidth = 100 / slidesToShow;
+            carouselInner.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+        }
+
+        if (prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', () => {
+                currentSlide = Math.max(currentSlide - 1, 0);
+                updateCarousel();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                currentSlide = Math.min(currentSlide + 1, totalSlides - slidesToShow);
+                updateCarousel();
+            });
+        }
+
+        // 星座分析
+        const analyzeBtn = document.getElementById('analyze-btn');
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', () => {
+                const constellation = document.getElementById('constellation-select').value;
+                const analysisType = document.getElementById('analysis-type').value;
+                if (constellation) {
+                    alert(`正在为您分析${constellation}的${getAnalysisTypeName(analysisType)}，请稍候...`);
+                } else {
+                    alert('请选择星座');
+                }
+            });
+        }
+
+        function getAnalysisTypeName(type) {
+            const typeMap = {
+                'personality': '性格特点',
+                'career': '事业发展',
+                'relationship': '情感关系',
+                'life': '生活习惯'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 星座配对分析
+        const matchBtn = document.getElementById('match-btn');
+        if (matchBtn) {
+            matchBtn.addEventListener('click', () => {
+                const constellation1 = document.getElementById('constellation1').value;
+                const constellation2 = document.getElementById('constellation2').value;
+                if (constellation1 && constellation2) {
+                    const matchResult = document.getElementById('match-result');
+                    matchResult.classList.remove('hidden');
+                    document.getElementById('match-title').textContent = `${constellation1}与${constellation2}配对分析`;
+                    
+                    // 随机生成匹配度
+                    const compatibilityScore = Math.floor(Math.random() * 40) + 60;
+                    document.getElementById('compatibility-score').textContent = `${compatibilityScore}%`;
+                    document.getElementById('compatibility-bar').style.width = `${compatibilityScore}%`;
+                } else {
+                    alert('请选择两个星座');
+                }
+            });
+        }
+
+        // 运势图表
+        const fortuneChart = document.getElementById('fortuneChart');
+        if (fortuneChart) {
+            new Chart(fortuneChart, {
+                type: 'line',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [{
+                        label: '白羊座',
+                        data: [75, 82, 78, 85, 90, 88, 92],
+                        borderColor: '#FF5252',
+                        backgroundColor: 'rgba(255, 82, 82, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: '金牛座',
+                        data: [80, 78, 85, 90, 88, 82, 86],
+                        borderColor: '#66BB6A',
+                        backgroundColor: 'rgba(102, 187, 106, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: '双子座',
+                        data: [85, 90, 82, 78, 86, 92, 95],
+                        borderColor: '#FFCA28',
+                        backgroundColor: 'rgba(255, 202, 40, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // 设置当前日期
+        const currentDate = document.getElementById('current-date');
+        if (currentDate) {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            currentDate.textContent = `${year}年${month}月${day}日`;
+        }
+
+        // FAQ手风琴效果
+        const faqToggles = document.querySelectorAll('.faq-toggle');
+        faqToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i');
+                
+                content.classList.toggle('hidden');
+                icon.classList.toggle('fa-plus');
+                icon.classList.toggle('fa-minus');
+                icon.classList.toggle('rotate-45');
+            });
+        });
+
+        // 返回顶部按钮
+        const backToTopBtn = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    // 关闭移动端菜单
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html>

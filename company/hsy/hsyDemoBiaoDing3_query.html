@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+
+<!-- 搜索表单 -->
+<form id="searchForm">
+    产品名称：<input type="text" id="productName"><br>
+    激励电压：<input type="text" id="excitationVoltage"><br>
+    <button type="button" class="el-button el-button--primary el-button--small" onclick="fetchData()">查询</button>
+    <button type="button" class="el-button el-button--primary el-button--small" onclick="resetForm()">重置</button>
+</form>
+
+<!-- 数据表格 -->
+<table id="dataTable">
+    <thead>
+    <tr>
+        <th>产品名称</th>
+        <th>精度</th>
+        <th>灵敏度</th>
+        <th>激励电压</th>
+        <th>放大倍数</th>
+        <th>量程</th>
+        <th>分辨率</th>
+        <th>满电压</th>
+        <th>供电</th>
+        <th>输出</th>
+        <th>编号</th>
+        <th>制造日期</th>
+        <th>制造单位</th>
+        <th>检测日期</th>
+        <th>修正气压</th>
+        <th>检测温度</th>
+        <th>采集频率</th>
+        <th>系数</th>
+        <th>截距</th>
+        <th>最大偏差</th>
+        <th>最小偏差</th>
+        <th>是否合格</th>
+        <th>偏差占比</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 表格数据将在这里动态插入 -->
+    </tbody>
+</table>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    // 假设的原始数据
+    var originalData = [
+        {
+            productName: '产品A',
+            accuracy: '0.01',
+            sensitivity: '1.0',
+            excitationVoltage: '12V',
+            amplification: '10',
+            range: '0-100',
+            resolution: '0.01',
+            fullScaleVoltage: '5V',
+            powerSupply: '5V',
+            output: '1A',
+            serialNumber: 'SN123456',
+            manufacturingDate: '2024-01-01',
+            manufacturer: '制造单位A',
+            inspectionDate: '2024-12-28',
+            correctedPressure: '1.03kg/cm²',
+            inspectionTemperature: '25°C',
+            samplingFrequency: '100Hz',
+            coefficient: '1.0',
+            intercept: '0.5',
+            maximumDeviation: '0.1',
+            minimumDeviation: '0.05',
+            compliance: '合格',
+            deviationRatio: '0.05%'
+        },
+        // 更多数据...
+    ];
+    var form = document.getElementById('searchForm');
+    var formData = new FormData(form);
+    //post请求
+    fetch('http://127.0.0.1:55055/v1/binding/product/list', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    }).then(response => response.json())
+        .then(data => {
+            originalData = data.productDataList;
+        })
+    // 当前表格数据
+    var tableData = [...originalData];
+
+    // 重置表单和表格数据
+    function resetForm() {
+        document.getElementById('productName').value = '';
+        document.getElementById('accuracy').value = '';
+        document.getElementById('sensitivity').value = '';
+        document.getElementById('excitationVoltage').value = '';
+        tableData = [...originalData];
+        renderTable();
+    }
+
+    // 根据查询条件过滤数据并更新表格
+    function fetchData() {
+        var productName = document.getElementById('productName').value;
+        var excitationVoltage = document.getElementById('excitationVoltage').value;
+
+        tableData = originalData.filter(item => {
+            return (
+                (!productName || item.productName.includes(productName)) &&
+                (!excitationVoltage || item.excitationVoltage.includes(excitationVoltage))
+            );
+        });
+        renderTable();
+    }
+
+    // 渲染表格
+    function renderTable() {
+        var tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // 清空表格
+        tableData.forEach(function (row) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = `
+      <td>${row.productName}</td>
+      <td>${row.accuracy}</td>
+      <td>${row.sensitivity}</td>
+      <td>${row.excitationVoltage}</td>
+      <td>${row.amplification}</td>
+      <td>${row.range}</td>
+      <td>${row.resolution}</td>
+      <td>${row.fullScaleVoltage}</td>
+      <td>${row.powerSupply}</td>
+      <td>${row.output}</td>
+      <td>${row.serialNumber}</td>
+      <td>${row.manufacturingDate}</td>
+      <td>${row.manufacturer}</td>
+      <td>${row.inspectionDate}</td>
+      <td>${row.correctedPressure}</td>
+      <td>${row.inspectionTemperature}</td>
+      <td>${row.samplingFrequency}</td>
+      <td>${row.coefficient}</td>
+      <td>${row.intercept}</td>
+      <td>${row.maximumDeviation}</td>
+      <td>${row.minimumDeviation}</td>
+      <td>${row.compliance}</td>
+      <td>${row.deviationRatio}</td>
+    `;
+            tableBody.appendChild(tr);
+        });
+    }
+</script>
+</body>
+</html>

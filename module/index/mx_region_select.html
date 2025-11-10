@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择地区 - 聊天室</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .province-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .province-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .province-item:hover {
+            background-color: #007bff;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+
+        .province-item:active {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .province-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+            }
+
+            .province-item {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fas fa-map-marker-alt"></i> 请选择您所在的地区
+        </div>
+        <div class="subtitle">
+            选择后将进入对应地区的专属聊天频道
+        </div>
+        
+        <div class="province-grid" id="provinceGrid">
+            <!-- 省份选项将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 中国省级行政区划列表（按标准顺序）
+        const provinces = [
+            { name: '北京市', pinyin: 'beijing' },
+            { name: '天津市', pinyin: 'tianjin' },
+            { name: '河北省', pinyin: 'hebei' },
+            { name: '山西省', pinyin: 'shanxi' },
+            { name: '内蒙古自治区', pinyin: 'neimenggu' },
+            { name: '辽宁省', pinyin: 'liaoning' },
+            { name: '吉林省', pinyin: 'jilin' },
+            { name: '黑龙江省', pinyin: 'heilongjiang' },
+            { name: '上海市', pinyin: 'shanghai' },
+            { name: '江苏省', pinyin: 'jiangsu' },
+            { name: '浙江省', pinyin: 'zhejiang' },
+            { name: '安徽省', pinyin: 'anhui' },
+            { name: '福建省', pinyin: 'fujian' },
+            { name: '江西省', pinyin: 'jiangxi' },
+            { name: '山东省', pinyin: 'shandong' },
+            { name: '河南省', pinyin: 'henan' },
+            { name: '湖北省', pinyin: 'hubei' },
+            { name: '湖南省', pinyin: 'hunan' },
+            { name: '广东省', pinyin: 'guangdong' },
+            { name: '广西壮族自治区', pinyin: 'guangxi' },
+            { name: '海南省', pinyin: 'hainan' },
+            { name: '重庆市', pinyin: 'chongqing' },
+            { name: '四川省', pinyin: 'sichuan' },
+            { name: '贵州省', pinyin: 'guizhou' },
+            { name: '云南省', pinyin: 'yunnan' },
+            { name: '西藏自治区', pinyin: 'xizang' },
+            { name: '陕西省', pinyin: 'shanxi' },
+            { name: '甘肃省', pinyin: 'gansu' },
+            { name: '青海省', pinyin: 'qinghai' },
+            { name: '宁夏回族自治区', pinyin: 'ningxia' },
+            { name: '新疆维吾尔自治区', pinyin: 'xinjiang' },
+            { name: '香港特别行政区', pinyin: 'xianggang' },
+            { name: '澳门特别行政区', pinyin: 'aomen' },
+            { name: '台湾省', pinyin: 'taiwan' }
+        ];
+
+        // 生成省份选择项
+        function generateProvinceItems() {
+            const grid = document.getElementById('provinceGrid');
+            
+            provinces.forEach(province => {
+                const item = document.createElement('div');
+                item.className = 'province-item';
+                item.textContent = province.name;
+                item.dataset.pinyin = province.pinyin;
+                item.dataset.name = province.name;
+                
+                // 添加点击事件
+                item.addEventListener('click', function() {
+                    const pinyin = this.dataset.pinyin;
+                    const name = this.dataset.name;
+                    
+                    // 保存选择到本地存储
+                    localStorage.setItem('selected_province', name);
+                    localStorage.setItem('selected_province_pinyin', pinyin);
+                    
+                    // 跳转到聊天页面并附带target参数
+                    window.location.href = 'mx_chat.html?target=' + pinyin;
+                });
+                
+                grid.appendChild(item);
+            });
+        }
+
+        // 页面加载时生成省份列表
+        document.addEventListener('DOMContentLoaded', generateProvinceItems);
+    </script>
+</body>
+</html>

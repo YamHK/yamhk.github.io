@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天室 - 地区群聊</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #121212;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 聊天应用容器 */
+        .chat-app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 顶部导航栏 */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: #075e54;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-icon {
+            font-size: 24px;
+            background-color: white;
+            color: #075e54;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .region-selector {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 12px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .region-selector:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 聊天消息区域 */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f0f2f5;
+            position: relative;
+        }
+
+        /* 系统消息 */
+        .system-message {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .system-message span {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        /* 消息行容器 */
+        .message-row {
+            display: flex;
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message-row.my-message {
+            justify-content: flex-end;
+        }
+
+        .message-row.other-message {
+            justify-content: flex-start;
+        }
+
+        /* 头像 */
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background-color: #ccc;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .message-row.my-message .message-avatar {
+            margin-right: 0;
+            margin-left: 8px;
+        }
+
+        /* 消息气泡容器 */
+        .message-content {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-row.my-message .message-content {
+            align-items: flex-end;
+        }
+
+        .message-row.other-message .message-content {
+            align-items: flex-start;
+        }
+
+        /* 用户名 */
+        .message-username {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            padding: 0 10px;
+        }
+
+        /* 消息气泡 */
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+
+        .message-row.my-message .message-bubble {
+            background-color: #dcf8c6;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-row.other-message .message-bubble {
+            background-color: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* 时间戳 */
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+            padding: 0 10px;
+        }
+
+        /* 消息状态 */
+        .message-status {
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .message-status.sending {
+            color: #999;
+        }
+
+        .message-status.sent {
+            color: #2196F3;
+        }
+
+        .message-status.read {
+            color: #00C853;
+        }
+
+        /* 输入区域 */
+        .chat-input {
+            padding: 15px 20px;
+            background-color: #f0f2f5;
+            border-top: 1px solid #ddd;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            background-color: white;
+            border-radius: 24px;
+            padding: 5px 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+
+        .input-tools i {
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .input-tools i:hover {
+            color: #075e54;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 0;
+            font-size: 15px;
+            resize: none;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .send-button {
+            background-color: #075e54;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-button:hover {
+            background-color: #128c7e;
+        }
+
+        .send-button i {
+            font-size: 16px;
+        }
+
+        /* 欢迎语样式 */
+        .welcome-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            animation: welcomeFadeIn 0.8s ease-out forwards;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .welcome-message .location {
+            color: #ffd700;
+            font-size: 28px;
+            margin: 10px 0;
+        }
+
+        .welcome-message .subtitle {
+            font-size: 16px;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+
+        /* 参数丢失提示弹窗 */
+        .param-error-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .param-error-modal button {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: white;
+            color: #e74c3c;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .param-error-modal button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 加载更多消息 */
+        .load-more {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .load-more button {
+            background-color: transparent;
+            border: 1px solid #ccc;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .load-more button:hover {
+            background-color: #eee;
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes welcomeFadeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes welcomeFadeOut {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        .welcome-message.fade-out {
+            animation: welcomeFadeOut 0.5s ease-in forwards;
+        }
+
+        /* 滚动条样式 */
+        .chat-messages::-webkit-scrollbar,
+        .message-input::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track,
+        .message-input::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb,
+        .message-input::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover,
+        .message-input::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .chat-app {
+                max-width: 100%;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .chat-header {
+                padding: 10px 15px;
+            }
+
+            .chat-messages {
+                padding: 15px;
+            }
+
+            .chat-input {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 欢迎语弹窗 -->
+<div id="welcomeModal" class="welcome-message" style="display: none;">
+    <div>欢迎来到</div>
+    <div class="location" id="selectedProvince">正在获取地区信息...</div>
+    <div>专属聊天室！</div>
+    <div class="subtitle">与当地朋友愉快交流吧！</div>
+</div>
+
+<!-- 参数丢失提示弹窗 -->
+<div id="paramErrorModal" class="param-error-modal" style="display: none;">
+    <div><i class="fas fa-exclamation-circle"></i> 地区信息丢失</div>
+    <div class="subtitle" style="margin-top: 20px;">请重新选择您所在的地区</div>
+    <button id="reselectBtn">重新选择</button>
+</div>
+
+<!-- 聊天应用容器 -->
+<div class="chat-app">
+    <!-- 顶部导航栏 -->
+    <div class="chat-header">
+        <div class="header-left">
+            <div class="chat-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="chat-title">地区群聊</div>
+        </div>
+        <div class="header-right">
+            <div class="region-selector" id="regionSelector">
+                <i class="fas fa-map-marker-alt"></i> <span id="currentRegion">未知地区</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 聊天消息区域 -->
+    <div class="chat-messages" id="messageContainer">
+        <div class="load-more" id="loadMoreContainer">
+            <button id="loadMoreBtn">加载更多消息</button>
+        </div>
+        <div class="system-message">
+            <span>欢迎来到 <span id="welcomeRegion">地区</span> 聊天室！</span>
+        </div>
+    </div>
+    
+    <!-- 输入区域 -->
+    <div class="chat-input">
+        <div class="input-container">
+            <div class="input-tools">
+                <i class="far fa-smile" title="表情"></i>
+                <i class="far fa-image" title="图片"></i>
+                <i class="far fa-paperclip" title="附件"></i>
+            </div>
+            <textarea class="message-input" id="messageInput" placeholder="输入消息..." rows="1"></textarea>
+            <button class="send-button" id="sendButton" title="发送消息">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 全局ESC键监听脚本 -->
+<script src="../../../js/global_escape_listener.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<!--连接服务器-->
+<script>
+    // 获取URL参数
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+    }
+
+    // 中国省份映射表（拼音到中文）
+    const provinceMap = {
+        'beijing': '北京市',
+        'tianjin': '天津市',
+        'hebei': '河北省',
+        'shanxi': '山西省',
+        'neimenggu': '内蒙古自治区',
+        'liaoning': '辽宁省',
+        'jilin': '吉林省',
+        'heilongjiang': '黑龙江省',
+        'shanghai': '上海市',
+        'jiangsu': '江苏省',
+        'zhejiang': '浙江省',
+        'anhui': '安徽省',
+        'fujian': '福建省',
+        'jiangxi': '江西省',
+        'shandong': '山东省',
+        'henan': '河南省',
+        'hubei': '湖北省',
+        'hunan': '湖南省',
+        'guangdong': '广东省',
+        'guangxi': '广西壮族自治区',
+        'hainan': '海南省',
+        'chongqing': '重庆市',
+        'sichuan': '四川省',
+        'guizhou': '贵州省',
+        'yunnan': '云南省',
+        'xizang': '西藏自治区',
+        'shanxi': '陕西省',
+        'gansu': '甘肃省',
+        'qinghai': '青海省',
+        'ningxia': '宁夏回族自治区',
+        'xinjiang': '新疆维吾尔自治区',
+        'xianggang': '香港特别行政区',
+        'aomen': '澳门特别行政区',
+        'taiwan': '台湾省'
+    };
+
+    // 省份映射表（中文到拼音）
+    const provincePinyinMap = {
+        '北京市': 'beijing',
+        '天津市': 'tianjin',
+        '河北省': 'hebei',
+        '山西省': 'shanxi',
+        '内蒙古自治区': 'neimenggu',
+        '辽宁省': 'liaoning',
+        '吉林省': 'jilin',
+        '黑龙江省': 'heilongjiang',
+        '上海市': 'shanghai',
+        '江苏省': 'jiangsu',
+        '浙江省': 'zhejiang',
+        '安徽省': 'anhui',
+        '福建省': 'fujian',
+        '江西省': 'jiangxi',
+        '山东省': 'shandong',
+        '河南省': 'henan',
+        '湖北省': 'hubei',
+        '湖南省': 'hunan',
+        '广东省': 'guangdong',
+        '广西壮族自治区': 'guangxi',
+        '海南省': 'hainan',
+        '重庆市': 'chongqing',
+        '四川省': 'sichuan',
+        '贵州省': 'guizhou',
+        '云南省': 'yunnan',
+        '西藏自治区': 'xizang',
+        '陕西省': 'shanxi',
+        '甘肃省': 'gansu',
+        '青海省': 'qinghai',
+        '宁夏回族自治区': 'ningxia',
+        '新疆维吾尔自治区': 'xinjiang',
+        '香港特别行政区': 'xianggang',
+        '澳门特别行政区': 'aomen',
+        '台湾省': 'taiwan'
+    };
+
+    // 获取用户地理位置
+    async function getUserLocation() {
+        try {
+            // 使用IP地理位置API获取位置信息
+            const response = await fetch('https://ipapi.co/json/');
+            const data = await response.json();
+            
+            // 检查响应数据是否有效
+            if (!data || data.error || !data.country) {
+                throw new Error('Invalid response data');
+            }
+            
+            // 如果是中国用户，优先获取省份信息
+            if (data.country === 'CN' && data.region) {
+                // 将英文省份名转换为中文
+                const regionMap = {
+                    'Beijing': '北京市',
+                    'Tianjin': '天津市',
+                    'Hebei': '河北省',
+                    'Shanxi': '山西省',
+                    'Inner Mongolia': '内蒙古自治区',
+                    'Liaoning': '辽宁省',
+                    'Jilin': '吉林省',
+                    'Heilongjiang': '黑龙江省',
+                    'Shanghai': '上海市',
+                    'Jiangsu': '江苏省',
+                    'Zhejiang': '浙江省',
+                    'Anhui': '安徽省',
+                    'Fujian': '福建省',
+                    'Jiangxi': '江西省',
+                    'Shandong': '山东省',
+                    'Henan': '河南省',
+                    'Hubei': '湖北省',
+                    'Hunan': '湖南省',
+                    'Guangdong': '广东省',
+                    'Guangxi': '广西壮族自治区',
+                    'Hainan': '海南省',
+                    'Chongqing': '重庆市',
+                    'Sichuan': '四川省',
+                    'Guizhou': '贵州省',
+                    'Yunnan': '云南省',
+                    'Tibet': '西藏自治区',
+                    'Shaanxi': '陕西省',
+                    'Gansu': '甘肃省',
+                    'Qinghai': '青海省',
+                    'Ningxia': '宁夏回族自治区',
+                    'Xinjiang': '新疆维吾尔自治区'
+                };
+                
+                // 获取省份名称，如果找不到映射则使用原始数据
+                const provinceName = regionMap[data.region] || data.region_name || data.region || '中国';
+                // 获取拼音，如果找不到映射则使用默认值
+                const provincePinyin = provincePinyinMap[provinceName] || 'china';
+                
+                return {
+                    name: provinceName,
+                    pinyin: provincePinyin
+                };
+            } else if (data.country_name) {
+                // 非中国用户或其他情况
+                return {
+                    name: data.country_name,
+                    pinyin: 'international'
+                };
+            } else {
+                // 默认情况
+                return {
+                    name: '中国',
+                    pinyin: 'china'
+                };
+            }
+        } catch (error) {
+            console.error('获取地理位置失败:', error);
+            // 默认返回中国
+            return {
+                name: '中国',
+                pinyin: 'china'
+            };
+        }
+    }
+
+    // 显示欢迎弹窗
+    function showWelcomeModal(provinceName) {
+        const welcomeModal = document.getElementById('welcomeModal');
+        const selectedProvince = document.getElementById('selectedProvince');
+        
+        if (welcomeModal && selectedProvince) {
+            selectedProvince.textContent = provinceName;
+            welcomeModal.style.display = 'block';
+            
+            // 3秒后隐藏欢迎弹窗
+            setTimeout(() => {
+                welcomeModal.classList.add('fade-out');
+                setTimeout(() => {
+                    welcomeModal.style.display = 'none';
+                }, 500);
+            }, 3000);
+        }
+    }
+
+    // 检查是否已有target参数
+    function hasTargetParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.has('target');
+    }
+
+    // 获取URL中的target参数
+    function getTargetParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('target');
+    }
+
+    // 重新加载页面并添加target参数
+    function reloadWithTarget(target) {
+        const url = new URL(window.location);
+        url.searchParams.set('target', target);
+        window.location.href = url.toString();
+    }
+
+    // 验证用户地理位置与target参数是否匹配
+    async function validateLocationWithTarget(target) {
+        try {
+            // 获取用户当前地理位置
+            const userLocation = await getUserLocation();
+            
+            // 如果target参数与用户地理位置匹配，返回true
+            if (userLocation.pinyin === target) {
+                return { valid: true, location: userLocation };
+            }
+            
+            // 特殊处理：如果target是有效的省份但与用户位置不匹配
+            if (provinceMap[target]) {
+                return { valid: false, location: userLocation, targetProvince: provinceMap[target] };
+            }
+            
+            // 其他情况默认为有效
+            return { valid: true, location: userLocation };
+        } catch (error) {
+            console.error('验证地理位置时出错:', error);
+            // 出错时默认允许访问
+            return { valid: true };
+        }
+    }
+
+    // 重新选择地区后触发事件
+    document.getElementById('reselectBtn').addEventListener('click', function() {
+        const welcomeModal = document.getElementById('welcomeModal');
+        const paramErrorModal = document.getElementById('paramErrorModal');
+        
+        if (paramErrorModal) {
+            paramErrorModal.style.display = 'none';
+        }
+        if (welcomeModal) {
+            welcomeModal.style.display = 'block';
+        }
+
+        // 检查参数，如果没有地区参数显示错误提示
+        const targetParam2 = getUrlParam('target');
+        if (!targetParam2 || !validateTargetParam(targetParam2)) {
+            setTimeout(() => {
+                if (welcomeModal) {
+                    welcomeModal.style.display = 'none';
+                }
+                if (paramErrorModal) {
+                    paramErrorModal.style.display = 'block';
+                }
+            }, 3000);
+        }
+
+        // 自动滚动到底部
+        scrollToBottom();
+    });
+
+    // 定期检查参数是否存在（处理参数丢失情况）
+    setInterval(() => {
+        const targetParam2 = getUrlParam('target');
+        if (!targetParam2 || !validateTargetParam(targetParam2)) {
+            showParamErrorModal();
+        }
+    }, 30000); // 每30秒检查一次
+</script>
+```

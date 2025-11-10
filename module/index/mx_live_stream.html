@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机直播视频播放器</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e6a419',
+                        secondary: '#1a237e',
+                        dark: '#1a1a2e',
+                        light: '#f8f9fa'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .video-container {
+                aspect-ratio: 16 / 9;
+            }
+            .control-btn {
+                @apply px-4 py-2 rounded-full text-white transition-all duration-300 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2;
+            }
+            .status-badge {
+                @apply px-3 py-1 text-xs rounded-full font-medium;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- 页面头部 -->
+    <header class="bg-dark text-white py-4">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">
+                    <i class="fa fa-video-camera mr-2 text-primary"></i>
+                    随机直播视频播放器
+                </h1>
+                <a href="../../index.html" class="text-gray-300 hover:text-primary transition-colors">
+                    <i class="fa fa-home mr-1"></i> 返回首页
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- 视频播放区域 -->
+        <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+            <div class="relative video-container bg-black rounded-lg overflow-hidden">
+                <!-- 视频元素 -->
+                <video id="liveVideo" class="w-full h-full object-contain" autoplay></video>
+                
+                <!-- 加载覆盖层 -->
+                <div id="loadingOverlay" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-primary border-solid mb-4"></div>
+                    <p id="loadingText" class="text-xl">正在加载直播源...</p>
+                </div>
+                
+                <!-- 错误覆盖层 -->
+                <div id="errorOverlay" class="absolute inset-0 bg-red-900/70 flex flex-col items-center justify-center text-white hidden">
+                    <i class="fa fa-exclamation-triangle text-5xl mb-4 text-red-300"></i>
+                    <p id="errorText" class="text-xl mb-4">加载失败，请尝试其他直播源</p>
+                    <button id="retryBtn" class="bg-primary hover:bg-primary/90 text-dark font-bold py-2 px-6 rounded-full transition-colors">
+                        <i class="fa fa-refresh mr-2"></i>重试
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 当前播放信息 -->
+            <div class="mt-4 flex justify-between items-center">
+                <div>
+                    <h2 id="streamTitle" class="text-lg font-semibold">加载中...</h2>
+                    <p id="streamInfo" class="text-sm text-gray-600">准备连接直播源</p>
+                </div>
+                <div id="streamStatus" class="status-badge bg-yellow-100 text-yellow-800">
+                    连接中
+                </div>
+            </div>
+        </div>
+        
+        <!-- 控制区域 -->
+        <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+            <div class="flex flex-wrap gap-4 justify-between items-center">
+                <div class="flex flex-wrap gap-3">
+                    <button id="randomStreamBtn" class="control-btn bg-primary">
+                        <i class="fa fa-random mr-2"></i>随机切换直播
+                    </button>
+                    <button id="playPauseBtn" class="control-btn bg-secondary">
+                        <i class="fa fa-pause mr-2"></i>暂停
+                    </button>
+                    <button id="refreshBtn" class="control-btn bg-gray-600">
+                        <i class="fa fa-refresh mr-2"></i>刷新当前
+                    </button>
+                </div>
+                
+                <div class="text-right">
+                    <span id="connectionTime" class="text-sm text-gray-600">连接时间: 00:00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 直播源列表 -->
+        <div class="bg-white rounded-xl shadow-lg p-4">
+            <h3 class="text-lg font-semibold mb-4">可用直播源</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
+                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">分辨率</th>
+                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="streamList" class="bg-white divide-y divide-gray-200">
+                        <!-- 直播源列表将通过JavaScript动态填充 -->
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                <i class="fa fa-spinner fa-spin mr-2"></i> 正在加载直播源列表...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400 text-sm">
+                <i class="fa fa-info-circle mr-1"></i>
+                本播放器仅播放公开可用的直播视频源，所有内容归原所有者所有
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const videoElement = document.getElementById('liveVideo');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            const errorOverlay = document.getElementById('errorOverlay');
+            const errorText = document.getElementById('errorText');
+            const retryBtn = document.getElementById('retryBtn');
+            const streamTitle = document.getElementById('streamTitle');
+            const streamInfo = document.getElementById('streamInfo');
+            const streamStatus = document.getElementById('streamStatus');
+            const randomStreamBtn = document.getElementById('randomStreamBtn');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const streamList = document.getElementById('streamList');
+            const connectionTime = document.getElementById('connectionTime');
+            
+            // 存储直播源列表
+            let liveStreamSources = [];
+            // 当前播放的直播源
+            let currentStream = null;
+            // 连接计时器
+            let connectionTimer = null;
+            let connectionStartTime = 0;
+            // 重试次数
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            // 更新的直播源列表 - 包含更多国内公开的直播源
+            // 这些是公开可用的测试直播源，更稳定可靠
+            const sampleStreamSources = [
+                // 国内直播源
+                {
+                    id: 1,
+                    name: 'CCTV-1 综合频道',
+                    url: 'https://live.cctvnews.cctv.com/live/cctv1/index.m3u8',
+                    type: '央视',
+                    resolution: '高清',
+                    description: '中央电视台综合频道'
+                },
+                {
+                    id: 2,
+                    name: 'CCTV-2 财经频道',
+                    url: 'https://live.cctvnews.cctv.com/live/cctv2/index.m3u8',
+                    type: '央视',
+                    resolution: '高清',
+                    description: '中央电视台财经频道'
+                },
+                {
+                    id: 3,
+                    name: 'CCTV-13 新闻频道',
+                    url: 'https://live.cctvnews.cctv.com/live/cctv13/index.m3u8',
+                    type: '央视',
+                    resolution: '高清',
+                    description: '中央电视台新闻频道'
+                },
+                {
+                    id: 4,
+                    name: 'CCTV-6 电影频道',
+                    url: 'https://live.cctvnews.cctv.com/live/cctv6/index.m3u8',
+                    type: '央视',
+                    resolution: '高清',
+                    description: '中央电视台电影频道'
+                },
+                {
+                    id: 5,
+                    name: 'CGTN 英语频道',
+                    url: 'https://cdn.hls.cgtn.com/hls/live/CH/CGTNE0_1/index.m3u8',
+                    type: '央视',
+                    resolution: '高清',
+                    description: '中国国际电视台英语频道'
+                },
+                {
+                    id: 6,
+                    name: '东方卫视',
+                    url: 'https://flv.hitv.com/stream/astm3u8/direct/02100000011111000001?format=hls&vtype=1',
+                    type: '卫视',
+                    resolution: '高清',
+                    description: '上海广播电视台东方卫视'
+                },
+                {
+                    id: 7,
+                    name: '浙江卫视',
+                    url: 'https://flv.hitv.com/stream/astm3u8/direct/02100000021111000001?format=hls&vtype=1',
+                    type: '卫视',
+                    resolution: '高清',
+                    description: '浙江广播电视台卫视'
+                },
+                {
+                    id: 8,
+                    name: '北京卫视',
+                    url: 'https://flv.hitv.com/stream/astm3u8/direct/02100000031111000001?format=hls&vtype=1',
+                    type: '卫视',
+                    resolution: '高清',
+                    description: '北京广播电视台卫视'
+                },
+                {
+                    id: 9,
+                    name: '江苏卫视',
+                    url: 'https://flv.hitv.com/stream/astm3u8/direct/02100000041111000001?format=hls&vtype=1',
+                    type: '卫视',
+                    resolution: '高清',
+                    description: '江苏广播电视台卫视'
+                },
+                {
+                    id: 10,
+                    name: '湖南卫视',
+                    url: 'https://flv.hitv.com/stream/astm3u8/direct/02100000051111000001?format=hls&vtype=1',
+                    type: '卫视',
+                    resolution: '高清',
+                    description: '湖南广播电视台卫视'
+                },
+                // 备用测试直播源
+                {
+                    id: 11,
+                    name: 'MUX 测试直播流',
+                    url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                    type: '测试',
+                    resolution: '高清',
+                    description: 'MUX 公开测试直播流'
+                },
+                {
+                    id: 12,
+                    name: 'NASA TV 测试流',
+                    url: 'https://nasa-i.akamaihd.net/hls/live/253565/NTV-Public1/master_1000.m3u8',
+                    type: '科教',
+                    resolution: '标清',
+                    description: '美国国家航空航天局公共频道'
+                }
+            ];
+            
+            // 初始化
+            async function init() {
+                try {
+                    // 加载直播源列表
+                    await loadStreamSources();
+                    // 随机选择一个直播源开始播放
+                    selectRandomStream();
+                    // 绑定事件监听
+                    bindEvents();
+                } catch (error) {
+                    handleError('初始化失败', error);
+                }
+            }
+            
+            // 加载直播源列表
+            async function loadStreamSources() {
+                try {
+                    // 这里可以替换为从API获取直播源列表
+                    // 模拟异步加载
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    // 使用示例数据
+                    liveStreamSources = sampleStreamSources;
+                    
+                    // 更新直播源列表UI
+                    updateStreamListUI();
+                    
+                    console.log('直播源列表加载成功:', liveStreamSources.length, '个源');
+                    return liveStreamSources;
+                } catch (error) {
+                    console.error('加载直播源列表失败:', error);
+                    throw error;
+                }
+            }
+            
+            // 更新直播源列表UI
+            function updateStreamListUI() {
+                streamList.innerHTML = '';
+                
+                if (liveStreamSources.length === 0) {
+                    streamList.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                <i class="fa fa-exclamation-circle mr-2"></i> 未找到可用的直播源
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                liveStreamSources.forEach(stream => {
+                    const isActive = currentStream && currentStream.id === stream.id;
+                    const statusClass = isActive ? 
+                        'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+                    const statusText = isActive ? '播放中' : '可用';
+                    
+                    const row = document.createElement('tr');
+                    row.className = isActive ? 'bg-green-50' : '';
+                    row.innerHTML = `
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${stream.name}</div>
+                            <div class="text-xs text-gray-500">${stream.description}</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="text-sm text-gray-900">${stream.type}</span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="text-sm text-gray-900">${stream.resolution}</span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                            <button class="play-stream-btn text-primary hover:text-primary/80 transition-colors" data-id="${stream.id}">
+                                <i class="fa fa-play mr-1"></i> 播放
+                            </button>
+                        </td>
+                    `;
+                    streamList.appendChild(row);
+                });
+                
+                // 绑定播放按钮事件
+                document.querySelectorAll('.play-stream-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const streamId = parseInt(this.getAttribute('data-id'));
+                        playStreamById(streamId);
+                    });
+                });
+            }
+            
+            // 随机选择一个直播源
+            function selectRandomStream() {
+                if (liveStreamSources.length === 0) {
+                    handleError('没有可用的直播源');
+                    return;
+                }
+                
+                const randomIndex = Math.floor(Math.random() * liveStreamSources.length);
+                const randomStream = liveStreamSources[randomIndex];
+                
+                playStream(randomStream);
+                return randomStream;
+            }
+            
+            // 根据ID播放指定直播源
+            function playStreamById(streamId) {
+                const stream = liveStreamSources.find(s => s.id === streamId);
+                if (stream) {
+                    playStream(stream);
+                } else {
+                    handleError('未找到指定的直播源');
+                }
+            }
+            
+            // 播放指定直播源
+            function playStream(stream) {
+                if (!stream || !stream.url) {
+                    handleError('无效的直播源信息');
+                    return;
+                }
+                
+                // 重置状态
+                resetStream();
+                
+                // 更新状态UI
+                updateStatus('connecting', stream);
+                
+                // 设置当前播放的直播源
+                currentStream = stream;
+                
+                // 更新直播源列表UI
+                updateStreamListUI();
+                
+                // 尝试播放直播源
+                playVideo(stream.url).catch(error => {
+                    handleStreamError(stream, error);
+                });
+            }
+            
+            // 播放视频
+            async function playVideo(url) {
+                return new Promise((resolve, reject) => {
+                    // 增加调试信息
+                    console.log(`尝试播放直播源: ${url}`);
+                    console.log(`当前尝试的直播源数量: ${liveStreamSources.length}`);
+                    
+                    // 设置视频源
+                    videoElement.src = url;
+                    
+                    // 视频加载成功
+                    const onLoadedMetadata = () => {
+                        console.log('视频元数据加载成功');
+                        videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                        videoElement.removeEventListener('error', onError);
+                        clearTimeout(timeoutId);
+                        
+                        // 开始播放
+                        videoElement.play().then(() => {
+                            console.log('视频播放开始');
+                            updateStatus('playing');
+                            startConnectionTimer();
+                            resolve();
+                        }).catch(playError => {
+                            console.error('播放失败:', playError);
+                            reject(playError);
+                        });
+                    };
+                    
+                    // 视频加载错误
+                    const onError = (event) => {
+                        // 获取更详细的错误信息
+                        const errorCode = videoElement.error ? videoElement.error.code : '未知错误';
+                        const errorMessages = {
+                            1: '用户中止',
+                            2: '网络错误',
+                            3: '解码错误',
+                            4: '格式不支持',
+                            5: '未知错误'
+                        };
+                        const errorMsg = errorMessages[errorCode] || '未知错误';
+                        
+                        console.error(`视频加载错误: ${errorMsg} (错误代码: ${errorCode})`, event);
+                        videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                        videoElement.removeEventListener('error', onError);
+                        clearTimeout(timeoutId);
+                        reject(new Error(`视频加载错误: ${errorMsg} (错误代码: ${errorCode})`));
+                    };
+                    
+                    // 设置超时
+                    const timeoutId = setTimeout(() => {
+                        console.error('视频加载超时');
+                        videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                        videoElement.removeEventListener('error', onError);
+                        reject(new Error('视频加载超时'));
+                    }, 20000); // 增加超时时间到20秒
+                    
+                    // 添加事件监听器
+                    videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
+                    videoElement.addEventListener('error', onError);
+                });
+            }
+            
+            // 处理直播源错误
+            function handleStreamError(stream, error) {
+                console.error(`直播源播放失败 [${stream.name}]:`, error);
+                
+                // 显示更详细的错误信息
+                const errorMsg = error.message || '未知错误';
+                loadingText.textContent = `连接失败: ${errorMsg}`;
+                
+                retryCount++;
+                
+                if (retryCount < maxRetries) {
+                    console.log(`尝试重新连接... (${retryCount}/${maxRetries})`);
+                    loadingText.textContent = `连接失败 ${errorMsg}，正在重试... (${retryCount}/${maxRetries})`;
+                    
+                    // 延迟重试，增加延迟时间以避免频繁请求
+                    setTimeout(() => {
+                        playVideo(stream.url).catch(retryError => {
+                            handleStreamError(stream, retryError);
+                        });
+                    }, 3000); // 增加延迟时间到3秒
+                } else {
+                    // 达到最大重试次数，尝试其他直播源
+                    console.log('达到最大重试次数，尝试切换到其他直播源');
+                    retryCount = 0;
+                    
+                    // 从列表中移除当前失败的直播源
+                    liveStreamSources = liveStreamSources.filter(s => s.id !== stream.id);
+                    
+                    // 更新直播源列表UI
+                    updateStreamListUI();
+                    
+                    // 随机选择另一个直播源
+                    if (liveStreamSources.length > 0) {
+                        loadingText.textContent = '正在尝试其他直播源...';
+                        selectRandomStream();
+                    } else {
+                        handleError('所有直播源均不可用，请稍后再试。您可以尝试刷新页面或联系管理员。');
+                    }
+                }
+            }
+            
+            // 更新状态
+            function updateStatus(status, stream = null) {
+                switch (status) {
+                    case 'connecting':
+                        loadingOverlay.classList.remove('hidden');
+                        errorOverlay.classList.add('hidden');
+                        streamStatus.className = 'status-badge bg-yellow-100 text-yellow-800';
+                        streamStatus.textContent = '连接中';
+                        
+                        if (stream) {
+                            streamTitle.textContent = stream.name;
+                            streamInfo.textContent = `正在连接 ${stream.description}...`;
+                        }
+                        break;
+                    
+                    case 'playing':
+                        loadingOverlay.classList.add('hidden');
+                        errorOverlay.classList.add('hidden');
+                        streamStatus.className = 'status-badge bg-green-100 text-green-800';
+                        streamStatus.textContent = '播放中';
+                        
+                        if (currentStream) {
+                            streamInfo.textContent = `${currentStream.type} · ${currentStream.resolution} · ${currentStream.url}`;
+                        }
+                        break;
+                    
+                    case 'paused':
+                        streamStatus.className = 'status-badge bg-gray-100 text-gray-800';
+                        streamStatus.textContent = '已暂停';
+                        break;
+                    
+                    case 'error':
+                        loadingOverlay.classList.add('hidden');
+                        errorOverlay.classList.remove('hidden');
+                        streamStatus.className = 'status-badge bg-red-100 text-red-800';
+                        streamStatus.textContent = '错误';
+                        break;
+                }
+            }
+            
+            // 处理错误
+            function handleError(message, error = null) {
+                console.error('错误:', message, error);
+                errorText.textContent = message;
+                updateStatus('error');
+                
+                // 停止计时器
+                stopConnectionTimer();
+            }
+            
+            // 重置直播流
+            function resetStream() {
+                // 停止视频
+                videoElement.pause();
+                videoElement.src = '';
+                
+                // 停止计时器
+                stopConnectionTimer();
+                
+                // 重置状态
+                retryCount = 0;
+                currentStream = null;
+            }
+            
+            // 开始连接计时器
+            function startConnectionTimer() {
+                connectionStartTime = Date.now();
+                
+                if (connectionTimer) {
+                    clearInterval(connectionTimer);
+                }
+                
+                connectionTimer = setInterval(() => {
+                    const elapsed = Date.now() - connectionStartTime;
+                    const minutes = Math.floor(elapsed / 60000).toString().padStart(2, '0');
+                    const seconds = Math.floor((elapsed % 60000) / 1000).toString().padStart(2, '0');
+                    connectionTime.textContent = `连接时间: ${minutes}:${seconds}`;
+                }, 1000);
+            }
+            
+            // 停止连接计时器
+            function stopConnectionTimer() {
+                if (connectionTimer) {
+                    clearInterval(connectionTimer);
+                    connectionTimer = null;
+                }
+                connectionTime.textContent = '连接时间: 00:00';
+            }
+            
+            // 绑定事件
+            function bindEvents() {
+                // 随机切换直播
+                randomStreamBtn.addEventListener('click', selectRandomStream);
+                
+                // 播放/暂停
+                playPauseBtn.addEventListener('click', function() {
+                    if (videoElement.paused || videoElement.ended) {
+                        videoElement.play().then(() => {
+                            playPauseBtn.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停';
+                            updateStatus('playing');
+                            startConnectionTimer();
+                        }).catch(error => {
+                            console.error('播放失败:', error);
+                            handleError('播放失败，请重试');
+                        });
+                    } else {
+                        videoElement.pause();
+                        playPauseBtn.innerHTML = '<i class="fa fa-play mr-2"></i>播放';
+                        updateStatus('paused');
+                        stopConnectionTimer();
+                    }
+                });
+                
+                // 刷新当前直播
+                refreshBtn.addEventListener('click', function() {
+                    if (currentStream) {
+                        playStream(currentStream);
+                    } else {
+                        selectRandomStream();
+                    }
+                });
+                
+                // 重试按钮
+                retryBtn.addEventListener('click', function() {
+                    if (currentStream) {
+                        playStream(currentStream);
+                    } else {
+                        selectRandomStream();
+                    }
+                });
+                
+                // 视频错误事件
+                videoElement.addEventListener('error', function(event) {
+                    console.error('视频错误:', event);
+                    handleError('视频播放错误，请尝试其他直播源');
+                });
+                
+                // 视频中断事件
+                videoElement.addEventListener('stalled', function() {
+                    console.warn('视频加载中断');
+                    loadingText.textContent = '视频加载中断，正在恢复...';
+                    loadingOverlay.classList.remove('hidden');
+                });
+                
+                // 视频恢复播放
+                videoElement.addEventListener('playing', function() {
+                    if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
+                        loadingOverlay.classList.add('hidden');
+                        updateStatus('playing');
+                    }
+                });
+            }
+            
+            // 初始化应用
+            init();
+            
+            // 页面卸载时清理
+            window.addEventListener('beforeunload', function() {
+                resetStream();
+            });
+        });
+    </script>
+</body>
+</html>

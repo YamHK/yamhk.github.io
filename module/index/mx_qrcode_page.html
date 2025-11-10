@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成 - 英雄工具箱</title>
+    <link rel="stylesheet" href="../../element/font-awesome.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <style>
+        /* 游戏风格导航栏样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: '微软雅黑', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+        
+        /* 导航栏样式 */
+        .game-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #1a1536, #2c2362, #1a1536);
+            border-bottom: 2px solid #6b46c1;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d6bcfa;
+            text-shadow: 2px 2px 4px rgba(107, 70, 193, 0.5);
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-logo i {
+            margin-right: 10px;
+            color: #9f7aea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            background: rgba(107, 70, 193, 0.2);
+            color: #d6bcfa;
+            border-color: rgba(107, 70, 193, 0.5);
+        }
+        
+        .nav-link.active {
+            background: rgba(107, 70, 193, 0.3);
+            color: #d6bcfa;
+            border-color: #6b46c1;
+        }
+        
+        /* 下拉菜单样式 */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-button {
+            background: rgba(107, 70, 193, 0.2);
+            color: #d6bcfa;
+            border: 1px solid rgba(107, 70, 193, 0.5);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-button:hover {
+            background: rgba(107, 70, 193, 0.4);
+            border-color: #6b46c1;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 5px;
+            background: rgba(26, 21, 54, 0.95);
+            border: 1px solid #6b46c1;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            min-width: 200px;
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: block;
+            padding: 10px 16px;
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(107, 70, 193, 0.2);
+            color: #d6bcfa;
+            border-left-color: #6b46c1;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(107, 70, 193, 0.3);
+            margin: 4px 0;
+        }
+        
+        /* 容器样式 */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background: rgba(26, 21, 54, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(107, 70, 193, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* 标题样式 */
+        h1 {
+            color: #d6bcfa;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(107, 70, 193, 0.3);
+        }
+        
+        /* 功能卡片样式 */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(107, 70, 193, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(107, 70, 193, 0.3);
+            border-color: #6b46c1;
+        }
+        
+        .feature-card i {
+            font-size: 48px;
+            color: #9f7aea;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover i {
+            transform: scale(1.1);
+        }
+        
+        .feature-card h3 {
+            color: #d6bcfa;
+            margin-bottom: 10px;
+        }
+        
+        /* 输入表单样式 */
+        .input-form {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(107, 70, 193, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d6bcfa;
+            font-weight: bold;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(107, 70, 193, 0.5);
+            border-radius: 6px;
+            font-size: 16px;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6b46c1;
+            box-shadow: 0 0 10px rgba(107, 70, 193, 0.3);
+        }
+        
+        .option-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .option-item input[type="radio"],
+        .option-item input[type="checkbox"] {
+            accent-color: #6b46c1;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            background: linear-gradient(45deg, #6b46c1, #805ad5);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(107, 70, 193, 0.4);
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(45deg, #553c9a, #6b46c1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(107, 70, 193, 0.5);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(107, 70, 193, 0.5);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 70, 193, 0.2);
+        }
+        
+        /* 二维码展示区域 */
+        .qrcode-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(107, 70, 193, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .qrcode-image {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .qrcode-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .qrcode-image img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* 下载按钮容器 */
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        /* 预设模板选择器 */
+        .preset-templates {
+            margin-bottom: 30px;
+        }
+        
+        .preset-templates h3 {
+            color: #d6bcfa;
+            margin-bottom: 15px;
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .template-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(107, 70, 193, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .template-item:hover,
+        .template-item.active {
+            background: rgba(107, 70, 193, 0.2);
+            border-color: #6b46c1;
+            transform: translateY(-3px);
+        }
+        
+        .template-item i {
+            font-size: 32px;
+            color: #9f7aea;
+            margin-bottom: 8px;
+        }
+        
+        .template-item p {
+            margin: 0;
+            font-size: 12px;
+            color: #e0e0e0;
+        }
+        
+        /* 提示框样式 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: #9f7aea;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background: rgba(26, 21, 54, 0.95);
+            color: #e0e0e0;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid #6b46c1;
+            font-size: 14px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* 金币和用户信息样式 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .gold-coins {
+            display: flex;
+            align-items: center;
+            color: #FFD700;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+        
+        .gold-coins i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-nav {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            body {
+                padding-top: 120px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .feature-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .option-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .templates-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .qrcode-image {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 游戏风格导航栏 -->
+    <nav class="game-nav">
+        <div class="nav-logo">
+            <i class="fa fa-gamepad"></i>
+            <span>英雄工具箱</span>
+        </div>
+        
+        <div class="nav-links">
+            <a href="../../index.html" class="nav-link">首页</a>
+            <a href="mx_days.html" class="nav-link">重要日子</a>
+            <a href="mx_qrcode_page.html" class="nav-link active">二维码生成</a>
+            <a href="mx_travel_map.html" class="nav-link">去哪儿玩</a>
+            <a href="mx_weather.html" class="nav-link">天气查询</a>
+        </div>
+        
+        <div class="user-info">
+            <div class="gold-coins">
+                <i class="fa fa-diamond"></i>
+                <span>690</span>
+            </div>
+            
+            <div class="dropdown">
+                <button id="core-features-dropdown" class="dropdown-button">
+                    <i class="fa fa-th-large"></i>
+                    <span>核心功能</span>
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div id="core-features-menu" class="dropdown-menu">
+                    <!-- 菜单内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>二维码生成器</h1>
+        
+        <!-- 功能卡片 -->
+        <div class="feature-cards">
+            <div class="feature-card">
+                <i class="fa fa-qrcode"></i>
+                <h3>快速生成</h3>
+                <p>输入内容一键生成二维码</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa fa-download"></i>
+                <h3>多种格式</h3>
+                <p>支持PNG、JPG等多种导出格式</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa fa-sliders"></i>
+                <h3>自定义样式</h3>
+                <p>调整大小、颜色等参数个性化二维码</p>
+            </div>
+        </div>
+        
+        <!-- 预设模板选择器 -->
+        <div class="preset-templates">
+            <h3><i class="fa fa-magic mr-2"></i>快速模板</h3>
+            <div class="templates-grid">
+                <div class="template-item" onclick="applyTemplate('url')">
+                    <i class="fa fa-link"></i>
+                    <p>网址链接</p>
+                </div>
+                <div class="template-item" onclick="applyTemplate('text')">
+                    <i class="fa fa-file-text-o"></i>
+                    <p>文本信息</p>
+                </div>
+                <div class="template-item" onclick="applyTemplate('wifi')">
+                    <i class="fa fa-wifi"></i>
+                    <p>WiFi连接</p>
+                </div>
+                <div class="template-item" onclick="applyTemplate('vcard')">
+                    <i class="fa fa-address-card-o"></i>
+                    <p>联系人</p>
+                </div>
+                <div class="template-item" onclick="applyTemplate('email')">
+                    <i class="fa fa-envelope-o"></i>
+                    <p>电子邮箱</p>
+                </div>
+                <div class="template-item" onclick="applyTemplate('phone')">
+                    <i class="fa fa-phone"></i>
+                    <p>电话号码</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 二维码生成表单 -->
+        <div class="input-form">
+            <h2 style="color: #d6bcfa; margin-bottom: 20px; display: flex; align-items: center;">
+                <i class="fa fa-cogs mr-2"></i>二维码设置
+            </h2>
+            
+            <div class="form-group">
+                <label for="qrContent">二维码内容</label>
+                <textarea id="qrContent" placeholder="请输入网址、文本等内容..." required>https://www.example.com</textarea>
+            </div>
+            
+            <div class="option-group">
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label for="qrSize">二维码大小</label>
+                    <input type="number" id="qrSize" min="100" max="800" value="300" required>
+                </div>
+                
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label for="errorCorrection">纠错级别</label>
+                    <select id="errorCorrection">
+                        <option value="L">低 (7%)</option>
+                        <option value="M" selected>中 (15%)</option>
+                        <option value="Q">较高 (25%)</option>
+                        <option value="H">高 (30%)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label for="foregroundColor">前景色</label>
+                    <input type="text" id="foregroundColor" value="#000000" placeholder="#000000">
+                </div>
+                
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label for="backgroundColor">背景色</label>
+                    <input type="text" id="backgroundColor" value="#ffffff" placeholder="#ffffff">
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-item">
+                    <input type="checkbox" id="addLogo" value="addLogo">
+                    <label for="addLogo">添加中心Logo</label>
+                </div>
+                
+                <div class="option-item">
+                    <input type="checkbox" id="transparentBg" value="transparentBg">
+                    <label for="transparentBg">透明背景</label>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="generateQRCode()">
+                <i class="fa fa-refresh mr-2"></i>生成二维码
+            </button>
+            <button class="btn btn-secondary" onclick="resetForm()">
+                <i class="fa fa-undo mr-2"></i>重置设置
+            </button>
+        </div>
+        
+        <!-- 二维码展示区域 -->
+        <div class="qrcode-container">
+            <h2 style="color: #d6bcfa; margin-bottom: 20px; display: flex; align-items: center;">
+                <i class="fa fa-qrcode mr-2"></i>生成结果
+            </h2>
+            
+            <div class="qrcode-image">
+                <div id="qrcode"></div>
+            </div>
+            
+            <div class="download-buttons">
+                <button class="btn" onclick="downloadQRCode('png')">
+                    <i class="fa fa-download mr-2"></i>下载PNG
+                </button>
+                <button class="btn btn-secondary" onclick="downloadQRCode('jpeg')">
+                    <i class="fa fa-download mr-2"></i>下载JPEG
+                </button>
+                <button class="btn btn-secondary" onclick="copyQRCode()">
+                    <i class="fa fa-copy mr-2"></i>复制到剪贴板
+                </button>
+            </div>
+        </div>
+        
+        <!-- 高级设置 -->
+        <div class="input-form">
+            <h2 style="color: #d6bcfa; margin-bottom: 20px; display: flex; align-items: center;">
+                <i class="fa fa-sliders mr-2"></i>高级设置
+                <span class="tooltip">
+                    <i class="fa fa-question-circle"></i>
+                    <span class="tooltiptext">这些设置可能会影响二维码的可读性</span>
+                </span>
+            </h2>
+            
+            <div class="option-group">
+                <div class="form-group" style="flex: 1; min-width: 150px;">
+                    <label for="moduleSize">模块大小</label>
+                    <input type="number" id="moduleSize" min="1" max="10" value="4">
+                </div>
+                
+                <div class="form-group" style="flex: 1; min-width: 150px;">
+                    <label for="marginSize">边距大小</label>
+                    <input type="number" id="marginSize" min="0" max="50" value="4">
+                </div>
+                
+                <div class="form-group" style="flex: 1; min-width: 150px;">
+                    <label for="logoSize">Logo大小</label>
+                    <input type="number" id="logoSize" min="10" max="50" value="30">
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-item">
+                    <input type="radio" id="moduleStyleSquare" name="moduleStyle" value="square" checked>
+                    <label for="moduleStyleSquare">方块样式</label>
+                </div>
+                
+                <div class="option-item">
+                    <input type="radio" id="moduleStyleDot" name="moduleStyle" value="dot">
+                    <label for="moduleStyleDot">圆点样式</label>
+                </div>
+                
+                <div class="option-item">
+                    <input type="radio" id="moduleStyleRound" name="moduleStyle" value="round">
+                    <label for="moduleStyleRound">圆角样式</label>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="applyAdvancedSettings()">
+                <i class="fa fa-check mr-2"></i>应用高级设置
+            </button>
+        </div>
+    </div>
+    
+    <!-- 下拉框导航JavaScript -->
+    <script>
+        // 核心功能模块列表
+        const coreFeatures = [
+            { name: '重要日子记录', url: 'mx_days.html', icon: 'fa-calendar' },
+            { name: '二维码生成', url: 'mx_qrcode_page.html', icon: 'fa-qrcode' },
+            { name: '去哪儿玩', url: 'mx_travel_map.html', icon: 'fa-map-marker' },
+            { name: '矩阵工具', url: 'mx_matrix.html', icon: 'fa-th' },
+            { name: '俊杰服务平台', url: 'mx_junjie.html', icon: 'fa-star' },
+            { name: '正当季', url: 'mx_seasonal_products.html', icon: 'fa-leaf' },
+            { name: '聊天室', url: 'mx_chat.html', icon: 'fa-comments' },
+            { name: '签到系统', url: 'mx_sign.html', icon: 'fa-check-square-o' },
+            { name: '50OK平台', url: 'mx_50OK.html', icon: 'fa-check-circle' },
+            { name: '关注地区天气', url: 'mx_weather.html', icon: 'fa-cloud' }
+        ];
+        
+        // 随机选择3个功能
+        function getRandomFeatures(features, count) {
+            const shuffled = [...features].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+        
+        // 生成下拉菜单内容 - 游戏风格
+        function generateDropdownMenu() {
+            const menuElement = document.getElementById('core-features-menu');
+            if (!menuElement) return;
+            
+            const randomFeatures = getRandomFeatures(coreFeatures, 3);
+            
+            // 创建菜单内容
+            let menuContent = '';
+            randomFeatures.forEach(feature => {
+                menuContent += `
+                    <a href="${feature.url}" class="dropdown-item">
+                        <i class="fa ${feature.icon} mr-3 text-purple-400"></i>${feature.name}
+                    </a>
+                `;
+            });
+            
+            // 添加分隔线和更多选项
+            menuContent += `
+                <div class="dropdown-divider"></div>
+                <a href="../../index.html" class="dropdown-item">
+                    <i class="fa fa-ellipsis-h mr-3 text-purple-400"></i>查看全部功能
+                </a>
+            `;
+            
+            menuElement.innerHTML = menuContent;
+        }
+        
+        // 应用预设模板
+        function applyTemplate(type) {
+            const qrContent = document.getElementById('qrContent');
+            
+            switch (type) {
+                case 'url':
+                    qrContent.value = 'https://';
+                    qrContent.placeholder = '请输入网址，如 https://www.example.com';
+                    break;
+                case 'text':
+                    qrContent.value = '';
+                    qrContent.placeholder = '请输入文本内容...';
+                    break;
+                case 'wifi':
+                    qrContent.value = 'WIFI:S:网络名称;T:WPA;P:密码;;';
+                    qrContent.placeholder = 'WIFI:S:网络名称;T:WPA;P:密码;;';
+                    break;
+                case 'vcard':
+                    qrContent.value = 'BEGIN:VCARD\nVERSION:3.0\nFN:姓名\nTEL:电话号码\nEMAIL:邮箱\nEND:VCARD';
+                    qrContent.placeholder = '请输入联系人信息...';
+                    break;
+                case 'email':
+                    qrContent.value = 'mailto:example@mail.com';
+                    qrContent.placeholder = 'mailto:邮箱地址';
+                    break;
+                case 'phone':
+                    qrContent.value = 'tel:13800138000';
+                    qrContent.placeholder = 'tel:电话号码';
+                    break;
+            }
+            
+            // 高亮选中的模板
+            document.querySelectorAll('.template-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 生成二维码
+            generateQRCode();
+        }
+        
+        // 生成二维码
+        function generateQRCode() {
+            const content = document.getElementById('qrContent').value;
+            const size = parseInt(document.getElementById('qrSize').value);
+            const errorCorrection = document.getElementById('errorCorrection').value;
+            const foregroundColor = document.getElementById('foregroundColor').value;
+            const backgroundColor = document.getElementById('transparentBg').checked ? 'transparent' : document.getElementById('backgroundColor').value;
+            const moduleSize = parseInt(document.getElementById('moduleSize').value);
+            const marginSize = parseInt(document.getElementById('marginSize').value);
+            
+            if (!content) {
+                alert('请输入二维码内容！');
+                return;
+            }
+            
+            // 获取纠错级别对应的QR码生成器参数
+            const ecLevel = errorCorrection === 'L' ? 0 : errorCorrection === 'M' ? 1 : errorCorrection === 'Q' ? 2 : 3;
+            
+            // 创建QR码 - 修复库使用方式
+            const qr = qrcode(errorCorrection, 'H');
+            qr.addData(content);
+            qr.make();
+            
+            // 生成QR码HTML
+            const qrDiv = document.getElementById('qrcode');
+            qrDiv.innerHTML = '';
+            
+            // 创建QR码图像
+            const qrImg = qr.createImgTag(moduleSize, marginSize, '二维码');
+            qrDiv.innerHTML = qrImg;
+            
+            // 设置颜色
+            const img = qrDiv.querySelector('img');
+            if (img) {
+                // 转换为Canvas以支持自定义颜色
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = size;
+                canvas.height = size;
+                
+                // 先绘制背景
+                if (backgroundColor !== 'transparent') {
+                    ctx.fillStyle = backgroundColor;
+                    ctx.fillRect(0, 0, size, size);
+                }
+                
+                // 加载QR码图像并绘制
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, size, size);
+                    
+                    // 如果需要更改前景色
+                    if (foregroundColor !== '#000000') {
+                        const imageData = ctx.getImageData(0, 0, size, size);
+                        const data = imageData.data;
+                        
+                        for (let i = 0; i < data.length; i += 4) {
+                            // 如果像素是黑色的，替换为前景色
+                            if (data[i] === 0 && data[i+1] === 0 && data[i+2] === 0) {
+                                const rgb = hexToRgb(foregroundColor);
+                                data[i] = rgb.r;
+                                data[i+1] = rgb.g;
+                                data[i+2] = rgb.b;
+                            } else if (data[i] === 255 && data[i+1] === 255 && data[i+2] === 255) {
+                                // 如果是白色背景且需要透明
+                                if (backgroundColor === 'transparent') {
+                                    data[i+3] = 0;
+                                }
+                            }
+                        }
+                        
+                        ctx.putImageData(imageData, 0, 0);
+                    }
+                    
+                    // 如果需要添加Logo
+                    if (document.getElementById('addLogo').checked) {
+                        // 这里应该有添加Logo的代码
+                        // 为了演示，我们只显示一个提示
+                        alert('Logo添加功能需要上传图片，在实际应用中这里将实现Logo添加逻辑');
+                    }
+                    
+                    // 更新QR码容器内容为Canvas
+                    qrDiv.innerHTML = '';
+                    qrDiv.appendChild(canvas);
+                };
+                
+                // 设置图像源（触发onload）
+                img.src = img.src;
+            }
+        }
+        
+        // 应用高级设置
+        function applyAdvancedSettings() {
+            // 重新生成二维码以应用高级设置
+            generateQRCode();
+            
+            alert('高级设置已应用！');
+        }
+        
+        // 下载二维码
+        function downloadQRCode(format) {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) {
+                alert('请先生成二维码！');
+                return;
+            }
+            
+            let dataURL;
+            if (format === 'png') {
+                dataURL = canvas.toDataURL('image/png');
+            } else if (format === 'jpeg') {
+                dataURL = canvas.toDataURL('image/jpeg', 0.95);
+            }
+            
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = `二维码_${new Date().getTime()}.${format}`;
+            
+            // 触发下载
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // 复制二维码到剪贴板
+        function copyQRCode() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) {
+                alert('请先生成二维码！');
+                return;
+            }
+            
+            // 尝试复制到剪贴板
+            canvas.toBlob(blob => {
+                try {
+                    navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+                        .then(() => alert('二维码已复制到剪贴板！'))
+                        .catch(err => {
+                            console.error('复制失败:', err);
+                            alert('复制失败，请尝试截图保存');
+                        });
+                } catch (e) {
+                    alert('您的浏览器不支持此功能，请尝试截图保存');
+                }
+            });
+        }
+        
+        // 重置表单
+        function resetForm() {
+            document.getElementById('qrContent').value = 'https://www.example.com';
+            document.getElementById('qrSize').value = 300;
+            document.getElementById('errorCorrection').value = 'M';
+            document.getElementById('foregroundColor').value = '#000000';
+            document.getElementById('backgroundColor').value = '#ffffff';
+            document.getElementById('addLogo').checked = false;
+            document.getElementById('transparentBg').checked = false;
+            document.getElementById('moduleSize').value = 4;
+            document.getElementById('marginSize').value = 4;
+            document.getElementById('logoSize').value = 30;
+            document.getElementById('moduleStyleSquare').checked = true;
+            
+            // 重新生成二维码
+            generateQRCode();
+        }
+        
+        // 辅助函数：将十六进制颜色转换为RGB
+        function hexToRgb(hex) {
+            // 移除#号
+            hex = hex.replace(/^#/, '');
+            
+            // 解析RGB值
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            
+            return { r, g, b };
+        }
+        
+        // 在页面加载完成后生成下拉菜单并初始化二维码
+        document.addEventListener('DOMContentLoaded', function() {
+            generateDropdownMenu();
+            // 初始化生成一个默认二维码
+            generateQRCode();
+        });
+        
+        // 移动端交互优化
+        if (window.innerWidth <= 768) {
+            const dropdownButtons = document.querySelectorAll('.dropdown-button');
+            
+            dropdownButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const menu = this.nextElementSibling;
+                    
+                    // 关闭其他下拉菜单
+                    document.querySelectorAll('.dropdown-menu').forEach(m => {
+                        if (m !== menu) {
+                            m.style.visibility = 'hidden';
+                            m.style.opacity = '0';
+                            m.style.transform = 'translateY(-10px)';
+                        }
+                    });
+                    
+                    // 切换当前菜单显示状态
+                    if (menu.style.visibility === 'visible') {
+                        menu.style.visibility = 'hidden';
+                        menu.style.opacity = '0';
+                        menu.style.transform = 'translateY(-10px)';
+                    } else {
+                        menu.style.visibility = 'visible';
+                        menu.style.opacity = '1';
+                        menu.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            // 点击页面其他区域关闭下拉菜单
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.style.visibility = 'hidden';
+                    menu.style.opacity = '0';
+                    menu.style.transform = 'translateY(-10px)';
+                });
+            });
+        }
+    </script>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html>

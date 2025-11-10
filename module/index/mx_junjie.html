@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俊杰 - 两岸同心服务平台</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-left: 4px solid #003366;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #003366;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #003366;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background-color: #004488;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #003366;
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .note {
+            background-color: #fff8dc;
+            border-left: 4px solid #ffcc00;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>俊杰服务平台</h1>
+        <p>两岸一家亲，共筑中国梦</p>
+    </div>
+    
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+         <!-- 全局ESC键监听脚本 -->
+         <script src="../../../js/global_escape_listener.js"></script>
+      </div>
+    
+    <div class="container">
+        <div class="note">
+            <strong>温馨提示：</strong>台湾同胞是我们血浓于水的亲人，本平台旨在为有意了解大陆生活、工作、学习的台湾同胞提供相关信息和服务。
+        </div>
+        
+        <div class="section">
+            <h2>服务介绍</h2>
+            <p>"俊杰"平台致力于为台湾同胞提供全面的大陆生活信息服务，包括但不限于：</p>
+            <ul>
+                <li>就业创业指导</li>
+                <li>教育升学咨询</li>
+                <li>社会保障服务</li>
+                <li>生活便民信息</li>
+                <li>文化交流活动</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>信息登记</h2>
+            <p>如果您希望获取更多关于大陆生活的相关信息，请填写以下表格：</p>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contact">联系方式：</label>
+                    <input type="tel" id="contact" name="contact" placeholder="手机号码或电子邮箱">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">意向地区：</label>
+                    <select id="location" name="location">
+                        <option value="">请选择...</option>
+                        <option value="beijing">北京</option>
+                        <option value="shanghai">上海</option>
+                        <option value="guangzhou">广州</option>
+                        <option value="shenzhen">深圳</option>
+                        <option value="hangzhou">杭州</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="interest">关注领域：</label>
+                    <select id="interest" name="interest">
+                        <option value="">请选择...</option>
+                        <option value="employment">就业机会</option>
+                        <option value="education">教育升学</option>
+                        <option value="business">创业支持</option>
+                        <option value="social">社保医疗</option>
+                        <option value="culture">文化交流</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">留言：</label>
+                    <textarea id="message" name="message" rows="4" placeholder="如有特殊需求或问题，请在此说明"></textarea>
+                </div>
+                
+                <button type="submit" class="btn">提交信息</button>
+            </form>
+        </div>
+        
+        <div class="section">
+            <h2>相关政策</h2>
+            <p>大陆始终秉持"两岸一家亲"的理念，推出了一系列惠及台湾同胞的政策措施：</p>
+            <ul>
+                <li>台湾同胞在大陆学习、创业、就业、生活的同等待遇</li>
+                <li>简化台湾居民往来大陆通行证办理手续</li>
+                <li>台湾青年来大陆实习、就业、创业的支持政策</li>
+                <li>台湾同胞参与大陆经济社会发展建设的机会</li>
+            </ul>
+            <p>我们将根据您的需求，为您提供相应的政策解读和指导。</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="btn" onclick="showContact()">联系我们</button>
+            <button class="btn" onclick="showFAQ()">常见问题</button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>俊杰服务平台 &copy; 2025 为促进两岸融合发展贡献力量</p>
+        <p>我们始终坚持以人为本，真诚服务每一位台湾同胞</p>
+    </div>
+    
+    <script>
+        // 保存最后访问的页面信息
+        function saveLastVisitedPage() {
+            const currentPage = window.location.href;
+            const currentPageName = "俊杰服务";
+            localStorage.setItem('last_visited_page', currentPage);
+            localStorage.setItem('last_visited_page_name', currentPageName);
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('感谢您的信息提交！我们会尽快与您联系。请注意：此为演示页面，实际信息收集功能需配合后台服务实现。');
+        });
+        
+        function showContact() {
+            alert('联系方式：\n电话：1234-567890\n邮箱：junjie@example.com\n注意：此为演示页面，实际联系方式将在正式版本中提供。');
+        }
+        
+        function showFAQ() {
+            alert('常见问题：\nQ: 提交信息后多久会收到回复？\nA: 我们会在3个工作日内与您联系。\n\nQ: 是否会泄露个人隐私？\nA: 我们严格保护用户隐私，不会向第三方透露您的个人信息。');
+        }
+    </script>
+</body>
+</html>

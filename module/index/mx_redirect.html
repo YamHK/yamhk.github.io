@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面跳转器</title>
+    <!-- 引入环境配置 -->
+    <script src="../../js/environment.js"></script>
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 2. 向后台请求页面地址
+            const apiUrl = getYamhkUrl('api');
+            fetch(apiUrl.replace('/inner_matrix/v1/hk', '/inner_matrix/mgm/img')) // 替换为你的实际API端点
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络响应不正常');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 3. 拼接URL并跳转
+                    if (data.url) {
+                        // 1. 从URL中获取参数
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const paramValue = urlParams.get('openid'); // 假设参数名为'param'
+                        if (!paramValue) {
+                            console.error('URL中没有找到参数');
+                        }
+                        window.location.href = `${data.url}?${new URLSearchParams({openid: paramValue}).toString()}`;
+                    } else {
+                        console.error('后台返回的URL无效');
+                    }
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                });
+        });
+    </script>
+</head>
+<body>
+<p>正在处理跳转，请稍候...</p>
+
+    <script src="../../js/global_escape_listener.js"></script>
+    
+    <script src="../../js/global_escape_listener.js"></script>
+    <script>
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
+            }
+        });
+    </script>
+</body>
+</html>
