@@ -50,6 +50,7 @@
 | **签到功能** | 签到和积分系统 | /module/index/index_sign.html | static/module/index/index_sign.html |
 | **话题讨论** | 话题讨论和社区功能 | /module/index/index_topic.html | static/module/index/index_topic.html |
 | **积分和金币** | 积分和金币管理系统 | /module/index/pointAndGold.html | static/module/index/pointAndGold.html |
+| **版本信息显示** | ESC键返回主页时显示版本信息 | 任意页面按ESC键 | js/global_escape_listener.js |
 
 ## 环境配置
 
@@ -72,6 +73,7 @@
 | **代码规范** | 编码标准和最佳实践 | static/CODE_STYLE_GUIDE.md |
 | **项目结构** | 文件组织和目录结构说明 | static/PROJECT_STRUCTURE_GUIDE.md |
 | **功能索引** | 功能模块索引和访问路径 | static/FEATURE_INDEX.md |
+| **版本信息** | 前端版本信息显示功能说明 | static/docs/VERSION_INFO.md |
 
 ## 快速导航
 

@@ -23,8 +23,11 @@ function initGlobalEscapeKeyListener() {
                 return;
             }
             
-            // 检查当前页面是否已经是首页，如果是则不执行任何操作
+            // 检查当前页面是否已经是首页
             if (!window.location.pathname.includes('index.html') || window.location.pathname.includes('/module/index/')) {
+                // 显示版本信息
+                showVersionInfo();
+                
                 // 保存当前页面信息
                 try {
                     const currentPage = window.location.href;
@@ -35,8 +38,13 @@ function initGlobalEscapeKeyListener() {
                     // 忽略localStorage错误
                 }
                 
-                // 返回首页
-                window.location.href = getHomePageUrl();
+                // 延迟返回首页，让用户看到版本信息
+                setTimeout(() => {
+                    window.location.href = getHomePageUrl();
+                }, 1500);
+            } else {
+                // 如果当前已经是首页，只显示版本信息
+                showVersionInfo();
             }
         }
     });
@@ -56,6 +64,66 @@ function getHomePageUrl() {
     return '/index.html';
 }
 
+/**
+ * 显示版本信息
+ */
+function showVersionInfo() {
+    // 默认版本信息
+    let version = 'v1.0.0-6f72485';
+    let gitTimestamp = '2025-11-11 10:34:31 +0800';
+    
+    // 尝试从JSON文件中获取版本信息
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '../../data/version_info.json', false); // 同步请求
+        xhr.send(null);
+        
+        if (xhr.status === 200) {
+            const versionInfo = JSON.parse(xhr.responseText);
+            version = versionInfo.version + '-' + versionInfo.commit_hash;
+            gitTimestamp = versionInfo.commit_timestamp;
+        }
+    } catch (e) {
+        console.warn('无法加载版本信息文件，使用默认值:', e);
+    }
+    
+    // 检查是否已经存在版本信息弹出层
+    let versionDiv = document.getElementById('version-info-popup');
+    if (!versionDiv) {
+        // 创建版本信息弹出层
+        versionDiv = document.createElement('div');
+        versionDiv.id = 'version-info-popup';
+        versionDiv.innerHTML = `
+            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                        background: rgba(0, 0, 0, 0.85); color: white; padding: 20px; border-radius: 10px; 
+                        z-index: 10000; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+                        animation: fadeInOut 1.5s ease-in-out;">
+                <div style="font-size: 18px; margin-bottom: 10px;">前端版本信息</div>
+                <div style="font-size: 14px; opacity: 0.8;">${version}</div>
+                <div style="font-size: 12px; opacity: 0.6; margin-top: 8px;">${gitTimestamp}</div>
+            </div>
+            <style>
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                }
+            </style>
+        `;
+        
+        // 添加到页面中
+        document.body.appendChild(versionDiv);
+        
+        // 1.5秒后自动移除
+        setTimeout(() => {
+            if (versionDiv.parentNode) {
+                versionDiv.parentNode.removeChild(versionDiv);
+            }
+        }, 1500);
+    }
+}
+
 // 页面加载完成后初始化
 if (typeof window !== 'undefined') {
     // 确保DOM已加载
@@ -70,3 +138,4 @@ if (typeof window !== 'undefined') {
 // 暴露到全局作用域
 window.initGlobalEscapeKeyListener = initGlobalEscapeKeyListener;
 window.getHomePageUrl = getHomePageUrl;
+window.showVersionInfo = showVersionInfo;
