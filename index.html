@@ -13,7 +13,7 @@
     <meta property="og:description" content="金零社专注于提供专业的数字金融服务和解决方案，为企业和个人用户创造价值。">
     <meta property="og:type" content="website">
     <meta property="og:image" content="index.png">
-    <meta property="og:url" content="https://www.jinlingshe.com">
+    <meta property="og:url" content="">
     <!-- 移动端优化 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,19 +21,17 @@
     <!-- 浏览器图标 -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="avatar.jpg">
-    <!-- 预连接重要域名 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    
     <!-- 预加载关键资源 -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" as="style">
-    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="element/font-awesome.css" as="style">
     
-    <!-- 引入外部资源 -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入本地资源 -->
+    <link href="element/font-awesome.css" rel="stylesheet">
+    
+    <!-- 使用本地Inter字体替代Google Fonts -->
+    <link href="fonts/inter.css" rel="stylesheet">
+    
+    <!-- 使用本地TailwindCSS替代CDN -->
+    <link href="css/tailwind.min.css" rel="stylesheet">
     
     <!-- 可选的Chart.js，使用轻量级替代方案 -->
     <!-- 移除外部Chart.js依赖，改为使用按需加载或轻量级替代方案 -->
@@ -284,7 +282,8 @@
                 }
             });
             
-            // 延迟加载百度统计（使用requestIdleCallback优先级更低）
+            // 移除百度统计外部链接，使用本地空函数替代
+            /*
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(() => {
                     var _hmt = _hmt || [];
@@ -304,6 +303,7 @@
                     s.parentNode.insertBefore(hm, s);
                 }, 2000);
             }
+            */
         };
         
         // 页面加载后执行
@@ -445,6 +445,47 @@
         </div>
     </section>
 
+    <!-- 核心推荐模块 - 突出展示股票交流社区 -->
+    <section class="py-16 bg-gradient-to-r from-yellow-50 to-amber-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-block p-2 bg-yellow-100 rounded-lg mb-4">
+                    <i class="fa fa-star text-yellow-600 text-2xl"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">核心推荐</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">我们最受欢迎的金融社交服务</p>
+            </div>
+            
+            <!-- 突出展示股票交流社区 -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-16 hover-scale">
+                <div class="md:flex">
+                    <div class="md:w-2/5 bg-gradient-to-br from-yellow-400 to-amber-500 p-8 flex flex-col justify-center">
+                        <div class="text-white text-center">
+                            <i class="fa fa-line-chart text-5xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">股票交流社区</h3>
+                            <p class="opacity-90">与股友分享投资见解</p>
+                        </div>
+                    </div>
+                    <div class="md:w-3/5 p-8">
+                        <h3 class="text-2xl font-bold text-dark mb-4">实时股票交流，共享投资智慧</h3>
+                        <p class="text-gray-600 mb-6">
+                            加入我们的股票交流社区，与志同道合的投资者一起关注市场动态，分享投资见解，获取实时行情分析。无论您是投资新手还是资深股民，这里都是您交流学习的理想场所。
+                        </p>
+                        <div class="flex flex-wrap gap-4 mb-6">
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">实时行情</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">社区讨论</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">投资分享</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">专家观点</span>
+                        </div>
+                        <a href="module/index/mx_stock_discussion.html" class="inline-block bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-dark font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                            立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 功能分类区域 -->
     <section id="categories" class="py-20 bg-light relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -521,6 +562,7 @@
                     <div class="flex flex-wrap items-center gap-4">
                         <select id="default-feature-selector" class="bg-light border border-gray-300 text-gray-700 py-3 px-5 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm md:text-base w-full md:w-auto">
                             <option value="">不启用</option>
+                            <option value="module/index/mx_stock_discussion.html" selected>股票交流社区</option>
                             <option value="module/index/mx_chat.html">金融社交圈</option>
                             <option value="module/index/mx_live_stream.html">财经直播</option>
                             <option value="module/index/mx_days.html">理财规划工具</option>
@@ -529,8 +571,7 @@
                             <option value="module/index/mx_software_custom.html">技术支持中心</option>
                             <option value="company/assets/index.html">个人资产管理</option>
                             <option value="module/index/mx_qrcode_page.html">数字支付助手</option>
-                            <option value="module/index/mx_task.html" selected>任务中心</option>
-                            <option value="module/index/mx_stock_discussion.html">股票交流社区</option>
+                            <option value="module/index/mx_task.html">任务中心</option>
                         </select>
                         <button id="save-default-feature" class="bg-primary hover:bg-primary/90 text-dark font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
                             保存设置
@@ -538,10 +579,17 @@
                         <button id="go-to-default-feature" class="bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
                             立即跳转
                         </button>
+                        <button id="go-to-default-feature-auto" class="bg-accent hover:bg-accent/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+                            自动跳转到默认功能
+                        </button>
                     </div>
                 </div>
                 <div id="feature-save-message" class="mt-4 text-sm text-green-600 hidden">
                     <i class="fa fa-check-circle mr-1"></i>默认功能设置已保存
+                </div>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p><i class="fa fa-info-circle mr-1"></i>说明：您可以设置常用功能作为默认页面。首次访问时，系统会自动跳转到默认功能页面。</p>
+                    <p class="mt-1"><i class="fa fa-lightbulb-o mr-1"></i>提示：如果您想访问主页，请在URL后添加 <code>?home=true</code> 参数。</p>
                 </div>
             </div>
             
@@ -678,6 +726,18 @@
         function getAllFeatures() {
             return [
                 // 社交金融类 (核心业务方向)
+                // 将股票交流社区作为首要推荐模块
+                {
+                    id: 'mx_stock_discussion',
+                    name: '股票交流社区',
+                    description: '与股友分享投资见解，共同关注股票动态，实时交流市场行情',
+                    icon: 'fa-line-chart',
+                    iconBgClass: 'bg-yellow-100',
+                    iconColorClass: 'text-yellow-600',
+                    link: 'module/index/mx_stock_discussion.html',
+                    category: 'feature',
+                    type: '社交金融'
+                },
                 {
                     id: 'mx_chat',
                     name: '金融社交圈',
@@ -781,18 +841,6 @@
                     link: 'module/index/mx_task.html',
                     category: 'feature',
                     type: '个人金融'
-                },
-                // 股票交流社区
-                {
-                    id: 'mx_stock_discussion',
-                    name: '股票交流社区',
-                    description: '与股友分享投资见解，共同关注股票动态',
-                    icon: 'fa-line-chart',
-                    iconBgClass: 'bg-yellow-100',
-                    iconColorClass: 'text-yellow-600',
-                    link: 'module/index/mx_stock_discussion.html',
-                    category: 'feature',
-                    type: '社交金融'
                 }
             ];
         }
@@ -987,6 +1035,23 @@
                 }
             });
             
+            // 自动跳转到默认功能按钮点击事件
+            document.getElementById('go-to-default-feature-auto').addEventListener('click', function() {
+                // 设置访问标记，表示用户已经访问过主页
+                localStorage.setItem('has_visited_homepage', 'true');
+                
+                // 获取默认功能设置
+                const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                
+                // 如果设置了默认功能且不是空值，则立即跳转
+                if (defaultFeature && defaultFeature !== '') {
+                    window.location.href = defaultFeature;
+                } else {
+                    // 如果没有设置默认功能，跳转到股票交流社区
+                    window.location.href = 'module/index/mx_stock_discussion.html';
+                }
+            });
+            
             // 添加滚动进度指示器
             addScrollProgressIndicator();
             
@@ -1053,6 +1118,23 @@
                                         messageEl.classList.remove('text-red-600', 'animate-pulse');
                                     }, 2000);
                                 });
+                            }
+                        }
+                        
+                        // 自动跳转到默认功能按钮
+                        if (e.target.closest('#go-to-default-feature-auto')) {
+                            // 设置访问标记，表示用户已经访问过主页
+                            localStorage.setItem('has_visited_homepage', 'true');
+                            
+                            // 获取默认功能设置
+                            const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                            
+                            // 如果设置了默认功能且不是空值，则立即跳转
+                            if (defaultFeature && defaultFeature !== '') {
+                                window.location.href = defaultFeature;
+                            } else {
+                                // 如果没有设置默认功能，跳转到股票交流社区
+                                window.location.href = 'module/index/mx_stock_discussion.html';
                             }
                         }
                     });
@@ -1152,11 +1234,11 @@
                 
                 let savedFeature = '';
                 try {
-                    savedFeature = localStorage.getItem('default_feature') || 'module/index/mx_task.html';
+                    savedFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
                 } catch (storageError) {
                     console.warn('无法从localStorage获取数据:', storageError);
-                    // 默认设置为任务中心
-                    savedFeature = 'module/index/mx_task.html';
+                    // 默认设置为股票交流社区
+                    savedFeature = 'module/index/mx_stock_discussion.html';
                 }
                 
                 // 设置选择器的值
@@ -1166,8 +1248,32 @@
             }
         }
         
-        // 检查并自动跳转到默认功能
-        function checkAndRedirectToDefaultFeature() {
+        // 读取本地homepage_default_config.json配置文件
+        async function loadHomepageConfig() {
+            try {
+                // 修改为从本地文件加载配置文件
+                const response = await fetch('/agent/data/homepage_default_config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const config = await response.json();
+                return config;
+            } catch (error) {
+                console.error('读取homepage_default_config.json配置文件时出错:', error);
+                // 如果无法读取配置文件，返回null
+                return null;
+            }
+        }
+
+        // 根据feature_id获取对应的页面链接
+        function getFeatureLinkById(featureId) {
+            const allFeatures = getAllFeatures();
+            const feature = allFeatures.find(f => f.id === featureId);
+            return feature ? feature.link : null;
+        }
+
+        // 检查并自动跳转到默认功能 - 增强版（基于本地配置文件）
+        async function checkAndRedirectToDefaultFeature() {
             try {
                 // 检查是否是从其他页面返回到首页的情况
                 const lastVisitedPage = localStorage.getItem('last_visited_page');
@@ -1176,6 +1282,22 @@
                 if (lastVisitedPage && lastVisitedPage !== 'index.html' && lastVisitedPage !== window.location.pathname) {
                     // 清除最后访问页面信息
                     localStorage.removeItem('last_visited_page');
+                    return;
+                }
+                
+                // 检查用户是否明确想要访问主页本身
+                // 通过查询参数?home=true来标识用户明确想要访问主页
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('home')) {
+                    console.log('用户明确想要访问主页，不进行自动跳转');
+                    return;
+                }
+                
+                // 检查是否是第一次访问主页（通过localStorage中的访问标记判断）
+                const hasVisitedBefore = localStorage.getItem('has_visited_homepage');
+                if (hasVisitedBefore) {
+                    // 如果不是第一次访问，不自动跳转
+                    console.log('用户不是第一次访问主页，不进行自动跳转');
                     return;
                 }
                 
@@ -1189,25 +1311,96 @@
                     return;
                 }
                 
+                // 确保在跳转前完成配置文件的加载和解析
+                console.log('开始加载本地默认功能配置文件...');
+                const homepageConfig = await loadHomepageConfig();
+                console.log('本地默认功能配置文件加载完成:', homepageConfig);
+                
+                // 如果成功读取到配置
+                if (homepageConfig) {
+                    // 获取配置中的默认功能ID
+                    const defaultFeatureId = homepageConfig.default_feature_id;
+                    
+                    // 根据feature_id获取对应的页面链接
+                    const defaultFeatureLink = getFeatureLinkById(defaultFeatureId);
+                    
+                    // 检查是否需要强制替换
+                    const forceOverride = homepageConfig.force_override;
+                    
+                    // 获取本地存储中的当前默认功能
+                    const currentDefaultFeature = localStorage.getItem('default_feature');
+                    
+                    // 如果配置要求强制替换，或者当前没有设置默认功能，则更新默认功能
+                    if (forceOverride || !currentDefaultFeature) {
+                        if (defaultFeatureLink) {
+                            // 将新的默认功能设置更新到本地缓存中
+                            localStorage.setItem('default_feature', defaultFeatureLink);
+                            console.log('已更新默认功能到本地缓存:', defaultFeatureLink);
+                            
+                            // 设置访问标记，表示用户已经访问过主页
+                            localStorage.setItem('has_visited_homepage', 'true');
+                            
+                            // 自动跳转到默认功能页面
+                            setTimeout(() => {
+                                console.log('跳转到默认功能页面:', defaultFeatureLink);
+                                window.location.href = defaultFeatureLink;
+                            }, 1000);
+                            return;
+                        }
+                    }
+                    
+                    // 如果没有强制替换要求，但本地存储中已有默认功能，则使用本地存储的设置
+                    if (!forceOverride && currentDefaultFeature && currentDefaultFeature !== '') {
+                        // 设置访问标记，表示用户已经访问过主页
+                        localStorage.setItem('has_visited_homepage', 'true');
+                        
+                        // 延迟跳转，让用户能看到页面
+                        setTimeout(() => {
+                            console.log('跳转到本地缓存的默认功能页面:', currentDefaultFeature);
+                            window.location.href = currentDefaultFeature;
+                        }, 1000);
+                        return;
+                    }
+                }
+                
+                // 如果无法读取配置文件或配置中没有有效的默认功能，则使用原来的逻辑
                 // 获取默认功能设置
                 const defaultFeature = localStorage.getItem('default_feature');
                 
                 // 如果设置了默认功能且不是空值，则自动跳转
                 if (defaultFeature && defaultFeature !== '') {
+                    // 设置访问标记，表示用户已经访问过主页
+                    localStorage.setItem('has_visited_homepage', 'true');
+                    
                     // 稍微延迟跳转，让用户能看到页面
                     setTimeout(() => {
+                        console.log('跳转到本地默认功能页面:', defaultFeature);
                         window.location.href = defaultFeature;
                     }, 1000);
                 } else {
-                    // 如果没有设置默认功能，设置任务中心为默认功能
-                    localStorage.setItem('default_feature', 'module/index/mx_task.html');
-                    // 延迟跳转到任务中心
+                    // 如果没有设置默认功能，设置股票交流社区为默认功能
+                    localStorage.setItem('default_feature', 'module/index/mx_stock_discussion.html');
+                    console.log('设置股票交流社区为默认功能');
+                    
+                    // 设置访问标记，表示用户已经访问过主页
+                    localStorage.setItem('has_visited_homepage', 'true');
+                    
+                    // 延迟跳转到股票交流社区
                     setTimeout(() => {
-                        window.location.href = 'module/index/mx_task.html';
+                        window.location.href = 'module/index/mx_stock_discussion.html';
                     }, 1000);
                 }
             } catch (error) {
                 console.error('检查并跳转到默认功能时出错:', error);
+                // 出错时使用原来的逻辑作为降级方案
+                const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                
+                // 设置访问标记，表示用户已经访问过主页
+                localStorage.setItem('has_visited_homepage', 'true');
+                
+                setTimeout(() => {
+                    window.location.href = defaultFeature;
+                }, 1000);
             }
         }
         
