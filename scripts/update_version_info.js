@@ -35,7 +35,7 @@ const versionInfo = {
 };
 
 // 写入版本信息文件
-const versionInfoPath = path.join(projectRoot, 'data', 'version_info.json');
+const versionInfoPath = path.join(projectRoot, 'agent', 'data', 'version_info.json');
 
 // 只有当内容发生变化时才更新文件
 const newContent = JSON.stringify(versionInfo, null, 2);

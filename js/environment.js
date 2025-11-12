@@ -9,33 +9,33 @@ class EnvironmentManager {
         this.environments = {
             development: {
                 name: '开发环境',
-                baseUrl: 'http://yamhk.2288.org:8090',
-                apiUrl: 'http://yamhk.2288.org:8090/inner_matrix/v1/hk',
-                svnUrl: 'http://yamhk.2288.org:8090/svn/',
-                guiUrl: 'http://yamhk.2288.org:8090/',
+                baseUrl: 'http://localhost:8000',
+                apiUrl: 'http://localhost:8000/api',
+                svnUrl: 'http://localhost:8000/local_resources/',
+                guiUrl: 'http://localhost:8000/',
                 verifySsl: false,
                 timeout: 60000,
                 // 兼容旧版envHelp.js的配置
-                hkApUrl: 'http://yamhk.2288.org:8090',
-                hkApApi: '/inner_matrix/activity/m/1',
+                hkApUrl: 'http://localhost:8000',
+                hkApApi: '/api/local',
                 hkHeader: 9999,
                 defaultConsoleSHow: true,
-                redirect: '/v5/hk/iy'
+                redirect: '/'
             },
             production: {
                 name: '生产环境',
-                baseUrl: 'https://www.yamhk.top',
-                apiUrl: 'https://www.yamhk.top/inner_matrix/v1/hk',
-                svnUrl: 'https://www.yamhk.top/svn/',
-                guiUrl: 'https://www.yamhk.top/',
+                baseUrl: './',
+                apiUrl: './api',
+                svnUrl: './local_resources/',
+                guiUrl: './',
                 verifySsl: true,
                 timeout: 30000,
                 // 兼容旧版envHelp.js的配置
-                hkApUrl: 'https://www.yamhk.top',
-                hkApApi: '/inner_matrix/activity/m/1',
+                hkApUrl: './',
+                hkApApi: '/api/local',
                 hkHeader: 9527,
                 defaultConsoleSHow: false,
-                redirect: '/v5/hk/bc'
+                redirect: '/'
             }
         };
         

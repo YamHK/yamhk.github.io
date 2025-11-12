@@ -56,15 +56,15 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-dark">
+<body class="bg-gray-900 text-gray-100">
     <!-- 导航栏 -->
-    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-30 transition-all duration-300">
+    <nav class="bg-gray-800 shadow-sm fixed top-0 left-0 right-0 z-30 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="../../../index.html" class="flex items-center">
                         <i class="fa fa-paw text-primary text-2xl mr-2"></i>
-                        <span class="text-lg font-bold text-dark">生肖交流</span>
+                        <span class="text-lg font-bold text-white">生肖交流</span>
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -464,196 +464,361 @@
 
     <!-- JavaScript -->
     <script>
-        // 导航栏滚动效果
-        const nav = document.querySelector('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                nav.classList.add('shadow-md');
-                nav.classList.remove('shadow-sm');
-            } else {
-                nav.classList.remove('shadow-md');
-                nav.classList.add('shadow-sm');
-            }
-        });
-        
-        // 移动端菜单
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // 关闭移动菜单当点击链接时
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-        
-        // 个人信息表单提交
-        const zodiacProfileForm = document.getElementById('zodiac-profile-form');
-        zodiacProfileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // 显示成功消息
-            alert('个人信息更新成功！');
-        });
-        
-        // 生肖轮播
-        const carouselInner = document.getElementById('carousel-inner');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        let currentIndex = 0;
-        const totalSlides = document.querySelectorAll('#carousel-inner > div').length;
-        
-        // 根据屏幕尺寸确定一次滚动的卡片数量
-        function getSlidesToShow() {
-            if (window.innerWidth >= 1024) return 3; // lg
-            if (window.innerWidth >= 768) return 2;  // md
-            return 1;                                // sm
-        }
-        
-        function updateCarousel() {
-            const slidesToShow = getSlidesToShow();
-            const maxIndex = Math.max(0, totalSlides - slidesToShow);
-            
-            if (currentIndex > maxIndex) {
-                currentIndex = maxIndex;
+        // 初始化ESC键监听
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalEscapeKeyListener === 'function') {
+                initGlobalEscapeKeyListener();
             }
             
-            // 计算滚动距离
-            const slideWidth = 100 / slidesToShow;
-            carouselInner.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-        }
-        
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateCarousel();
-            }
-        });
-        
-        nextBtn.addEventListener('click', () => {
-            const slidesToShow = getSlidesToShow();
-            if (currentIndex < totalSlides - slidesToShow) {
-                currentIndex++;
-                updateCarousel();
-            }
-        });
-        
-        // 窗口大小改变时更新轮播
-        window.addEventListener('resize', updateCarousel);
-        
-        // 配对分析
-        const matchBtn = document.getElementById('match-btn');
-        const matchResult = document.getElementById('match-result');
-        const zodiac1 = document.getElementById('zodiac1');
-        const zodiac2 = document.getElementById('zodiac2');
-        const matchTitle = document.getElementById('match-title');
-        const compatibilityScore = document.getElementById('compatibility-score');
-        const compatibilityBar = document.getElementById('compatibility-bar');
-        const matchAdvantages = document.getElementById('match-advantages');
-        const matchNotes = document.getElementById('match-notes');
-        const matchAdvice = document.getElementById('match-advice');
-        
-        matchBtn.addEventListener('click', () => {
-            // 显示结果区域
-            matchResult.classList.remove('hidden');
+            // 生肖轮播
+            const carouselInner = document.getElementById('carousel-inner');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            let currentIndex = 0;
+            const totalSlides = document.querySelectorAll('#carousel-inner > div').length;
             
-            // 更新标题
-            matchTitle.textContent = `${zodiac1.value}与${zodiac2.value}配对分析`;
-            
-            // 生成随机匹配度(60-100之间)
-            const score = Math.floor(Math.random() * 41) + 60;
-            compatibilityScore.textContent = `${score}%`;
-            compatibilityBar.style.width = `${score}%`;
-            
-            // 根据匹配度设置颜色
-            if (score >= 80) {
-                compatibilityBar.classList.remove('bg-yellow-500', 'bg-red-500');
-                compatibilityBar.classList.add('bg-green-500');
-            } else if (score >= 70) {
-                compatibilityBar.classList.remove('bg-green-500', 'bg-red-500');
-                compatibilityBar.classList.add('bg-yellow-500');
-            } else {
-                compatibilityBar.classList.remove('bg-green-500', 'bg-yellow-500');
-                compatibilityBar.classList.add('bg-red-500');
+            // 根据屏幕尺寸确定一次滚动的卡片数量
+            function getSlidesToShow() {
+                if (window.innerWidth >= 1024) return 3; // lg
+                if (window.innerWidth >= 768) return 2;  // md
+                return 1;                                // sm
             }
             
-            // 更新分析内容
-            matchAdvantages.textContent = `${zodiac1.value}和${zodiac2.value}在某些方面有很好的互补性，能够相互理解和支持。`;
-            matchNotes.textContent = `${zodiac1.value}可能会觉得${zodiac2.value}有些方面需要改进，而${zodiac2.value}也可能对${zodiac1.value}有一些不同的看法。`;
-            matchAdvice.textContent = `在日常生活中，双方应该多进行坦诚的交流，学会欣赏彼此的优点，共同成长。`;
-            
-            // 滚动到结果区域
-            matchResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-        
-        // 发布话题
-        const postTopicBtn = document.getElementById('post-topic-btn');
-        const newTopicContent = document.getElementById('new-topic-content');
-        
-        postTopicBtn.addEventListener('click', () => {
-            if (newTopicContent.value.trim() === '') {
-                alert('请输入话题内容');
-                return;
-            }
-            
-            alert('话题发布成功！');
-            newTopicContent.value = '';
-        });
-        
-        // FAQ 手风琴效果
-        const faqToggles = document.querySelectorAll('.faq-toggle');
-        
-        faqToggles.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const content = toggle.nextElementSibling;
-                const icon = toggle.querySelector('i');
+            function updateCarousel() {
+                const slidesToShow = getSlidesToShow();
+                const maxIndex = Math.max(0, totalSlides - slidesToShow);
                 
-                // 切换当前FAQ的状态
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                    icon.style.transform = 'rotate(0deg)';
-                } else {
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    icon.style.transform = 'rotate(180deg)';
+                if (currentIndex > maxIndex) {
+                    currentIndex = maxIndex;
                 }
-            });
-        });
-        
-        // 返回顶部按钮
-        const backToTopButton = document.getElementById('back-to-top');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopButton.classList.remove('opacity-0', 'invisible');
-                backToTopButton.classList.add('opacity-100', 'visible');
-            } else {
-                backToTopButton.classList.add('opacity-0', 'invisible');
-                backToTopButton.classList.remove('opacity-100', 'visible');
-            }
-        });
-        
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
                 
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+                // 计算滚动距离
+                const slideWidth = 100 / slidesToShow;
+                carouselInner.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+            }
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateCarousel();
+                    }
                 });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    const slidesToShow = getSlidesToShow();
+                    if (currentIndex < totalSlides - slidesToShow) {
+                        currentIndex++;
+                        updateCarousel();
+                    }
+                });
+            }
+            
+            // 窗口大小改变时更新轮播
+            window.addEventListener('resize', updateCarousel);
+            
+            // 配对分析
+            const matchBtn = document.getElementById('match-btn');
+            const matchResult = document.getElementById('match-result');
+            const zodiac1 = document.getElementById('zodiac1');
+            const zodiac2 = document.getElementById('zodiac2');
+            const matchTitle = document.getElementById('match-title');
+            const compatibilityScore = document.getElementById('compatibility-score');
+            const compatibilityBar = document.getElementById('compatibility-bar');
+            const matchAdvantages = document.getElementById('match-advantages');
+            const matchNotes = document.getElementById('match-notes');
+            const matchAdvice = document.getElementById('match-advice');
+            
+            if (matchBtn) {
+                matchBtn.addEventListener('click', () => {
+                    // 显示结果区域
+                    matchResult.classList.remove('hidden');
+                    
+                    // 更新标题
+                    matchTitle.textContent = `${zodiac1.value}与${zodiac2.value}配对分析`;
+                    
+                    // 生成随机匹配度(60-100之间)
+                    const score = Math.floor(Math.random() * 41) + 60;
+                    compatibilityScore.textContent = `${score}%`;
+                    compatibilityBar.style.width = `${score}%`;
+                    
+                    // 根据匹配度设置颜色
+                    if (score >= 80) {
+                        compatibilityBar.classList.remove('bg-yellow-500', 'bg-red-500');
+                        compatibilityBar.classList.add('bg-green-500');
+                    } else if (score >= 70) {
+                        compatibilityBar.classList.remove('bg-green-500', 'bg-red-500');
+                        compatibilityBar.classList.add('bg-yellow-500');
+                    } else {
+                        compatibilityBar.classList.remove('bg-green-500', 'bg-yellow-500');
+                        compatibilityBar.classList.add('bg-red-500');
+                    }
+                    
+                    // 更新分析内容
+                    matchAdvantages.textContent = `${zodiac1.value}和${zodiac2.value}在某些方面有很好的互补性，能够相互理解和支持。`;
+                    matchNotes.textContent = `${zodiac1.value}可能会觉得${zodiac2.value}有些方面需要改进，而${zodiac2.value}也可能对${zodiac1.value}有一些不同的看法。`;
+                    matchAdvice.textContent = `在日常生活中，双方应该多进行坦诚的交流，学会欣赏彼此的优点，共同成长。`;
+                    
+                    // 滚动到结果区域
+                    matchResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+            
+            // 发布话题
+            const postTopicBtn = document.getElementById('post-topic-btn');
+            const newTopicContent = document.getElementById('new-topic-content');
+            
+            if (postTopicBtn) {
+                postTopicBtn.addEventListener('click', () => {
+                    if (newTopicContent.value.trim() === '') {
+                        alert('请输入话题内容');
+                        return;
+                    }
+                    
+                    alert('话题发布成功！');
+                    newTopicContent.value = '';
+                });
+            }
+            
+            // FAQ 手风琴效果
+            const faqToggles = document.querySelectorAll('.faq-toggle');
+            
+            faqToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('i');
+                    
+                    // 切换当前FAQ的状态
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+            
+            // 返回顶部按钮
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            if (backToTopButton) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 300) {
+                        backToTopButton.classList.remove('opacity-0', 'invisible');
+                        backToTopButton.classList.add('opacity-100', 'visible');
+                    } else {
+                        backToTopButton.classList.add('opacity-0', 'invisible');
+                        backToTopButton.classList.remove('opacity-100', 'visible');
+                    }
+                });
+                
+                backToTopButton.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // 生肖轮播功能
+            const carousel = document.getElementById('carousel-inner');
+            let itemsPerView = 1;
+            
+            // 根据屏幕尺寸确定每页显示的项目数
+            function updateItemsPerView() {
+                if (window.innerWidth >= 1024) {
+                    itemsPerView = 3;
+                } else if (window.innerWidth >= 768) {
+                    itemsPerView = 2;
+                } else {
+                    itemsPerView = 1;
+                }
+                // 重置轮播位置
+                currentIndex = 0;
+                updateCarouselPosition();
+            }
+            
+            function updateCarouselPosition() {
+                const itemWidth = 100 / itemsPerView;
+                carousel.style.transform = `translateX(-${currentIndex * itemWidth}%)`;
+            }
+            
+            // 使用已声明的变量
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateCarouselPosition();
+                    }
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    const totalItems = document.querySelectorAll('#carousel-inner > div').length;
+                    if (currentIndex < totalItems - itemsPerView) {
+                        currentIndex++;
+                        updateCarouselPosition();
+                    }
+                });
+            }
+            
+            // 初始化和窗口大小改变时更新
+            updateItemsPerView();
+            window.addEventListener('resize', updateItemsPerView);
+
+            // 生肖配对分析
+            const matchButton = document.getElementById('match-btn');
+            if (matchButton) {
+                matchButton.addEventListener('click', function() {
+                    const zodiac1Select = document.getElementById('zodiac1');
+                    const zodiac2Select = document.getElementById('zodiac2');
+                    
+                    if (zodiac1Select && zodiac2Select) {
+                        const zodiac1Value = zodiac1Select.value;
+                        const zodiac2Value = zodiac2Select.value;
+                        
+                        // 更新配对结果显示
+                        const matchTitleElement = document.getElementById('match-title');
+                        if (matchTitleElement) {
+                            matchTitleElement.textContent = `${zodiac1Value}与${zodiac2Value}配对分析`;
+                        }
+                        
+                        // 设置生肖图标（简化版）
+                        const getZodiacIcon = (zodiac) => {
+                            const iconMap = {
+                                '鼠': 'fa-mouse-pointer',
+                                '牛': 'fa-bullseye',
+                                '虎': 'fa-paw',
+                                '兔': 'fa-home',
+                                '龙': 'fa-star',
+                                '蛇': 'fa-code-fork',
+                                '马': 'fa-car',
+                                '羊': 'fa-paw',
+                                '猴': 'fa-code-fork',
+                                '鸡': 'fa-cutlery',
+                                '狗': 'fa-paw',
+                                '猪': 'fa-cutlery'
+                            };
+                            return iconMap[zodiac] || 'fa-question';
+                        };
+                        
+                        const zodiac1Icon = document.getElementById('zodiac1-icon');
+                        const zodiac2Icon = document.getElementById('zodiac2-icon');
+                        
+                        if (zodiac1Icon) {
+                            zodiac1Icon.innerHTML = `<i class="fa ${getZodiacIcon(zodiac1Value)} text-primary text-2xl"></i>`;
+                        }
+                        
+                        if (zodiac2Icon) {
+                            zodiac2Icon.innerHTML = `<i class="fa ${getZodiacIcon(zodiac2Value)} text-primary text-2xl"></i>`;
+                        }
+                        
+                        // 生成随机匹配度（实际应用中应基于更复杂的算法）
+                        const compatibility = Math.floor(Math.random() * 20) + 70; // 70-89之间的随机数
+                        const compatibilityScoreElement = document.getElementById('compatibility-score');
+                        const compatibilityBarElement = document.getElementById('compatibility-bar');
+                        
+                        if (compatibilityScoreElement) {
+                            compatibilityScoreElement.textContent = `${compatibility}%`;
+                        }
+                        
+                        if (compatibilityBarElement) {
+                            compatibilityBarElement.style.width = `${compatibility}%`;
+                        }
+                        
+                        // 更新配对分析内容（简化版，实际应用中应基于生肖组合提供不同内容）
+                        const matchAdvantagesElement = document.getElementById('match-advantages');
+                        const matchNotesElement = document.getElementById('match-notes');
+                        const matchAdviceElement = document.getElementById('match-advice');
+                        
+                        if (matchAdvantagesElement) {
+                            matchAdvantagesElement.textContent = `${zodiac1Value}的特点与${zodiac2Value}的特点形成良好的互补，能够相互理解和支持。`;
+                        }
+                        
+                        if (matchNotesElement) {
+                            matchNotesElement.textContent = `${zodiac1Value}可能会觉得${zodiac2Value}有些地方需要改进，而${zodiac2Value}也可能对${zodiac1Value}有类似感觉，需要相互包容。`;
+                        }
+                        
+                        if (matchAdviceElement) {
+                            matchAdviceElement.textContent = `${zodiac1Value}和${zodiac2Value}在相处过程中，应该多一些沟通和理解，尊重彼此的差异，这样才能建立更加牢固的关系。`;
+                        }
+                        
+                        // 显示结果
+                        const matchResultElement = document.getElementById('match-result');
+                        if (matchResultElement) {
+                            matchResultElement.classList.remove('hidden');
+                            
+                            // 滚动到结果区域
+                            matchResultElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            }
+
+            // 话题发布功能
+            const postTopicButton = document.getElementById('post-topic-btn');
+            if (postTopicButton) {
+                postTopicButton.addEventListener('click', function() {
+                    const topicContent = document.getElementById('new-topic-content');
+                    if (topicContent) {
+                        const topicContentValue = topicContent.value.trim();
+                        if (!topicContentValue) {
+                            alert('请输入话题内容');
+                            return;
+                        }
+                        
+                        alert('话题发布成功！');
+                        topicContent.value = '';
+                    }
+                });
+            }
+
+            // 加载更多话题
+            const loadMoreButton = document.getElementById('load-more-btn');
+            if (loadMoreButton) {
+                loadMoreButton.addEventListener('click', function() {
+                    // 模拟加载中
+                    this.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
+                    
+                    // 模拟网络请求延迟
+                    setTimeout(() => {
+                        this.innerHTML = '加载更多';
+                        alert('已加载全部话题');
+                    }, 1000);
+                });
+            }
+
+            // 初始化页面时，尝试从本地存储加载用户信息
+            window.addEventListener('DOMContentLoaded', function() {
+                const savedNickname = localStorage.getItem('zodiac_user_nickname');
+                const savedBirthYear = localStorage.getItem('zodiac_user_birthYear');
+                
+                const nicknameElement = document.getElementById('nickname');
+                const birthYearElement = document.getElementById('birth-year');
+                
+                if (savedNickname && nicknameElement) {
+                    nicknameElement.value = savedNickname;
+                }
+                
+                if (savedBirthYear && birthYearElement) {
+                    birthYearElement.value = savedBirthYear;
+                }
             });
         });
     </script>
 
-    <script src="../../js/global_escape_listener.js"></script>
-    
     <script src="../../js/global_escape_listener.js"></script>
     <script>
         // 初始化ESC键监听
@@ -843,11 +1008,11 @@
     </section>
 
     <!-- 生肖文化介绍 -->
-    <section id="zodiac-intro" class="py-16 bg-gray-50">
+    <section id="zodiac-intro" class="py-16 bg-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-dark mb-4">生肖文化介绍</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">探索中国传统文化中的十二生肖，了解每个生肖的特点和象征意义</p>
+                <h2 class="text-3xl font-bold text-white mb-4">生肖文化介绍</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">探索中国传统文化中的十二生肖，了解每个生肖的特点和象征意义</p>
             </div>
             
             <!-- 生肖轮播 -->
@@ -856,19 +1021,19 @@
                     <div class="flex transition-transform duration-300" id="carousel-inner">
                         <!-- 鼠 -->
                         <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
-                            <div class="bg-white rounded-xl p-6 card-shadow hover-scale h-full">
+                            <div class="bg-gray-700 rounded-xl p-6 card-shadow hover-scale h-full">
                                 <div class="text-center mb-6">
-                                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <div class="w-24 h-24 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <i class="fa fa-mouse-pointer text-primary text-5xl"></i>
                                     </div>
-                                    <h3 class="text-2xl font-bold text-dark">鼠</h3>
+                                    <h3 class="text-2xl font-bold text-white">鼠</h3>
                                 </div>
-                                <p class="text-gray-600 mb-4">
+                                <p class="text-gray-300 mb-4">
                                     鼠在十二生肖中居首位，象征着机智、灵活和创造力。属鼠的人通常聪明机智，善于应变，具有敏锐的直觉和洞察力。
                                 </p>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h4 class="font-semibold text-dark mb-2">性格特点</h4>
-                                    <p class="text-gray-600 text-sm">机智灵活、聪明过人、善于社交、适应力强、洞察力敏锐</p>
+                                <div class="bg-gray-600 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-white mb-2">性格特点</h4>
+                                    <p class="text-gray-300 text-sm">机智灵活、聪明过人、善于社交、适应力强、洞察力敏锐</p>
                                 </div>
                             </div>
                         </div>
@@ -971,32 +1136,32 @@
                 </div>
                 
                 <!-- 轮播控制按钮 -->
-                <button id="prev-btn" class="absolute top-1/2 left-2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors duration-200">
-                    <i class="fa fa-chevron-left text-gray-600"></i>
+                <button id="prev-btn" class="absolute top-1/2 left-2 -translate-y-1/2 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center shadow-md hover:bg-gray-600 transition-colors duration-200">
+                    <i class="fa fa-chevron-left text-gray-300"></i>
                 </button>
-                <button id="next-btn" class="absolute top-1/2 right-2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors duration-200">
-                    <i class="fa fa-chevron-right text-gray-600"></i>
+                <button id="next-btn" class="absolute top-1/2 right-2 -translate-y-1/2 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center shadow-md hover:bg-gray-600 transition-colors duration-200">
+                    <i class="fa fa-chevron-right text-gray-300"></i>
                 </button>
             </div>
         </div>
     </section>
 
     <!-- 生肖配对分析 -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-dark mb-4">生肖配对分析</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">探索不同生肖之间的匹配度，找到与您最契合的朋友</p>
+                <h2 class="text-3xl font-bold text-white mb-4">生肖配对分析</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">探索不同生肖之间的匹配度，找到与您最契合的朋友</p>
             </div>
             
             <!-- 配对查询工具 -->
-            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-100 mb-12">
-                <h3 class="text-xl font-bold text-dark mb-6 text-center">生肖配对查询</h3>
+            <div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-xl shadow-md border border-gray-700 mb-12">
+                <h3 class="text-xl font-bold text-white mb-6 text-center">生肖配对查询</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="zodiac1" class="block text-sm font-medium text-gray-700 mb-1">您的生肖</label>
+                        <label for="zodiac1" class="block text-sm font-medium text-gray-300 mb-1">您的生肖</label>
                         <select id="zodiac1" name="zodiac1"
-                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus">
+                            class="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-700 text-white form-input-focus">
                             <option value="鼠">鼠</option>
                             <option value="牛">牛</option>
                             <option value="虎">虎</option>
@@ -1012,9 +1177,9 @@
                         </select>
                     </div>
                     <div>
-                        <label for="zodiac2" class="block text-sm font-medium text-gray-700 mb-1">对方生肖</label>
+                        <label for="zodiac2" class="block text-sm font-medium text-gray-300 mb-1">对方生肖</label>
                         <select id="zodiac2" name="zodiac2"
-                            class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus">
+                            class="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-700 text-white form-input-focus">
                             <option value="鼠">鼠</option>
                             <option value="牛">牛</option>
                             <option value="虎">虎</option>
@@ -1040,15 +1205,15 @@
             
             <!-- 配对结果展示 -->
             <div id="match-result" class="max-w-3xl mx-auto hidden">
-                <div class="bg-white rounded-xl p-8 shadow-md border border-gray-100">
+                <div class="bg-gray-800 rounded-xl p-8 shadow-md border border-gray-700">
                     <div class="text-center mb-6">
-                        <h3 class="text-xl font-bold text-dark" id="match-title">鼠与牛配对分析</h3>
+                        <h3 class="text-xl font-bold text-white" id="match-title">鼠与牛配对分析</h3>
                         <div class="flex justify-center items-center gap-2 mt-4">
-                            <div id="zodiac1-icon" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                            <div id="zodiac1-icon" class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
                                 <i class="fa fa-mouse-pointer text-primary text-2xl"></i>
                             </div>
                             <i class="fa fa-heart text-red-500 text-xl"></i>
-                            <div id="zodiac2-icon" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                            <div id="zodiac2-icon" class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
                                 <i class="fa fa-bullseye text-primary text-2xl"></i>
                             </div>
                         </div>
@@ -1056,26 +1221,26 @@
                     
                     <div class="mb-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">匹配度</span>
+                            <span class="text-sm font-medium text-gray-300">匹配度</span>
                             <span class="text-sm font-semibold text-primary" id="compatibility-score">85%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="w-full bg-gray-700 rounded-full h-2">
                             <div class="bg-primary h-2 rounded-full" style="width: 85%" id="compatibility-bar"></div>
                         </div>
                     </div>
                     
                     <div class="space-y-4">
                         <div>
-                            <h4 class="font-semibold text-dark mb-2">配对优势</h4>
-                            <p class="text-gray-600 text-sm" id="match-advantages">鼠的机智与牛的稳重形成互补，在性格和能力上能够相互支持和理解，共同应对生活中的各种挑战。</p>
+                            <h4 class="font-semibold text-white mb-2">配对优势</h4>
+                            <p class="text-gray-300 text-sm" id="match-advantages">鼠的机智与牛的稳重形成互补，在性格和能力上能够相互支持和理解，共同应对生活中的各种挑战。</p>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-dark mb-2">需要注意</h4>
-                            <p class="text-gray-600 text-sm" id="match-notes">鼠可能会觉得牛过于保守，而牛可能认为鼠过于急躁。双方需要学会理解和包容对方的不同之处。</p>
+                            <h4 class="font-semibold text-white mb-2">需要注意</h4>
+                            <p class="text-gray-300 text-sm" id="match-notes">鼠可能会觉得牛过于保守，而牛可能认为鼠过于急躁。双方需要学会理解和包容对方的不同之处。</p>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-dark mb-2">相处建议</h4>
-                            <p class="text-gray-600 text-sm" id="match-advice">鼠可以多学习牛的稳重和耐心，而牛可以尝试接受鼠的创新思维。相互理解和尊重是维持良好关系的关键。</p>
+                            <h4 class="font-semibold text-white mb-2">相处建议</h4>
+                            <p class="text-gray-300 text-sm" id="match-advice">鼠可以多学习牛的稳重和耐心，而牛可以尝试接受鼠的创新思维。相互理解和尊重是维持良好关系的关键。</p>
                         </div>
                     </div>
                 </div>
@@ -1084,29 +1249,29 @@
     </section>
 
     <!-- 生肖运势分享 -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-16 bg-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-dark mb-4">生肖运势分享</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">了解每个生肖的最新运势，分享您的运势体验</p>
+                <h2 class="text-3xl font-bold text-white mb-4">生肖运势分享</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">了解每个生肖的最新运势，分享您的运势体验</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- 鼠运势 -->
-                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
+                <div class="bg-gray-700 rounded-xl p-6 card-shadow hover-scale">
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
                                 <i class="fa fa-mouse-pointer text-primary text-2xl"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-dark">鼠 - 本周运势</h3>
+                            <h3 class="text-xl font-bold text-white">鼠 - 本周运势</h3>
                         </div>
-                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">运势上升</span>
+                        <span class="px-3 py-1 bg-green-900 text-green-200 rounded-full text-xs font-medium">运势上升</span>
                     </div>
                     
                     <div class="space-y-4 mb-6">
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">事业运势</span>
+                            <span class="text-sm text-gray-300">事业运势</span>
                             <div class="flex">
                                 <i class="fa fa-star text-yellow-400"></i>
                                 <i class="fa fa-star text-yellow-400"></i>
@@ -1116,7 +1281,7 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">财运运势</span>
+                            <span class="text-sm text-gray-300">财运运势</span>
                             <div class="flex">
                                 <i class="fa fa-star text-yellow-400"></i>
                                 <i class="fa fa-star text-yellow-400"></i>
@@ -1126,7 +1291,7 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">感情运势</span>
+                            <span class="text-sm text-gray-300">感情运势</span>
                             <div class="flex">
                                 <i class="fa fa-star text-yellow-400"></i>
                                 <i class="fa fa-star text-yellow-400"></i>
@@ -1136,7 +1301,7 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">健康运势</span>
+                            <span class="text-sm text-gray-300">健康运势</span>
                             <div class="flex">
                                 <i class="fa fa-star text-yellow-400"></i>
                                 <i class="fa fa-star text-yellow-400"></i>
@@ -1147,17 +1312,17 @@
                         </div>
                     </div>
                     
-                    <p class="text-gray-600 text-sm mb-4">
+                    <p class="text-gray-300 text-sm mb-4">
                         本周属鼠的朋友运势整体上升，事业上可能会有新的机会出现，财运平稳，感情方面需要多一些沟通和理解，健康方面要注意休息。
                     </p>
                     
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-3">
-                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <button class="flex items-center text-sm text-gray-300 hover:text-primary transition-colors duration-200">
                                 <i class="fa fa-thumbs-up mr-1"></i>
                                 <span>有用(86)</span>
                             </button>
-                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <button class="flex items-center text-sm text-gray-300 hover:text-primary transition-colors duration-200">
                                 <i class="fa fa-comment-o mr-1"></i>
                                 <span>评论(23)</span>
                             </button>
@@ -1324,32 +1489,32 @@
     </section>
 
     <!-- 生肖话题讨论区 -->
-    <section id="topic-discussion" class="py-16 bg-white">
+    <section id="topic-discussion" class="py-16 bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-dark mb-4">生肖话题讨论区</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">参与生肖相关话题讨论，结交志同道合的朋友</p>
+                <h2 class="text-3xl font-bold text-white mb-4">生肖话题讨论区</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">参与生肖相关话题讨论，结交志同道合的朋友</p>
             </div>
             
             <!-- 发布话题 -->
-            <div class="bg-white rounded-xl p-6 shadow-md border border-gray-100 mb-8">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-md border border-gray-700 mb-8">
                 <div class="flex items-start space-x-4">
                     <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                         <i class="fa fa-user text-primary text-xl"></i>
                     </div>
                     <div class="flex-1">
-                        <textarea id="new-topic-content" placeholder="分享您关于生肖的想法或问题..." class="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 form-input-focus resize-none" rows="3"></textarea>
+                        <textarea id="new-topic-content" placeholder="分享您关于生肖的想法或问题..." class="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-700 text-white form-input-focus resize-none" rows="3"></textarea>
                         <div class="flex justify-between items-center mt-4">
                             <div class="flex items-center space-x-3">
-                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                <button class="flex items-center text-gray-300 hover:text-primary transition-colors duration-200">
                                     <i class="fa fa-smile-o mr-1"></i>
                                     <span>表情</span>
                                 </button>
-                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                <button class="flex items-center text-gray-300 hover:text-primary transition-colors duration-200">
                                     <i class="fa fa-picture-o mr-1"></i>
                                     <span>图片</span>
                                 </button>
-                                <button class="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+                                <button class="flex items-center text-gray-300 hover:text-primary transition-colors duration-200">
                                     <i class="fa fa-tag mr-1"></i>
                                     <span>话题</span>
                                 </button>
@@ -1365,17 +1530,17 @@
             <!-- 话题列表 -->
             <div class="space-y-6">
                 <!-- 话题1 -->
-                <div class="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                <div class="bg-gray-800 rounded-xl p-6 shadow-md border border-gray-700">
                     <div class="flex items-start space-x-4 mb-4">
-                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa fa-user text-gray-500 text-xl"></i>
+                        <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-user text-gray-400 text-xl"></i>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center justify-between">
-                                <h4 class="font-semibold text-dark">龙的传人</h4>
-                                <span class="text-xs text-gray-500">2小时前</span>
+                                <h4 class="font-semibold text-white">龙的传人</h4>
+                                <span class="text-xs text-gray-400">2小时前</span>
                             </div>
-                            <p class="text-gray-600 mt-2">
+                            <p class="text-gray-300 mt-2">
                                 作为属龙的人，我一直觉得自己性格比较开朗自信，大家觉得属龙的人还有哪些典型特点呢？欢迎分享交流！
                             </p>
                             <div class="flex items-center space-x-3 mt-3">
@@ -1387,20 +1552,20 @@
                     
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-6">
-                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <button class="flex items-center text-sm text-gray-300 hover:text-primary transition-colors duration-200">
                                 <i class="fa fa-thumbs-up mr-1"></i>
                                 <span>赞同(42)</span>
                             </button>
-                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <button class="flex items-center text-sm text-gray-300 hover:text-primary transition-colors duration-200">
                                 <i class="fa fa-comment-o mr-1"></i>
                                 <span>回复(16)</span>
                             </button>
-                            <button class="flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                            <button class="flex items-center text-sm text-gray-300 hover:text-primary transition-colors duration-200">
                                 <i class="fa fa-share-alt mr-1"></i>
                                 <span>分享</span>
                             </button>
                         </div>
-                        <button class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                        <button class="text-sm text-gray-300 hover:text-primary transition-colors duration-200">
                             <i class="fa fa-ellipsis-h"></i>
                         </button>
                     </div>
@@ -1874,8 +2039,6 @@
         });
     </script>
 
-    <script src="../../js/global_escape_listener.js"></script>
-    
     <script src="../../js/global_escape_listener.js"></script>
     <script>
         // 初始化ESC键监听

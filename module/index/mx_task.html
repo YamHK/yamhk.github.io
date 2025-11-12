@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>任务中心 - 执行任务赢取积分</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="../../element/vue.min.js"></script>
+    <script src="../../element/element.js"></script>
+    <link href="../../element/element.css" rel="stylesheet">
+    <link href="../../element/font-awesome.css" rel="stylesheet">
+    <link href="../../css/tailwind.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -100,7 +103,7 @@
         </div>
         <div class="md:w-1/2 relative">
             <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                <img src="https://picsum.photos/seed/tasks/600/400" alt="任务中心展示" class="w-full h-auto">
+                <img src="../../images/task_demo.jpg" alt="任务中心展示" class="w-full h-auto">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                     <div class="p-6 text-white">
                         <p class="font-medium">完成任务，轻松赚取积分</p>
@@ -800,6 +803,19 @@
         // 初始化ESC键监听
         if (typeof initGlobalEscapeKeyListener === 'function') {
             initGlobalEscapeKeyListener();
+        }
+        
+        // 获取位置信息元素（如果存在）
+        const locationInfo = document.getElementById('locationInfo');
+        if (locationInfo) {
+            // 使用本地模拟数据替代外部API调用
+            const mockLocationData = {
+                city: '北京',
+                region: '北京',
+                country: '中国'
+            };
+            // 更新地理位置信息
+            locationInfo.textContent = `${mockLocationData.city || '未知位置'}`;
         }
     });
 

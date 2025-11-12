@@ -75,7 +75,7 @@ function showVersionInfo() {
     // 尝试从JSON文件中获取版本信息
     try {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', '../../data/version_info.json', false); // 同步请求
+        xhr.open('GET', '/agent/data/version_info.json', false); // 同步请求
         xhr.send(null);
         
         if (xhr.status === 200) {
@@ -98,9 +98,9 @@ function showVersionInfo() {
                         background: rgba(0, 0, 0, 0.85); color: white; padding: 20px; border-radius: 10px; 
                         z-index: 10000; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
                         animation: fadeInOut 1.5s ease-in-out;">
-                <div style="font-size: 18px; margin-bottom: 10px;">前端版本信息</div>
-                <div style="font-size: 14px; opacity: 0.8;">${version}</div>
-                <div style="font-size: 12px; opacity: 0.6; margin-top: 8px;">${gitTimestamp}</div>
+                <div style="font-size: 18px; margin-bottom: 10px;">金零社主题社交平台</div>
+                <div style="font-size: 14px; opacity: 0.8;">版本: ${version}</div>
+                <div style="font-size: 12px; opacity: 0.6; margin-top: 8px;">更新时间: ${gitTimestamp}</div>
             </div>
             <style>
                 @keyframes fadeInOut {

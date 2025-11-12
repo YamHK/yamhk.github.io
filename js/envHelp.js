@@ -194,66 +194,74 @@ async function openTarget(target, virtualSpace) {
     }
     //本地广播
     if (target === "local") {
-        // fetch('https://ipinfo.io/json')
-        //     .then(res => res.json())
-        //     .then(data => console.log('公网IP及地理位置：', data.ip, data.country, data.region, data.city));
-        //同步等待请求https://api.ip.sb/geoip获取用户所在地,注意不是异步请求
-        await fetch('https://api.ip.sb/geoip')
-            .then(response => response.json())
-            .then(data => {
-                //获取用户IP
-                let ip = data.ip;
-                //获取用户所在地
-                let city = data.city;
-                //获取用户所在省份
-                let region = data.region;
-                //获取用户所在国家
-                let country = data.country;
-                //获取用户所在经度
-                let longitude = data.longitude;
-                //获取用户所在纬度
-                let latitude = data.latitude;
-                if (city === "" || city === null || city === "null" || city === "undefined") {
-                    targetSite = "baidu";
-                } else {
-                    targetSite = city;
-                    targetSite = region;
-                }
-                //虚拟定位
-                if (realVirtual) {
-                    targetSite = virtualSpace;
-                    //log
-                    console.log("虚拟定位-" + virtualSpace);
-                }
+        // 使用本地模拟数据替代外部API调用
+        // const mockLocationData = {
+        //     ip: '127.0.0.1',
+        //     country: '中国',
+        //     region: '北京',
+        //     city: '北京'
+        // };
+        // console.log('公网IP及地理位置（模拟）：', mockLocationData.ip, mockLocationData.country, mockLocationData.region, mockLocationData.city);
+        // 使用本地模拟数据替代外部API调用
+            const mockLocationData = {
+                ip: '127.0.0.1',
+                country: '中国',
+                region: '北京',
+                city: '北京',
+                longitude: 116.4074,
+                latitude: 39.9042,
+                isp: '本地网络'
+            };
+            //获取模拟数据
+            let ip = mockLocationData.ip;
+            let city = mockLocationData.city;
+            let region = mockLocationData.region;
+            let country = mockLocationData.country;
+            let longitude = mockLocationData.longitude;
+            let latitude = mockLocationData.latitude;
+            
+            if (city === "" || city === null || city === "null" || city === "undefined") {
+                targetSite = "baidu";
+            } else {
+                targetSite = city;
+                targetSite = region;
+            }
+            //虚拟定位
+            if (realVirtual) {
+                targetSite = virtualSpace;
                 //log
-                console.log("当前访问站点-ip: " + ip + "-" + city + "-" + region + "-" + country + "-" + longitude + "-" + latitude);
-                //通知服务器人访问,带上 位置信息
-                const apiUrl = getYamhkUrl('api');
-                fetch(apiUrl + '?action=locationMonitor&city=' + city + '&region=' + region + '&ip=' + ip)
-            })
+                console.log("虚拟定位-" + virtualSpace);
+            }
+            //log
+            console.log("当前访问站点-ip(模拟): " + ip + "-" + city + "-" + region + "-" + country + "-" + longitude + "-" + latitude);
+            //通知服务器人访问,带上 位置信息
+            const apiUrl = getYamhkUrl('api');
+            fetch(apiUrl + '?action=locationMonitor&city=' + city + '&region=' + region + '&ip=' + ip)
     }
     if (target !== "local") {
-        fetch('https://api.ip.sb/geoip')
-            .then(response => response.json())
-            .then(data => {
-                //获取用户IP
-                let ip = data.ip;
-                //获取用户所在地
-                let city = data.city;
-                //获取用户所在省份
-                let region = data.region;
-                //获取用户所在国家
-                let country = data.country;
-                //获取用户所在经度
-                let longitude = data.longitude;
-                //获取用户所在纬度
-                let latitude = data.latitude;
-                //log
-                console.log("当前访问站点-ip: " + ip + "-" + city + "-" + region + "-" + country + "-" + longitude + "-" + latitude);
-                //通知服务器人访问,带上 位置信息
-                const apiUrl = getYamhkUrl('api');
-                fetch(apiUrl + '?action=locationMonitor&city=' + city + '&region=' + region + '&ip=' + ip)
-            })
+        // 使用本地模拟数据替代外部API调用
+        const mockLocationData = {
+            ip: '127.0.0.1',
+            country: '中国',
+            region: '北京',
+            city: '北京',
+            longitude: 116.4074,
+            latitude: 39.9042,
+            isp: '本地网络'
+        };
+        //获取模拟数据
+        let ip = mockLocationData.ip;
+        let city = mockLocationData.city;
+        let region = mockLocationData.region;
+        let country = mockLocationData.country;
+        let longitude = mockLocationData.longitude;
+        let latitude = mockLocationData.latitude;
+        
+        //log
+        console.log("当前访问站点-ip(模拟): " + ip + "-" + city + "-" + region + "-" + country + "-" + longitude + "-" + latitude);
+        //通知服务器人访问,带上 位置信息
+        const apiUrl = getYamhkUrl('api');
+        fetch(apiUrl + '?action=locationMonitor&city=' + city + '&region=' + region + '&ip=' + ip)
     }
     // Fetching site configurations from JSON
     fetch('json/targetSites.json')

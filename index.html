@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金零社 - 数字金融服务平台</title>
+    <title>金零社 - 主题社交平台</title>
     <!-- SEO 优化 meta 标签 -->
-    <meta name="description" content="金零社 - 专业数字金融社交平台，为个人用户提供智能金融解决方案和社交服务">
-    <meta name="keywords" content="金零社,数字金融,金融服务,金融科技,投资管理">
+    <meta name="description" content="金零社 - 专业主题社交平台，为用户提供基于兴趣爱好的社交服务">
+    <meta name="keywords" content="金零社,主题社交,兴趣社区,星座,生肖,话题讨论">
     <meta name="author" content="金零社">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="金零社 - 数字金融服务平台">
-    <meta property="og:description" content="金零社专注于提供专业的数字金融服务和解决方案，为企业和个人用户创造价值。">
+    <meta property="og:title" content="金零社 - 主题社交平台">
+    <meta property="og:description" content="金零社专注于提供专业的主题社交服务，让用户基于共同兴趣爱好建立连接">
     <meta property="og:type" content="website">
     <meta property="og:image" content="index.png">
     <meta property="og:url" content="">
@@ -41,232 +41,51 @@
         window.Chart.defaults = {};
     </script>
     
-    <!-- 国内服务器可访问性检测 -->
-    <div id="cn-server-detection" class="fixed top-4 right-4 bg-dark/90 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+    <!-- 本地资源优化提示 -->
+    <div id="local-resource-info" class="fixed top-4 right-4 bg-dark/90 text-white px-4 py-3 rounded-lg shadow-lg z-50">
         <div class="flex items-center space-x-2">
-            <div id="detection-spinner" class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-            <span id="detection-status">正在检测国内服务器...</span>
+            <div class="rounded-full h-5 w-5 flex items-center justify-center">
+                <i class="fa fa-check text-green-400"></i>
+            </div>
+            <span>本地资源加载模式</span>
         </div>
-        <div id="detection-details" class="text-xs mt-2 text-gray-300"></div>
-        <div id="detection-actions" class="mt-3 hidden">
-            <button id="manual-redirect-btn" class="bg-primary text-dark px-3 py-1 text-sm rounded hover:bg-primary/90 transition-colors">
-                手动跳转到国内服务器
-            </button>
-            <button id="close-detection-btn" class="ml-2 text-xs text-gray-300 hover:text-white transition-colors">
+        <div class="text-xs mt-2 text-gray-300">所有资源均已配置为本地或国内CDN加载</div>
+        <div class="mt-3">
+            <button id="close-info-btn" class="text-xs text-gray-300 hover:text-white transition-colors">
                 关闭
             </button>
         </div>
     </div>
     
     <script>
-        // 立即执行检测脚本
+        // 本地资源提示处理
         (function() {
-            console.log('[国内服务器检测] 开始初始化');
-            
             // 获取DOM元素
-            const detectionElement = document.getElementById('cn-server-detection');
-            const statusElement = document.getElementById('detection-status');
-            const detailsElement = document.getElementById('detection-details');
-            const spinnerElement = document.getElementById('detection-spinner');
-            const actionsElement = document.getElementById('detection-actions');
-            const redirectBtn = document.getElementById('manual-redirect-btn');
-            const closeBtn = document.getElementById('close-detection-btn');
+            const infoElement = document.getElementById('local-resource-info');
+            const closeBtn = document.getElementById('close-info-btn');
             
-            // 检测参数设置
-            const targetUrl = 'http://yamhk.2288.org:8090/';
-            
-            // 更新状态函数
-            function updateStatus(message, details = '') {
-                if (statusElement) statusElement.textContent = message;
-                if (detailsElement && details) detailsElement.textContent = details;
-                console.log('[国内服务器检测]', message, details ? `(${details})` : '');
-            }
-            
-            // 结束检测函数
-            function finishDetection(success = false) {
-                // 停止旋转动画
-                if (spinnerElement) {
-                    spinnerElement.classList.remove('animate-spin');
-                    spinnerElement.classList.add('rounded-full', 'h-5', 'w-5');
-                    
-                    // 显示成功/失败图标
-                    spinnerElement.innerHTML = success ? 
-                        '<i class="fa fa-check" style="position: relative; top: -7px; left: -1px;"></i>' : 
-                        '<i class="fa fa-times" style="position: relative; top: -7px; left: -1px;"></i>';
-                }
-                
-                // 显示操作按钮
-                if (actionsElement) {
-                    actionsElement.classList.remove('hidden');
-                }
-                
-                // 更新背景色
-                if (detectionElement) {
-                    detectionElement.classList.add(success ? 'bg-green-700/90' : 'bg-red-700/90');
-                }
-            }
-            
-            // 手动跳转函数
-            function manualRedirect() {
-                console.log('[国内服务器检测] 用户手动触发跳转:', targetUrl);
-                if (statusElement) statusElement.textContent = '正在跳转到国内服务器...';
-                window.location.href = targetUrl;
-            }
-            
-            // 关闭检测提示
-            function closeDetection() {
-                console.log('[国内服务器检测] 用户关闭检测提示');
-                if (detectionElement) {
-                    detectionElement.style.transition = 'opacity 0.3s ease';
-                    detectionElement.style.opacity = '0';
+            // 关闭提示函数
+            function closeInfo() {
+                if (infoElement) {
+                    infoElement.style.transition = 'opacity 0.3s ease';
+                    infoElement.style.opacity = '0';
                     setTimeout(() => {
-                        detectionElement.classList.add('hidden');
+                        infoElement.classList.add('hidden');
                     }, 300);
                 }
             }
             
             // 添加事件监听器
-            if (redirectBtn) redirectBtn.addEventListener('click', manualRedirect);
-            if (closeBtn) closeBtn.addEventListener('click', closeDetection);
+            if (closeBtn) closeBtn.addEventListener('click', closeInfo);
             
-            // 避免在iframe中执行检测
-            if (window.top !== window.self) {
-                updateStatus('在iframe中，跳过检测');
-                finishDetection(false);
-                return;
-            }
-            
-            // 检查是否为localhost访问，如果是则不执行检测和跳转
-            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            if (isLocalhost) {
-                updateStatus('localhost访问，跳过跳转');
-                finishDetection(false);
-                
-                // 3秒后自动关闭提示
-                setTimeout(() => {
-                    closeDetection();
-                }, 3000);
-                return;
-            }
-            
-            updateStatus('开始检测目标服务器', targetUrl);
-            
-            // 使用更简单直接的检测方法 - 尝试直接连接
-            const startTime = Date.now();
-            const timeoutMs = 8000;
-            
-            // 简化的检测方法
-            function attemptConnection() {
-                // 创建一个Image对象尝试加载目标服务器上的资源
-                // 这是一个简单的跨域检测方法，不会触发CORS问题
-                const img = new Image();
-                let timer;
-                
-                img.onload = function() {
-                    clearTimeout(timer);
-                    const elapsedTime = Date.now() - startTime;
-                    console.log('[国内服务器检测] 图像加载成功，服务器可达');
-                    updateStatus('检测成功，服务器可达', `耗时: ${elapsedTime}ms`);
-                    finishDetection(true);
-                    
-                    // 自动跳转
-                    setTimeout(() => {
-                        console.log('[国内服务器检测] 执行自动跳转:', targetUrl);
-                        window.location.href = targetUrl;
-                    }, 1500);
-                };
-                
-                img.onerror = function() {
-                    clearTimeout(timer);
-                    const elapsedTime = Date.now() - startTime;
-                    console.log('[国内服务器检测] 图像加载失败');
-                    updateStatus('自动检测失败', `耗时: ${elapsedTime}ms`);
-                    finishDetection(false);
-                };
-                
-                // 设置超时
-                timer = setTimeout(() => {
-                    const elapsedTime = Date.now() - startTime;
-                    console.log('[国内服务器检测] 连接超时');
-                    updateStatus('连接超时', `耗时: ${elapsedTime}ms`);
-                    finishDetection(false);
-                }, timeoutMs);
-                
-                // 尝试加载目标服务器上的favicon或其他小资源
-                img.src = targetUrl + 'favicon.ico?' + Date.now();
-                console.log('[国内服务器检测] 发送检测请求:', img.src);
-            }
-            
-            // 备用检测方法 - 使用JSONP模式
-            function fallbackDetection() {
-                console.log('[国内服务器检测] 使用备用检测方法');
-                const script = document.createElement('script');
-                const callbackName = 'cnServerCheck_' + Date.now();
-                let timer;
-                
-                window[callbackName] = function() {
-                    clearTimeout(timer);
-                    const elapsedTime = Date.now() - startTime;
-                    console.log('[国内服务器检测] JSONP回调触发，服务器可达');
-                    updateStatus('检测成功，服务器可达', `耗时: ${elapsedTime}ms`);
-                    finishDetection(true);
-                    
-                    // 清理
-                    delete window[callbackName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    
-                    // 自动跳转
-                    setTimeout(() => {
-                        console.log('[国内服务器检测] 执行自动跳转:', targetUrl);
-                        window.location.href = targetUrl;
-                    }, 1500);
-                };
-                
-                // 设置超时
-                timer = setTimeout(() => {
-                    const elapsedTime = Date.now() - startTime;
-                    console.log('[国内服务器检测] JSONP检测超时');
-                    updateStatus('自动检测失败', `耗时: ${elapsedTime}ms`);
-                    finishDetection(false);
-                    
-                    // 清理
-                    delete window[callbackName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                }, timeoutMs);
-                
-                // 设置脚本源
-                script.src = targetUrl + '?callback=' + callbackName;
-                script.onerror = function() {
-                    clearTimeout(timer);
-                    const elapsedTime = Date.now() - startTime;
-                    console.log('[国内服务器检测] JSONP脚本加载失败');
-                    updateStatus('自动检测失败', `耗时: ${elapsedTime}ms`);
-                    finishDetection(false);
-                    
-                    // 清理
-                    delete window[callbackName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                };
-                
-                // 添加到文档
-                document.body.appendChild(script);
-                console.log('[国内服务器检测] 发送JSONP检测请求:', script.src);
-            }
-            
-            // 首先尝试简单的图像加载检测
-            attemptConnection();
-            
-            // 如果5秒后还没有结果，尝试备用方法
+            // 自动关闭提示
             setTimeout(() => {
-                if (spinnerElement && spinnerElement.classList.contains('animate-spin')) {
-                    console.log('[国内服务器检测] 主检测方法超时，尝试备用方法');
-                    fallbackDetection();
-                }
+                closeInfo();
             }, 5000);
         })();
     </script>
     
-    <!-- 配置Tailwind - 金融主题配色方案 -->
+    <!-- 配置Tailwind - 主题社交配色方案 -->
     <!-- 延迟加载非关键脚本 -->
     <script>
         // 使用requestIdleCallback或setTimeout延迟加载非关键脚本
@@ -310,24 +129,30 @@
         window.addEventListener('load', loadNonCriticalResources);
     </script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#e6a419', // 金融金色作为主色调
-                        secondary: '#1a237e', // 深蓝作为辅助色
-                        accent: '#f50057', // 强调色
-                        dark: '#1a1a2e', // 深色背景
-                        darker: '#16213e', // 更深色
-                        light: '#f8f9fa', // 浅色文本
-                        'gold-light': '#f9f0d6', // 浅金色
-                        'navy-light': '#283593' // 浅海军蓝
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                    },
+        // 安全地配置 Tailwind CSS，避免 ReferenceError
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#9C27B0', // 紫色作为主色调，适合社交平台
+                            secondary: '#165DFF', // 蓝色作为辅助色
+                            accent: '#FF4081', // 粉色作为强调色
+                            dark: '#1a1a2e', // 深色背景
+                            darker: '#16213e', // 更深色
+                            light: '#f8f9fa', // 浅色文本
+                            'theme-purple': '#9C27B0',
+                            'theme-blue': '#165DFF',
+                            'theme-pink': '#FF4081'
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        },
+                    }
                 }
-            }
+            };
+        } else {
+            console.warn('Tailwind CSS 未定义，跳过配置');
         }
     </script>
     
@@ -337,64 +162,78 @@
                 content-visibility: auto;
             }
             .card-shadow {
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 15px rgba(230, 164, 25, 0.1);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 15px rgba(156, 39, 176, 0.1);
             }
             .hover-scale {
                 transition: transform 0.3s ease, box-shadow 0.3s ease;
             }
             .hover-scale:hover {
                 transform: translateY(-5px);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 20px rgba(230, 164, 25, 0.2);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 20px rgba(156, 39, 176, 0.2);
             }
             .hero-gradient {
-                background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+                background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
             }
-            .gold-glow {
-                box-shadow: 0 0 15px rgba(230, 164, 25, 0.5), 0 0 30px rgba(26, 35, 126, 0.3);
+            .theme-glow {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(22, 93, 255, 0.3);
             }
-            .gold-border {
-                border: 1px solid rgba(230, 164, 25, 0.5);
-                box-shadow: 0 0 10px rgba(230, 164, 25, 0.2);
+            .theme-border {
+                border: 1px solid rgba(156, 39, 176, 0.5);
+                box-shadow: 0 0 10px rgba(156, 39, 176, 0.2);
             }
             .nav-shadow {
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 20px rgba(230, 164, 25, 0.1);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 20px rgba(156, 39, 176, 0.1);
             }
             .section-divider {
                 height: 2px;
-                background: linear-gradient(90deg, transparent, rgba(230, 164, 25, 0.5), transparent);
+                background: linear-gradient(90deg, transparent, rgba(156, 39, 176, 0.5), transparent);
+            }
+            /* 深色主题样式 */
+            .dark-bg {
+                background-color: #1a1a2e;
+            }
+            .darker-bg {
+                background-color: #16213e;
+            }
+            .dark-text {
+                color: #e2e8f0;
+            }
+            .muted-text {
+                color: #94a3b8;
+            }
+            .dark-card {
+                background-color: #1e293b;
+            }
+            .dark-border {
+                border-color: #334155;
             }
         }
     </style>
 </head>
-<body class="bg-light min-h-screen">
-    <!-- 导航栏 - DOTA风格顶部导航 -->
+<body class="bg-dark dark-bg dark-text min-h-screen">
+    <!-- 导航栏 - 深色简约风格 -->
     <header class="bg-dark fixed w-full top-0 z-50 nav-shadow">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- 网站Logo -->
                 <div class="flex items-center">
                     <a href="index.html" class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3 gold-glow">
-                            <i class="fa fa-line-chart text-white text-xl"></i>
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3 theme-glow">
+                            <i class="fa fa-comments text-white text-xl"></i>
                         </div>
                         <span class="text-xl font-bold text-white">金零社</span>
                     </a>
                 </div>
                 
                 <!-- 主导航菜单 - 桌面版 -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="#features" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">金融服务</a>
-                    <a href="#categories" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">服务中心</a>
-                    <a href="#quick-access" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">社交金融服务</a>
-                    <a href="module/index/mx_contact.html" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">关于我们</a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#features" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">主题社区</a>
+                    <a href="#categories" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">兴趣圈子</a>
+                    <a href="#quick-access" class="text-white hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">快速开始</a>
                 </div>
                 
-                <!-- 搜索和用户区域 -->
+                <!-- 用户区域 -->
                 <div class="flex items-center space-x-4">
-                    <!-- 搜索按钮 -->
-                    <button class="text-white hover:text-primary p-2 rounded-full hover:bg-white/10 transition-colors duration-200">
-                        <i class="fa fa-search text-lg"></i>
-                    </button>
                     <!-- 用户按钮 -->
                     <button class="text-white hover:text-primary p-2 rounded-full hover:bg-white/10 transition-colors duration-200">
                         <i class="fa fa-user-circle text-lg"></i>
@@ -413,29 +252,29 @@
         </div>
     </div>
     
-    <!-- 英雄区域 - DOTA风格强调门户特性 -->
+    <!-- 英雄区域 - 主题社交风格 -->
     <section class="hero-gradient pt-56 pb-24 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-block p-4 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 gold-glow">
-                <i class="fa fa-line-chart text-6xl"></i>
+            <div class="inline-block p-4 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 theme-glow">
+                <i class="fa fa-users text-6xl"></i>
             </div>
             <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold mb-6 leading-tight tracking-tight">
                 <span class="text-primary">金零社</span>
             </h1>
             <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-white/90">
-                专业数字金融服务平台，为企业和个人提供智能金融解决方案。我们致力于通过科技创新，赋能金融发展，创造可持续价值。
+                发现志同道合的朋友，基于共同兴趣爱好建立深度连接。在这里，每个主题都是一个社交圈子。
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="#features" class="bg-primary hover:bg-primary/90 text-dark font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
-                    探索服务
+                <a href="#quick-access" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                    快速加入
                 </a>
-                <a href="#quick-access" class="bg-transparent border-2 border-white hover:border-primary text-white hover:text-primary font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105">
-                    解决方案
+                <a href="#features" class="bg-transparent border-2 border-white hover:border-primary text-white hover:text-primary font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105">
+                    探索社区
                 </a>
             </div>
         </div>
         
-        <!-- 装饰性元素 - DOTA风格波纹效果 -->
+        <!-- 装饰性元素 - 社交风格波纹效果 -->
         <div class="absolute bottom-0 left-0 right-0 h-16 overflow-hidden">
             <div class="absolute bottom-0 left-0 right-0 bg-light transform translate-y-1/2">
                 <svg viewBox="0 0 1440 120" class="w-full h-auto">
@@ -445,39 +284,102 @@
         </div>
     </section>
 
-    <!-- 核心推荐模块 - 突出展示股票交流社区 -->
-    <section class="py-16 bg-gradient-to-r from-yellow-50 to-amber-50">
+    <!-- 快捷访问区域 - 增强版用户体验 -->
+    <section id="quick-access" class="py-20 bg-gradient-to-b from-white to-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <div class="inline-block p-2 bg-yellow-100 rounded-lg mb-4">
-                    <i class="fa fa-star text-yellow-600 text-2xl"></i>
+            <div class="text-center mb-16">
+                <div class="inline-block p-2 bg-accent/10 rounded-lg mb-4">
+                    <i class="fa fa-bolt text-accent text-2xl"></i>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">核心推荐</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">我们最受欢迎的金融社交服务</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">快速加入</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">快速加入你感兴趣的主题社区，开启社交之旅</p>
             </div>
             
-            <!-- 突出展示股票交流社区 -->
+            <!-- 默认功能选择器 - 社交风格升级版 -->
+            <div class="bg-white rounded-xl p-8 mb-12 theme-border">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div class="flex items-center">
+                        <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mr-5">
+                            <i class="fa fa-star text-secondary text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-dark">选择常用社区</h3>
+                <p class="text-gray-600">设置您常用的社区，提升访问效率</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-4">
+                        <select id="default-feature-selector" class="bg-light border border-gray-300 text-gray-700 py-3 px-5 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm md:text-base w-full md:w-auto">
+                            <option value="">不启用</option>
+                            <option value="module/index/mx_constellation_chat.html" selected>星座交流社区</option>
+                            <option value="module/index/mx_zodiac_chat.html">生肖交流社区</option>
+                            <option value="module/index/mx_chat.html">通用社交圈</option>
+                            <option value="module/index/mx_live_stream.html">主题直播</option>
+                            <option value="module/index/mx_days.html">重要日子记录</option>
+                            <option value="module/index/mx_weather.html">地区天气分享</option>
+                            <option value="module/index/mx_matrix.html">兴趣匹配系统</option>
+                            <option value="module/index/mx_software_custom.html">技术支持中心</option>
+                            <option value="company/assets/index.html">个人资产管理</option>
+                            <option value="module/index/mx_qrcode_page.html">数字支付助手</option>
+                            <option value="module/index/mx_task.html">任务中心</option>
+                        </select>
+                        <button id="save-default-feature" class="bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+                            保存设置
+                        </button>
+                        <button id="go-to-default-feature" class="bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+                            立即进入
+                        </button>
+                        <button id="go-to-default-feature-auto" class="bg-accent hover:bg-accent/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+                            自动进入默认社区
+                        </button>
+                    </div>
+                </div>
+                <div id="feature-save-message" class="mt-4 text-sm text-green-600 hidden">
+                    <i class="fa fa-check-circle mr-1"></i>默认社区设置已保存
+                </div>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p><i class="fa fa-info-circle mr-1"></i>说明：您可以设置常用社区作为默认页面。首次访问时，系统会自动跳转到默认社区页面。</p>
+                    <p class="mt-1"><i class="fa fa-lightbulb-o mr-1"></i>提示：如果您想访问主页，请在URL后添加 <code>?home=true</code> 参数。</p>
+                </div>
+            </div>
+            
+        
+        </div>
+    </section>
+
+    <!-- 核心推荐模块 - 突出展示主题社交 -->
+    <section class="py-16 bg-gradient-to-r from-purple-50 to-blue-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-block p-2 bg-purple-100 rounded-lg mb-4">
+                    <i class="fa fa-star text-purple-600 text-2xl"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">热门社区</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">我们最受欢迎的主题社交社区</p>
+            </div>
+            
+            <!-- 突出展示星座交流社区 -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-16 hover-scale">
                 <div class="md:flex">
-                    <div class="md:w-2/5 bg-gradient-to-br from-yellow-400 to-amber-500 p-8 flex flex-col justify-center">
+                    <div class="md:w-2/5 bg-gradient-to-br from-purple-500 to-blue-500 p-8 flex flex-col justify-center">
                         <div class="text-white text-center">
-                            <i class="fa fa-line-chart text-5xl mb-4"></i>
-                            <h3 class="text-2xl font-bold mb-2">股票交流社区</h3>
-                            <p class="opacity-90">与股友分享投资见解</p>
+                            <i class="fa fa-star-o text-5xl mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">星座交流社区</h3>
+                            <p class="opacity-90">探索星座奥秘，结识有缘人</p>
                         </div>
                     </div>
                     <div class="md:w-3/5 p-8">
-                        <h3 class="text-2xl font-bold text-dark mb-4">实时股票交流，共享投资智慧</h3>
+                        <h3 class="text-2xl font-bold text-dark mb-4">发现星座文化魅力，与志同道合的朋友交流</h3>
                         <p class="text-gray-600 mb-6">
-                            加入我们的股票交流社区，与志同道合的投资者一起关注市场动态，分享投资见解，获取实时行情分析。无论您是投资新手还是资深股民，这里都是您交流学习的理想场所。
+                            加入我们的星座交流社区，与同样热爱星座文化的朋友们一起探讨星座奥秘，分享生活感悟，寻找志同道合的朋友。无论你是星座新手还是资深爱好者，这里都是你交流学习的理想场所。
                         </p>
                         <div class="flex flex-wrap gap-4 mb-6">
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">实时行情</span>
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">社区讨论</span>
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">投资分享</span>
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">专家观点</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">星座文化</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">性格分析</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">话题讨论</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">交友匹配</span>
                         </div>
-                        <a href="module/index/mx_stock_discussion.html" class="inline-block bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-dark font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                        <a href="module/index/mx_constellation_chat.html" class="inline-block bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
                             立即体验 <i class="fa fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -486,24 +388,24 @@
         </div>
     </section>
 
-    <!-- 功能分类区域 -->
+    <!-- 社区分类区域 -->
     <section id="categories" class="py-20 bg-light relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <div class="inline-block p-2 bg-primary/10 rounded-lg mb-4">
                     <i class="fa fa-th-large text-primary text-2xl"></i>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">服务分类</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">探索我们的金融社交服务，满足您的各类需求</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">兴趣圈子</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">探索基于不同主题的兴趣社区，找到属于你的社交圈子</p>
             </div>
             
             <!-- 分类导航 -->
             <div class="flex overflow-x-auto pb-4 mb-8 gap-4 scrollbar-hide">
-                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-primary text-dark font-medium hover:bg-primary/90 transition-colors duration-200">全部服务</button>
-                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">个人金融</button>
-                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">社交金融</button>
-                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">金融科技</button>
-                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">技术支持</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors duration-200">全部社区</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">星座社区</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">生肖社区</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">兴趣爱好</button>
+                <button class="category-btn whitespace-nowrap px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors duration-200">生活分享</button>
             </div>
         </div>
     </section>
@@ -518,8 +420,8 @@
                 <div class="inline-block p-2 bg-secondary/10 rounded-lg mb-4">
                     <i class="fa fa-star text-secondary text-2xl"></i>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">核心服务</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">我们的精选金融服务，为您提供专业、安全、高效的金融解决方案</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">主题社区</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">我们的精选主题社区，为您提供专业、安全、有趣的社交体验</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="features-container">
@@ -531,73 +433,11 @@
     </section>
 
     <!-- 添加回到顶部按钮 -->
-    <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-primary text-dark flex items-center justify-center shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+    <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
         <i class="fa fa-arrow-up text-xl"></i>
     </button>
 
-    <!-- 快捷访问区域 - 增强版用户体验 -->
-    <section id="quick-access" class="py-20 bg-gradient-to-b from-white to-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <div class="inline-block p-2 bg-accent/10 rounded-lg mb-4">
-                    <i class="fa fa-bolt text-accent text-2xl"></i>
-                </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">社交金融服务</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">为个人用户提供的社交金融服务，连接志同道合的金融爱好者</p>
-            </div>
-            
-            <!-- 默认功能选择器 - DOTA风格升级版 -->
-            <div class="bg-white rounded-xl p-8 mb-12 dota-border">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                    <div class="flex items-center">
-                        <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mr-5">
-                            <i class="fa fa-star text-secondary text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-dark">选择常用服务</h3>
-                <p class="text-gray-600">设置您常用的金融服务，提升访问效率</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-wrap items-center gap-4">
-                        <select id="default-feature-selector" class="bg-light border border-gray-300 text-gray-700 py-3 px-5 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm md:text-base w-full md:w-auto">
-                            <option value="">不启用</option>
-                            <option value="module/index/mx_stock_discussion.html" selected>股票交流社区</option>
-                            <option value="module/index/mx_chat.html">金融社交圈</option>
-                            <option value="module/index/mx_live_stream.html">财经直播</option>
-                            <option value="module/index/mx_days.html">理财规划工具</option>
-                            <option value="module/index/mx_weather.html">市场行情分析</option>
-                            <option value="module/index/mx_matrix.html">风险评估系统</option>
-                            <option value="module/index/mx_software_custom.html">技术支持中心</option>
-                            <option value="company/assets/index.html">个人资产管理</option>
-                            <option value="module/index/mx_qrcode_page.html">数字支付助手</option>
-                            <option value="module/index/mx_task.html">任务中心</option>
-                        </select>
-                        <button id="save-default-feature" class="bg-primary hover:bg-primary/90 text-dark font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
-                            保存设置
-                        </button>
-                        <button id="go-to-default-feature" class="bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
-                            立即跳转
-                        </button>
-                        <button id="go-to-default-feature-auto" class="bg-accent hover:bg-accent/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
-                            自动跳转到默认功能
-                        </button>
-                    </div>
-                </div>
-                <div id="feature-save-message" class="mt-4 text-sm text-green-600 hidden">
-                    <i class="fa fa-check-circle mr-1"></i>默认功能设置已保存
-                </div>
-                <div class="mt-4 text-sm text-gray-600">
-                    <p><i class="fa fa-info-circle mr-1"></i>说明：您可以设置常用功能作为默认页面。首次访问时，系统会自动跳转到默认功能页面。</p>
-                    <p class="mt-1"><i class="fa fa-lightbulb-o mr-1"></i>提示：如果您想访问主页，请在URL后添加 <code>?home=true</code> 参数。</p>
-                </div>
-            </div>
-            
-        
-        </div>
-    </section>
-
-    <!-- 页脚 - DOTA风格门户版 -->
+    <!-- 页脚 - 社交风格门户版 -->
     <footer class="bg-dark text-white py-16 relative">
         <!-- 装饰性顶部边框 -->
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
@@ -607,13 +447,13 @@
                 <!-- 品牌区域 -->
                 <div class="md:col-span-1">
                     <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center mr-4 gold-glow">
-                    <i class="fa fa-line-chart text-white text-2xl"></i>
+                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center mr-4 theme-glow">
+                    <i class="fa fa-comments text-white text-2xl"></i>
                 </div>
                 <span class="text-2xl font-bold">金零社</span>
                     </div>
                     <p class="text-gray-400 mb-6">
-                        专业数字金融社交平台，为个人用户提供智能金融解决方案和社交服务，助力财富增长与社交连接
+                        专业主题社交平台，为用户提供基于兴趣爱好的社交服务，帮助用户建立深度连接
                     </p>
                     <div class="flex space-x-4">
                         <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors duration-200">
@@ -635,9 +475,9 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-6 text-primary">快速链接</h4>
                 <ul class="space-y-3">
-                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors duration-200">金融服务</a></li>
-                    <li><a href="#categories" class="text-gray-400 hover:text-white transition-colors duration-200">服务中心</a></li>
-                    <li><a href="#quick-access" class="text-gray-400 hover:text-white transition-colors duration-200">社交金融服务</a></li>
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors duration-200">主题社区</a></li>
+                    <li><a href="#categories" class="text-gray-400 hover:text-white transition-colors duration-200">兴趣圈子</a></li>
+                    <li><a href="#quick-access" class="text-gray-400 hover:text-white transition-colors duration-200">快速开始</a></li>
                     <li><a href="module/index/mx_contact.html" class="text-gray-400 hover:text-white transition-colors duration-200">关于我们</a></li>
                     <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">帮助中心</a></li>
                 </ul>
@@ -657,14 +497,14 @@
                     </li>
                     <li class="flex items-center">
                         <i class="fa fa-map-marker text-primary mr-3"></i>
-                        <span class="text-gray-400">上海市浦东新区陆家嘴金融中心</span>
+                        <span class="text-gray-400">上海市浦东新区陆家嘴社交中心</span>
                     </li>
                 </ul>
                 </div>
             </div>
             
             <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 mb-4 md:mb-0">© 2025 金零社金融服务平台. 保留所有权利.</p>
+                <p class="text-gray-500 mb-4 md:mb-0">© 2025 金零社主题社交平台. 保留所有权利.</p>
                 <div class="flex space-x-6">
                     <a href="#" class="text-gray-500 hover:text-gray-400 transition-colors duration-200">隐私政策</a>
                     <a href="#" class="text-gray-500 hover:text-gray-400 transition-colors duration-200">使用条款</a>
@@ -725,75 +565,89 @@
         // 获取所有功能模块数据 - 核心模块优化版
         function getAllFeatures() {
             return [
-                // 社交金融类 (核心业务方向)
-                // 将股票交流社区作为首要推荐模块
-                {
-                    id: 'mx_stock_discussion',
-                    name: '股票交流社区',
-                    description: '与股友分享投资见解，共同关注股票动态，实时交流市场行情',
-                    icon: 'fa-line-chart',
-                    iconBgClass: 'bg-yellow-100',
-                    iconColorClass: 'text-yellow-600',
-                    link: 'module/index/mx_stock_discussion.html',
-                    category: 'feature',
-                    type: '社交金融'
-                },
+                // 突出显示正在推广的通用社交圈
                 {
                     id: 'mx_chat',
-                    name: '金融社交圈',
-                    description: '连接全球金融爱好者，分享投资见解和市场动态',
+                    name: '通用社交圈',
+                    description: '连接全球爱好者，分享见解和动态',
                     icon: 'fa-comments',
                     iconBgClass: 'bg-green-100',
                     iconColorClass: 'text-green-600',
                     link: 'module/index/mx_chat.html',
                     category: 'feature',
-                    type: '社交金融'
+                    type: '兴趣爱好'
+                },
+                // 显示几个有前景的模块为"待启用"状态
+                {
+                    id: 'mx_constellation_chat',
+                    name: '星座交流社区',
+                    description: '探索星座奥秘，结识有缘人，分享星座文化魅力',
+                    icon: 'fa-star-o',
+                    iconBgClass: 'bg-purple-100',
+                    iconColorClass: 'text-purple-600',
+                    link: '#',
+                    category: 'feature',
+                    type: '星座社区',
+                    disabled: true
+                },
+                {
+                    id: 'mx_zodiac_chat',
+                    name: '生肖交流社区',
+                    description: '基于生肖文化建立连接，寻找志同道合的朋友',
+                    icon: 'fa-paw',
+                    iconBgClass: 'bg-blue-100',
+                    iconColorClass: 'text-blue-600',
+                    link: '#',
+                    category: 'feature',
+                    type: '生肖社区',
+                    disabled: true
                 },
                 {
                     id: 'mx_live_stream',
-                    name: '财经直播',
-                    description: '实时财经直播，获取专家观点和市场分析',
+                    name: '主题直播',
+                    description: '实时主题直播，获取专家观点和社区互动',
                     icon: 'fa-video-camera',
                     iconBgClass: 'bg-pink-100',
                     iconColorClass: 'text-pink-600',
-                    link: 'module/index/mx_live_stream.html',
+                    link: '#',
                     category: 'feature',
-                    type: '社交金融'
+                    type: '生活分享',
+                    disabled: true
                 },
-                // 个人金融工具类
+                // 隐藏其他模块（注释掉）
+                /*
                 {
                     id: 'mx_days',
-                    name: '理财规划工具',
-                    description: '智能理财规划，助您实现财富增长目标',
-                    icon: 'fa-line-chart',
+                    name: '重要日子记录',
+                    description: '记录和提醒重要日子，分享生活点滴',
+                    icon: 'fa-calendar',
                     iconBgClass: 'bg-primary/10',
                     iconColorClass: 'text-primary',
                     link: 'module/index/mx_days.html',
                     category: 'feature',
-                    type: '个人金融'
+                    type: '生活分享'
                 },
                 {
                     id: 'mx_weather',
-                    name: '市场行情分析',
-                    description: '实时金融市场行情分析，助您把握投资时机',
+                    name: '地区天气分享',
+                    description: '关注地区天气，分享当地生活状态',
                     icon: 'fa-area-chart',
                     iconBgClass: 'bg-blue-100',
                     iconColorClass: 'text-blue-500',
                     link: 'module/index/mx_weather.html',
                     category: 'feature',
-                    type: '个人金融'
+                    type: '生活分享'
                 },
-                // 技术支持服务类
                 {
                     id: 'mx_matrix',
-                    name: '风险评估系统',
-                    description: '基于AI的风险评估系统，保障您的金融安全',
+                    name: '兴趣匹配系统',
+                    description: '基于AI的兴趣匹配系统，发现志同道合的朋友',
                     icon: 'fa-shield',
                     iconBgClass: 'bg-purple-100',
                     iconColorClass: 'text-purple-600',
                     link: 'module/index/mx_matrix.html',
                     category: 'feature',
-                    type: '金融科技'
+                    type: '技术支持'
                 },
                 {
                     id: 'mx_software_custom',
@@ -806,7 +660,6 @@
                     category: 'feature',
                     type: '技术支持'
                 },
-                // 个人资产管理
                 {
                     id: 'company_assets',
                     name: '个人资产管理',
@@ -816,9 +669,8 @@
                     iconColorClass: 'text-blue-600',
                     link: 'company/assets/index.html',
                     category: 'feature',
-                    type: '个人金融'
+                    type: '生活分享'
                 },
-                // 金融科技创新
                 {
                     id: 'mx_qrcode_page',
                     name: '数字支付助手',
@@ -828,28 +680,38 @@
                     iconColorClass: 'text-secondary',
                     link: 'module/index/mx_qrcode_page.html',
                     category: 'feature',
-                    type: '金融科技'
+                    type: '生活分享'
                 },
-                // 新增任务中心
                 {
                     id: 'mx_task',
                     name: '任务中心',
-                    description: '执行任务获取积分，积分可兑换礼品',
+                    description: '完成任务获取积分，积分可兑换礼品',
                     icon: 'fa-tasks',
                     iconBgClass: 'bg-indigo-100',
                     iconColorClass: 'text-indigo-600',
                     link: 'module/index/mx_task.html',
                     category: 'feature',
-                    type: '个人金融'
+                    type: '生活分享'
                 }
+                */
             ];
         }
 
-        // 创建功能卡片 - 金融主题增强版
+        // 创建功能卡片 - 社交主题增强版
         function createFeatureCard(feature, index) {
             const card = document.createElement('a');
             card.href = feature.link;
             card.className = 'block bg-white rounded-xl p-6 hover-scale card-shadow border border-gray-100 transition-all duration-300 opacity-0 transform translate-y-4';
+            
+            // 如果功能被禁用，添加特殊样式
+            if (feature.disabled) {
+                card.classList.add('opacity-60', 'cursor-not-allowed');
+                card.onclick = function(e) {
+                    e.preventDefault();
+                    // 显示提示信息
+                    alert('该功能即将上线，敬请期待！');
+                };
+            }
             
             // 添加渐入动画 - 优化为有序延迟，减少随机性带来的性能波动
             setTimeout(() => {
@@ -857,36 +719,41 @@
                 card.classList.add('opacity-100', 'translate-y-0');
             }, 30 * index); // 使用索引计算延迟，保证有序且性能稳定
             
-            // 存储页面信息，用于快速返回功能
-            card.addEventListener('click', function(e) {
-                try {
-                    localStorage.setItem('last_visited_page', feature.link);
-                    localStorage.setItem('last_visited_page_name', feature.name);
-                } catch (error) {
-                    console.warn('无法保存页面信息到localStorage:', error);
-                }
-            });
+            // 存储页面信息，用于快速返回功能（仅对启用的功能）
+            if (!feature.disabled) {
+                card.addEventListener('click', function(e) {
+                    try {
+                        localStorage.setItem('last_visited_page', feature.link);
+                        localStorage.setItem('last_visited_page_name', feature.name);
+                    } catch (error) {
+                        console.warn('无法保存页面信息到localStorage:', error);
+                    }
+                });
+            }
             
             // 验证所有必要属性存在
             const safeIcon = feature.icon || 'fa-cog';
             const safeIconBgClass = feature.iconBgClass || 'bg-gray-100';
             const safeIconColorClass = feature.iconColorClass || 'text-gray-500';
             const safeType = feature.type || '未分类';
-            const safeName = feature.name || '未命名服务';
+            const safeName = feature.name || '未命名社区';
             const safeDescription = feature.description || '暂无描述';
+            
+            // 如果功能被禁用，添加"待启用"标签
+            const disabledBadge = feature.disabled ? 
+                '<div class="inline-block px-3 py-1 bg-gray-200 text-xs font-medium text-gray-500 rounded-full mb-4">待启用</div>' : 
+                `<div class="inline-block px-3 py-1 bg-gray-100 text-xs font-medium text-gray-700 rounded-full mb-4">${safeType}</div>`;
             
             card.innerHTML = `
                 <div class="w-16 h-16 ${safeIconBgClass} rounded-full flex items-center justify-center mb-6 shadow-sm">
                     <i class="fa ${safeIcon} ${safeIconColorClass} text-2xl"></i>
                 </div>
-                <div class="inline-block px-3 py-1 bg-gray-100 text-xs font-medium text-gray-700 rounded-full mb-4">
-                    ${safeType}
-                </div>
+                ${disabledBadge}
                 <h3 class="text-xl font-bold mb-3 text-dark">${safeName}</h3>
                 <p class="text-gray-600 mb-6 line-clamp-2">${safeDescription}</p>
                 <div class="flex items-center text-primary font-semibold group">
-                    <span>立即体验</span>
-                    <i class="fa fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+                    <span>${feature.disabled ? '敬请期待' : '立即加入'}</span>
+                    ${feature.disabled ? '' : '<i class="fa fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>'}
                 </div>
             `;
             
@@ -911,7 +778,7 @@
                     const allFeatures = getAllFeatures();
                     
                     // 根据筛选类型过滤功能
-                    const filteredFeatures = filterType === '全部服务' 
+                    const filteredFeatures = filterType === '全部社区' 
                         ? allFeatures 
                         : allFeatures.filter(feature => feature.type === filterType);
                     
@@ -925,8 +792,8 @@
                                     <div class="inline-block p-6 bg-gray-100 rounded-full mb-4">
                                         <i class="fa fa-search text-gray-400 text-3xl"></i>
                                     </div>
-                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">未找到相关服务</h3>
-                                    <p class="text-gray-500">请尝试选择其他分类或返回全部服务</p>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">未找到相关社区</h3>
+                                    <p class="text-gray-500">请尝试选择其他分类或返回全部社区</p>
                                 </div>
                             `;
                             return;
@@ -948,7 +815,7 @@
                                 </div>
                                 <h3 class="text-xl font-semibold text-gray-800 mb-2">加载失败</h3>
                                 <p class="text-gray-500">请刷新页面重试</p>
-                                <button onclick="renderFeatures('${filterType.replace(/'/g, "\\'")}')" class="mt-4 bg-primary text-dark font-semibold py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+                                <button onclick="renderFeatures('${filterType.replace(/'/g, "\\'")}')" class="mt-4 bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
                                     重试
                                 </button>
                             </div>
@@ -957,7 +824,7 @@
                 // 移除不必要的延迟，提高响应速度
             } catch (error) {
                 console.error('初始化渲染时出错:', error);
-                featuresContainer.innerHTML = `<div class="text-center py-12 text-gray-500">加载服务列表失败</div>`;
+                featuresContainer.innerHTML = `<div class="text-center py-12 text-gray-500">加载社区列表失败</div>`;
             }
         }
         
@@ -969,11 +836,11 @@
                 btn.addEventListener('click', function() {
                     // 更新按钮样式
                     categoryBtns.forEach(b => {
-                        b.classList.remove('bg-primary', 'text-dark');
+                        b.classList.remove('bg-primary', 'text-white');
                         b.classList.add('bg-gray-200', 'text-gray-700');
                     });
                     this.classList.remove('bg-gray-200', 'text-gray-700');
-                    this.classList.add('bg-primary', 'text-dark');
+                    this.classList.add('bg-primary', 'text-white');
                     
                     // 渲染对应分类的产品
                     renderFeatures(this.textContent.trim());
@@ -991,6 +858,9 @@
             
             // 初始化默认功能选择器
             initDefaultFeatureSelector();
+            
+            // 检查URL参数跳转
+            checkUrlParamRedirect();
             
             // 检查是否需要自动跳转到默认功能
             checkAndRedirectToDefaultFeature();
@@ -1022,13 +892,13 @@
                 } else {
                     // 显示提示信息
                     const messageEl = document.getElementById('feature-save-message');
-                    messageEl.textContent = '请先选择一个默认功能';
+                    messageEl.textContent = '请先选择一个默认社区';
                     messageEl.classList.remove('hidden', 'text-green-600');
                     messageEl.classList.add('text-red-600', 'animate-pulse');
                     
                     // 3秒后恢复原来的样式
                     setTimeout(() => {
-                        messageEl.textContent = '默认功能设置已保存';
+                        messageEl.textContent = '默认社区设置已保存';
                         messageEl.classList.add('hidden', 'text-green-600');
                         messageEl.classList.remove('text-red-600', 'animate-pulse');
                     }, 3000);
@@ -1041,14 +911,14 @@
                 localStorage.setItem('has_visited_homepage', 'true');
                 
                 // 获取默认功能设置
-                const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_constellation_chat.html';
                 
                 // 如果设置了默认功能且不是空值，则立即跳转
                 if (defaultFeature && defaultFeature !== '') {
                     window.location.href = defaultFeature;
                 } else {
-                    // 如果没有设置默认功能，跳转到股票交流社区
-                    window.location.href = 'module/index/mx_stock_discussion.html';
+                    // 如果没有设置默认功能，跳转到星座交流社区
+                    window.location.href = 'module/index/mx_constellation_chat.html';
                 }
             });
             
@@ -1083,7 +953,7 @@
                             
                             // 显示保存成功提示
                             const messageEl = document.getElementById('feature-save-message');
-                            messageEl.textContent = '默认功能设置已保存';
+                            messageEl.textContent = '默认社区设置已保存';
                             messageEl.classList.remove('hidden', 'text-red-600');
                             messageEl.classList.add('text-green-600', 'animate-pulse');
                             
@@ -1106,14 +976,14 @@
                             } else {
                                 // 显示提示信息
                                 const messageEl = document.getElementById('feature-save-message');
-                                messageEl.textContent = '请先选择一个默认功能';
+                                messageEl.textContent = '请先选择一个默认社区';
                                 messageEl.classList.remove('hidden', 'text-green-600');
                                 messageEl.classList.add('text-red-600', 'animate-pulse');
                                 
                                 // 2秒后恢复原来的样式
                                 requestAnimationFrame(() => {
                                     setTimeout(() => {
-                                        messageEl.textContent = '默认功能设置已保存';
+                                        messageEl.textContent = '默认社区设置已保存';
                                         messageEl.classList.add('hidden', 'text-green-600');
                                         messageEl.classList.remove('text-red-600', 'animate-pulse');
                                     }, 2000);
@@ -1127,14 +997,14 @@
                             localStorage.setItem('has_visited_homepage', 'true');
                             
                             // 获取默认功能设置
-                            const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                            const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_constellation_chat.html';
                             
                             // 如果设置了默认功能且不是空值，则立即跳转
                             if (defaultFeature && defaultFeature !== '') {
                                 window.location.href = defaultFeature;
                             } else {
-                                // 如果没有设置默认功能，跳转到股票交流社区
-                                window.location.href = 'module/index/mx_stock_discussion.html';
+                                // 如果没有设置默认功能，跳转到星座交流社区
+                                window.location.href = 'module/index/mx_constellation_chat.html';
                             }
                         }
                     });
@@ -1171,6 +1041,24 @@
                 });
             }
         })();
+        
+        // 修复控制台中关于<meta name="apple-mobile-web-app-capable">的警告
+        function fixMetaTagWarning() {
+            const oldMetaTag = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+            if (oldMetaTag) {
+                const newMetaTag = document.createElement('meta');
+                newMetaTag.name = 'mobile-web-app-capable';
+                newMetaTag.content = 'yes';
+                document.head.appendChild(newMetaTag);
+            }
+        }
+        
+        // 页面加载完成后修复警告
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fixMetaTagWarning);
+        } else {
+            fixMetaTagWarning();
+        }
         
         // 优化事件监听处理
         function optimizeEventListeners() {
@@ -1234,11 +1122,11 @@
                 
                 let savedFeature = '';
                 try {
-                    savedFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                    savedFeature = localStorage.getItem('default_feature') || 'module/index/mx_constellation_chat.html';
                 } catch (storageError) {
                     console.warn('无法从localStorage获取数据:', storageError);
-                    // 默认设置为股票交流社区
-                    savedFeature = 'module/index/mx_stock_discussion.html';
+                    // 默认设置为星座交流社区
+                    savedFeature = 'module/index/mx_constellation_chat.html';
                 }
                 
                 // 设置选择器的值
@@ -1272,6 +1160,52 @@
             return feature ? feature.link : null;
         }
 
+        // 检查URL参数跳转 - 新增功能
+        function checkUrlParamRedirect() {
+            // 获取URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const moduleParam = urlParams.get('t');
+            
+            // 如果没有模块参数，直接返回
+            if (!moduleParam) return;
+            
+            // 定义模块映射关系
+            const moduleMap = {
+                'proxy': 'module/index/mx_chat.html',
+                'stock': 'module/index/mx_constellation_chat.html',
+                'live': 'module/index/mx_live_stream.html',
+                'days': 'module/index/mx_days.html',
+                'weather': 'module/index/mx_weather.html',
+                'matrix': 'module/index/mx_matrix.html',
+                'support': 'module/index/mx_software_custom.html',
+                'assets': 'company/assets/index.html',
+                'pay': 'module/index/mx_qrcode_page.html',
+                'task': 'module/index/mx_task.html'
+            };
+            
+            // 获取目标链接
+            const targetLink = moduleMap[moduleParam];
+            
+            // 如果找到对应模块，执行跳转
+            if (targetLink) {
+                // 构造带所有参数的完整URL
+                let redirectUrl = targetLink;
+                
+                // 保留除t以外的所有参数
+                const allParams = new URLSearchParams(window.location.search);
+                allParams.delete('t');
+                
+                // 如果还有其他参数，附加到跳转链接
+                const otherParams = allParams.toString();
+                if (otherParams) {
+                    redirectUrl += '?' + otherParams;
+                }
+                
+                // 执行跳转
+                window.location.href = redirectUrl;
+            }
+        }
+
         // 检查并自动跳转到默认功能 - 增强版（基于本地配置文件）
         async function checkAndRedirectToDefaultFeature() {
             try {
@@ -1290,6 +1224,12 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.has('home')) {
                     console.log('用户明确想要访问主页，不进行自动跳转');
+                    return;
+                }
+                            
+                // 检查是否有模块跳转参数
+                if (urlParams.has('t')) {
+                    console.log('检测到模块跳转参数，不进行默认功能跳转');
                     return;
                 }
                 
@@ -1324,6 +1264,7 @@
                     // 根据feature_id获取对应的页面链接
                     const defaultFeatureLink = getFeatureLinkById(defaultFeatureId);
                     
+                    // 检查是否需要强制替换
                     // 检查是否需要强制替换
                     const forceOverride = homepageConfig.force_override;
                     
@@ -1378,22 +1319,22 @@
                         window.location.href = defaultFeature;
                     }, 1000);
                 } else {
-                    // 如果没有设置默认功能，设置股票交流社区为默认功能
-                    localStorage.setItem('default_feature', 'module/index/mx_stock_discussion.html');
-                    console.log('设置股票交流社区为默认功能');
+                    // 如果没有设置默认功能，设置星座交流社区为默认功能
+                    localStorage.setItem('default_feature', 'module/index/mx_constellation_chat.html');
+                    console.log('设置星座交流社区为默认功能');
                     
                     // 设置访问标记，表示用户已经访问过主页
                     localStorage.setItem('has_visited_homepage', 'true');
                     
-                    // 延迟跳转到股票交流社区
+                    // 延迟跳转到星座交流社区
                     setTimeout(() => {
-                        window.location.href = 'module/index/mx_stock_discussion.html';
+                        window.location.href = 'module/index/mx_constellation_chat.html';
                     }, 1000);
                 }
             } catch (error) {
                 console.error('检查并跳转到默认功能时出错:', error);
                 // 出错时使用原来的逻辑作为降级方案
-                const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_stock_discussion.html';
+                const defaultFeature = localStorage.getItem('default_feature') || 'module/index/mx_constellation_chat.html';
                 
                 // 设置访问标记，表示用户已经访问过主页
                 localStorage.setItem('has_visited_homepage', 'true');
@@ -1641,7 +1582,7 @@
             // 尝试从JSON文件中获取版本信息
             try {
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'data/version_info.json', false); // 同步请求
+                xhr.open('GET', '/agent/data/version_info.json', false); // 同步请求
                 xhr.send(null);
                 
                 if (xhr.status === 200) {
@@ -1664,9 +1605,9 @@
                                 background: rgba(0, 0, 0, 0.85); color: white; padding: 20px; border-radius: 10px; 
                                 z-index: 10000; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
                                 animation: fadeInOut 1.5s ease-in-out;">
-                        <div style="font-size: 18px; margin-bottom: 10px;">前端版本信息</div>
-                        <div style="font-size: 14px; opacity: 0.8;">${version}</div>
-                        <div style="font-size: 12px; opacity: 0.6; margin-top: 8px;">${gitTimestamp}</div>
+                        <div style="font-size: 18px; margin-bottom: 10px;">金零社主题社交平台</div>
+                        <div style="font-size: 14px; opacity: 0.8;">版本: ${version}</div>
+                        <div style="font-size: 12px; opacity: 0.6; margin-top: 8px;">更新时间: ${gitTimestamp}</div>
                     </div>
                     <style>
                         @keyframes fadeInOut {

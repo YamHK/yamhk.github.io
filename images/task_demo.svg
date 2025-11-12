@@ -1,0 +1,15 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="400" fill="#f0f0f0"/>
+  <rect x="50" y="50" width="500" height="300" rx="10" ry="10" fill="#ffffff" stroke="#dddddd" stroke-width="2"/>
+  <circle cx="100" cy="100" r="20" fill="#4CAF50"/>
+  <rect x="150" y="85" width="350" height="30" rx="5" ry="5" fill="#e3f2fd"/>
+  <text x="170" y="105" font-family="Arial" font-size="16" fill="#212121">任务管理示例</text>
+  <rect x="150" y="135" width="350" height="30" rx="5" ry="5" fill="#e8f5e8"/>
+  <text x="170" y="155" font-family="Arial" font-size="16" fill="#212121">完成项目初始化</text>
+  <rect x="150" y="185" width="350" height="30" rx="5" ry="5" fill="#fff3e0"/>
+  <text x="170" y="205" font-family="Arial" font-size="16" fill="#212121">更新用户界面</text>
+  <rect x="150" y="235" width="250" height="30" rx="5" ry="5" fill="#fce4ec"/>
+  <text x="170" y="255" font-family="Arial" font-size="16" fill="#212121">编写测试用例</text>
+  <rect x="50" y="320" width="500" height="30" rx="5" ry="5" fill="#f3e5f5"/>
+  <text x="200" y="340" font-family="Arial" font-size="16" fill="#757575">任务进度：75%</text>
+</svg>

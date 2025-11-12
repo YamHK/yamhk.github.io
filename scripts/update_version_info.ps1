@@ -21,7 +21,7 @@ $jsonContent = @{
 } | ConvertTo-Json
 
 # 写入版本信息文件
-$jsonContent | Out-File -FilePath "data\version_info.json" -Encoding UTF8
+$jsonContent | Out-File -FilePath "agent\data\version_info.json" -Encoding UTF8
 
 Write-Host "版本信息已更新:"
 Write-Host "提交哈希: $commitHash"
