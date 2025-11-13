@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通用社交圈 - 金零社</title>
+    <!-- 引入二维码生成库 -->
+    <script src="../../js/qrcode.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -86,6 +88,22 @@
         }
 
         .region-selector:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .share-btn {
+            font-size: 18px;
+            padding: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .share-btn:hover {
             background-color: rgba(255, 255, 255, 0.3);
         }
 
@@ -571,6 +589,9 @@
             <div class="region-selector" id="regionSelector">
                 <i class="fas fa-users"></i> <span id="currentRegion">社交圈</span>
             </div>
+            <div class="share-btn" id="shareBtn" title="分享">
+                <i class="fas fa-share-alt"></i>
+            </div>
         </div>
     </div>
     
@@ -651,20 +672,29 @@
         initRegionDisplay();
         
         // 获取并显示主题信息
-        const noteParam = getUrlParam('note');
-        if (noteParam) {
-            console.log('检测到主题参数:', noteParam);
+        const topic = getUrlParam('topic'); // 聊天室主题
+        if (topic) {
+            console.log('检测到聊天室主题:', topic);
             // 显示主题在标题栏
             const chatTitleElement = document.querySelector('.chat-title');
             if (chatTitleElement) {
-                chatTitleElement.textContent = noteParam;
+                chatTitleElement.textContent = topic;
             }
+            
+            // 更新页面标题
+            document.title = topic + ' - 金零社';
             
             // 显示主题在欢迎消息中
             const welcomeRegionElement = document.getElementById('welcomeRegion');
             if (welcomeRegionElement) {
-                welcomeRegionElement.textContent = noteParam;
+                welcomeRegionElement.textContent = topic;
             }
+        }
+        
+        // 如果有note参数，可以将其显示在某个概述区域（这里可以根据需要扩展）
+        if (noteParam) {
+            console.log('检测到概述信息:', noteParam);
+            // 可以在这里添加代码将note显示在界面上
         }
         
         // 显示欢迎弹窗
@@ -729,6 +759,422 @@
         window.location.href = '../../../index.html';
     });
 
+    // WebSocket连接
+    let websocket = null;
+    let userId = null;
+    let userProvince = null;
+    let userIP = null;
+
+    // 页面加载完成后初始化用户信息
+    document.addEventListener('DOMContentLoaded', function() {
+        // 初始化用户信息
+        initUserInfo();
+        // 原有初始化代码...
+    });
+
+    // 初始化用户信息
+    function initUserInfo() {
+        const savedUser = localStorage.getItem('chatUserInfo');
+        if (savedUser) {
+            try {
+                const userInfo = JSON.parse(savedUser);
+                userId = userInfo.userId;
+                userProvince = userInfo.userProvince;
+                userIP = userInfo.userIP;
+                console.log('已从localStorage加载用户信息:', userInfo);
+                // 初始化WebSocket连接
+                initWebSocket();
+                // 更新用户信息界面
+                updateUserInfo();
+            } catch (error) {
+                console.error('解析用户信息失败:', error);
+                generateNewUserInfo();
+            }
+        } else {
+            generateNewUserInfo();
+        }
+    }
+
+    // 生成新的用户信息
+    function generateNewUserInfo() {
+        userId = 'user_' + Math.random().toString(36).substring(2, 10);
+        userProvince = '未知省份';
+        userIP = '';
+
+        // 使用Geolocation API获取用户位置
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    // 成功获取位置后，调用逆地理编码API获取省份
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=zh-CN`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.address && data.address.state) {
+                                userProvince = data.address.state;
+                            } else if (data.address && data.address.province) {
+                                userProvince = data.address.province;
+                            } else {
+                                // 如果无法获取省份，使用默认值
+                                userProvince = '未知省份';
+                            }
+                            // 保存用户信息到localStorage
+                            saveUserInfo();
+                            // 初始化WebSocket
+                            initWebSocket();
+                        })
+                        .catch(error => {
+                            console.error('逆地理编码失败:', error);
+                            saveUserInfo();
+                            initWebSocket();
+                        });
+                },
+                error => {
+                    console.error('位置获取失败:', error.message);
+                    saveUserInfo();
+                    initWebSocket();
+                }
+            );
+        } else {
+            // 浏览器不支持Geolocation API
+            console.error('当前浏览器不支持地理位置获取功能');
+            saveUserInfo();
+            initWebSocket();
+        }
+    }
+
+    // 保存用户信息到localStorage
+    function saveUserInfo() {
+        const userInfo = {
+            userId: userId,
+            userProvince: userProvince,
+            userIP: userIP
+        };
+        localStorage.setItem('chatUserInfo', JSON.stringify(userInfo));
+    }
+
+    // 初始化WebSocket连接
+    function initWebSocket() {
+        // 获取聊天室主题
+        const topic = getUrlParam('topic');
+        
+        // 构建WebSocket URL，使用动态协议和主机名，确保与当前页面一致
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const wsUrl = protocol + window.location.host + '/ws/chat/' + userId + '?topic=' + encodeURIComponent(topic) + '&province=' + encodeURIComponent(userProvince);
+        
+        try {
+            websocket = new WebSocket(wsUrl);
+            
+            websocket.onopen = function(event) {
+                console.log('WebSocket连接已建立', event);
+                showSystemMessage('已连接到聊天服务器');
+            };
+            
+            websocket.onmessage = function(event) {
+                console.log('收到消息:', event.data);
+                handleWebSocketMessage(event.data);
+            };
+            
+            websocket.onclose = function(event) {
+                console.log('WebSocket连接已关闭', event);
+                showSystemMessage('与聊天服务器的连接已断开');
+            };
+            
+            websocket.onerror = function(error) {
+                console.error('WebSocket错误:', error);
+                showSystemMessage('WebSocket连接发生错误');
+            };
+        } catch (error) {
+            console.error('初始化WebSocket连接失败:', error);
+        }
+    }
+
+    // 处理WebSocket消息
+    function handleWebSocketMessage(messageJson) {
+        try {
+            const message = JSON.parse(messageJson);
+            const messageContainer = document.getElementById('messageContainer');
+            const messageRow = document.createElement('div');
+            
+            // 确定消息类型（自己的消息或他人的消息）
+            const isMyMessage = message.msgFrom === userId;
+            messageRow.className = 'message-row ' + (isMyMessage ? 'my-message' : 'other-message');
+            
+            const now = new Date(message.createTime);
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            
+            // 构造消息HTML
+            const messageHTML = `
+                ${!isMyMessage ? '<div class="message-avatar" style="background-color: #9C27B0;"><i class="fas fa-user text-white"></i></div>' : ''}
+                <div class="message-content">
+                    ${!isMyMessage ? '<div class="message-username">' + message.msgFrom + '</div>' : ''}
+                    <div class="message-bubble">
+                        ${message.content}
+                    </div>
+                    <div class="message-time">[${timeString}] [${message.province || '未知省份'}] ${isMyMessage ? '<i class="fas fa-check sent"></i>' : ''}</div>
+                </div>
+                ${isMyMessage ? '<div class="message-avatar" style="background-color: #7B1FA2;"><i class="fas fa-user text-white"></i></div>' : ''}
+            `;
+            
+            messageRow.innerHTML = messageHTML;
+            messageContainer.appendChild(messageRow);
+            
+            // 滚动到底部
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        } catch (error) {
+            console.error('处理消息失败:', error);
+        }
+    }
+
+    // 分享功能实现
+    // 创建分享模态框
+    const shareModalHTML = `
+        <div id="shareModal" class="share-modal" style="display: none;">
+            <div class="share-modal-content">
+                <div class="share-modal-header">
+                    <h3>分享聊天室</h3>
+                    <button class="close-btn" id="closeShareModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="share-modal-body">
+                    <div class="share-info">
+                        <p>分享链接</p>
+                        <div class="share-link-container">
+                            <input type="text" id="shareLinkInput" value="${window.location.href}" readonly>
+                            <button class="copy-btn" id="copyLinkBtn">
+                                <i class="fas fa-copy"></i> 复制
+                            </button>
+                        </div>
+                    </div>
+                    <div class="share-info">
+                        <p>二维码</p>
+                        <div class="qr-code-container" id="qrCodeContainer">
+                            <p>二维码生成中...</p>
+                        </div>
+                    </div>
+                    <div class="share-info">
+                        <p>分享说明</p>
+                        <p>点击复制链接或扫描二维码，邀请朋友加入当前聊天室</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 将分享模态框添加到页面
+    document.body.insertAdjacentHTML('beforeend', shareModalHTML);
+    
+    // 为分享按钮添加点击事件
+    document.getElementById('shareBtn').addEventListener('click', function() {
+        const shareModal = document.getElementById('shareModal');
+        if (shareModal) {
+            shareModal.style.display = 'flex';
+            // 生成二维码
+            generateQRCode();
+        }
+    });
+    
+    // 为关闭按钮添加点击事件
+    document.getElementById('closeShareModal').addEventListener('click', function() {
+        const shareModal = document.getElementById('shareModal');
+        if (shareModal) {
+            shareModal.style.display = 'none';
+        }
+    });
+    
+    // 点击模态框外部关闭
+    window.addEventListener('click', function(event) {
+        const shareModal = document.getElementById('shareModal');
+        if (event.target === shareModal) {
+            shareModal.style.display = 'none';
+        }
+    });
+    
+    // 复制链接功能
+    document.getElementById('copyLinkBtn').addEventListener('click', function() {
+        const shareLinkInput = document.getElementById('shareLinkInput');
+        shareLinkInput.select();
+        shareLinkInput.setSelectionRange(0, 99999); // 移动端
+        
+        try {
+            document.execCommand('copy');
+            // 复制成功反馈
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i> 已复制';
+            this.classList.add('copied');
+            setTimeout(() => {
+                this.innerHTML = originalHTML;
+                this.classList.remove('copied');
+            }, 2000);
+        } catch (error) {
+            console.error('复制失败:', error);
+            alert('复制失败，请手动复制链接');
+        }
+    });
+
+    // ESC键关闭分享模态框
+    window.addEventListener('keydown', function(event) {
+        const shareModal = document.getElementById('shareModal');
+        if (event.key === 'Escape' && shareModal && shareModal.style.display === 'flex') {
+            shareModal.style.display = 'none';
+        }
+    });
+    
+    // 生成二维码
+    function generateQRCode() {
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        const shareLink = window.location.href;
+        
+        // 使用qrcode-generator库生成二维码
+        if (typeof qrcode === 'function') {
+            const qr = qrcode(0, 'L');
+            qr.addData(shareLink);
+            qr.make();
+            qrCodeContainer.innerHTML = qr.createImgTag(4, 2, '聊天室分享二维码');
+            // 设置二维码图片大小
+            const qrImg = qrCodeContainer.querySelector('img');
+            if (qrImg) {
+                qrImg.width = 200;
+                qrImg.height = 200;
+            }
+        } else {
+            // 如果库加载失败，显示链接
+            qrCodeContainer.innerHTML = `
+                <p>请使用以下链接加入聊天室:</p>
+                <p style="font-size: 10px; word-break: break-all;">${shareLink}</p>
+            `;
+        }
+    }
+    
+    // 为分享模态框添加CSS样式
+    const shareModalStyle = `
+        <style>
+            .share-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            }
+            
+            .share-modal-content {
+                background-color: #374151;
+                color: white;
+                padding: 25px;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 450px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .share-modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #4B5563;
+            }
+            
+            .share-modal-header h3 {
+                margin: 0;
+                font-size: 20px;
+            }
+            
+            .close-btn {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 5px;
+            }
+            
+            .close-btn:hover {
+                color: #D1D5DB;
+            }
+            
+            .share-modal-body {
+                font-size: 14px;
+            }
+            
+            .share-info {
+                margin-bottom: 20px;
+            }
+            
+            .share-info p:first-child {
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #D1D5DB;
+            }
+            
+            .share-link-container {
+                display: flex;
+                gap: 10px;
+            }
+            
+            #shareLinkInput {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #4B5563;
+                border-radius: 5px;
+                background-color: #4B5563;
+                color: white;
+                font-size: 12px;
+            }
+            
+            .copy-btn {
+                padding: 10px 15px;
+                background-color: #7B1FA2;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+            
+            .copy-btn:hover {
+                background-color: #6A1B9A;
+            }
+            
+            .copy-btn.copied {
+                background-color: #10B981;
+            }
+            
+            .qr-code-container {
+                width: 100%;
+                height: 200px;
+                background-color: white;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #374151;
+                font-size: 12px;
+            }
+        </style>
+    `;
+    
+    // 添加分享模态框样式
+    document.head.insertAdjacentHTML('beforeend', shareModalStyle);
+    
+    // 显示系统消息
+    function showSystemMessage(content) {
+        const messageContainer = document.getElementById('messageContainer');
+        const systemMessage = document.createElement('div');
+        systemMessage.className = 'system-message';
+        systemMessage.innerHTML = '<span>' + content + '</span>';
+        messageContainer.appendChild(systemMessage);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+
     // 发送消息功能
     document.getElementById('sendButton').addEventListener('click', function() {
         sendMessage();
@@ -743,36 +1189,28 @@
 
     function sendMessage() {
         const messageInput = document.getElementById('messageInput');
-        const message = messageInput.value.trim();
+        const messageContent = messageInput.value.trim();
         
-        if (message) {
-            // 创建消息元素
-            const messageContainer = document.getElementById('messageContainer');
-            const messageRow = document.createElement('div');
-            messageRow.className = 'message-row my-message';
+        if (messageContent && websocket && websocket.readyState === WebSocket.OPEN) {
+            // 获取聊天室主题
+            const topic = getUrlParam('topic');
             
-            const now = new Date();
-            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            // 构建消息对象
+            const message = {
+                content: messageContent,
+                contentText: messageContent,
+                itemType: 1, // 普通消息类型
+                msgFrom: userId,
+                addressee: 'all',
+                msgGroup: 'general_chat',
+                topic: topic // 添加topic字段
+            };
             
-            messageRow.innerHTML = `
-                <div class="message-content">
-                    <div class="message-bubble">
-                        ${message}
-                    </div>
-                    <div class="message-time">${timeString} <i class="fas fa-check sent"></i></div>
-                </div>
-                <div class="message-avatar" style="background-color: #7B1FA2;">
-                    <i class="fas fa-user text-white"></i>
-                </div>
-            `;
-            
-            messageContainer.appendChild(messageRow);
+            // 发送消息到WebSocket服务器
+            websocket.send(JSON.stringify(message));
             
             // 清空输入框
             messageInput.value = '';
-            
-            // 滚动到底部
-            messageContainer.scrollTop = messageContainer.scrollHeight;
         }
     }
 </script>
